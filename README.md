@@ -34,6 +34,8 @@ make test     # attack tests against the current scenario, evidence in results/
 make down     # delete the VMs
 ```
 
+`make up` and `make app` reapply the base config; run the scenario target (`make s1`, `make s2a`, ...) again afterwards.
+
 After `make up`, point kubectl at the cluster:
 
 ```bash
