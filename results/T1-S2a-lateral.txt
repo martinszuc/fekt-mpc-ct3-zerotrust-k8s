@@ -9,12 +9,12 @@ command terminated with exit code 1
 ## frontend-to-details-allowed: productpage -> http http://details:9080/details/0
 OK HTTP 200 {"id":0,"author":"William Shakespeare","year":1595,"type":"paperback","pages":200,"publisher":"PublisherA","language":"English","ISBN-10":"1234567890","ISBN-13":"123-1234567890"}
 
-## hubble: dropped flows from productpage since 2026-10-22T14:49:13Z (agent on lima-zt-w1)
-Oct 22 14:49:14.160: bookinfo/productpage-v1-77954995c7-8k4pp:46312 (ID:30465) <> bookinfo/mongodb-v1-b849bccb7-qxpvr:27017 (ID:37908) Policy denied DROPPED (TCP Flags: SYN)
-Oct 22 14:49:15.205: bookinfo/productpage-v1-77954995c7-8k4pp:46312 (ID:30465) <> bookinfo/mongodb-v1-b849bccb7-qxpvr:27017 (ID:37908) Policy denied DROPPED (TCP Flags: SYN)
-Oct 22 14:49:16.305: bookinfo/productpage-v1-77954995c7-8k4pp:46312 (ID:30465) <> bookinfo/mongodb-v1-b849bccb7-qxpvr:27017 (ID:37908) Policy denied DROPPED (TCP Flags: SYN)
-Oct 22 14:49:17.354: bookinfo/productpage-v1-77954995c7-8k4pp:46312 (ID:30465) <> bookinfo/mongodb-v1-b849bccb7-qxpvr:27017 (ID:37908) Policy denied DROPPED (TCP Flags: SYN)
-Oct 22 14:49:18.318: bookinfo/productpage-v1-77954995c7-8k4pp:56754 (ID:30465) <> bookinfo/ratings-v2-757579c46-jd9kw:9080 (ID:26299) Policy denied DROPPED (TCP Flags: SYN)
-Oct 22 14:49:19.361: bookinfo/productpage-v1-77954995c7-8k4pp:56754 (ID:30465) <> bookinfo/ratings-v2-757579c46-jd9kw:9080 (ID:26299) Policy denied DROPPED (TCP Flags: SYN)
-Oct 22 14:49:20.412: bookinfo/productpage-v1-77954995c7-8k4pp:56754 (ID:30465) <> bookinfo/ratings-v2-757579c46-jd9kw:9080 (ID:26299) Policy denied DROPPED (TCP Flags: SYN)
-Oct 22 14:49:21.482: bookinfo/productpage-v1-77954995c7-8k4pp:56754 (ID:30465) <> bookinfo/ratings-v2-757579c46-jd9kw:9080 (ID:26299) Policy denied DROPPED (TCP Flags: SYN)
+## hubble: dropped flows from productpage since 2026-10-22T18:11:56Z (agent on lima-zt-w1)
+Oct 22 18:11:56.599: bookinfo/productpage-v1-7d4ff89989-r6lpn:55478 (ID:30465) <> bookinfo/mongodb-v1-5459678bdc-sgjs4:27017 (ID:37908) Policy denied DROPPED (TCP Flags: SYN)
+Oct 22 18:11:57.656: bookinfo/productpage-v1-7d4ff89989-r6lpn:55478 (ID:30465) <> bookinfo/mongodb-v1-5459678bdc-sgjs4:27017 (ID:37908) Policy denied DROPPED (TCP Flags: SYN)
+Oct 22 18:11:58.680: bookinfo/productpage-v1-7d4ff89989-r6lpn:55478 (ID:30465) <> bookinfo/mongodb-v1-5459678bdc-sgjs4:27017 (ID:37908) Policy denied DROPPED (TCP Flags: SYN)
+Oct 22 18:11:59.704: bookinfo/productpage-v1-7d4ff89989-r6lpn:55478 (ID:30465) <> bookinfo/mongodb-v1-5459678bdc-sgjs4:27017 (ID:37908) Policy denied DROPPED (TCP Flags: SYN)
+Oct 22 18:12:00.753: bookinfo/productpage-v1-7d4ff89989-r6lpn:60992 (ID:30465) <> bookinfo/ratings-v2-55657d6494-j8x25:9080 (ID:26299) Policy denied DROPPED (TCP Flags: SYN)
+Oct 22 18:12:01.816: bookinfo/productpage-v1-7d4ff89989-r6lpn:60992 (ID:30465) <> bookinfo/ratings-v2-55657d6494-j8x25:9080 (ID:26299) Policy denied DROPPED (TCP Flags: SYN)
+Oct 22 18:12:02.840: bookinfo/productpage-v1-7d4ff89989-r6lpn:60992 (ID:30465) <> bookinfo/ratings-v2-55657d6494-j8x25:9080 (ID:26299) Policy denied DROPPED (TCP Flags: SYN)
+Oct 22 18:12:03.864: bookinfo/productpage-v1-7d4ff89989-r6lpn:60992 (ID:30465) <> bookinfo/ratings-v2-55657d6494-j8x25:9080 (ID:26299) Policy denied DROPPED (TCP Flags: SYN)
