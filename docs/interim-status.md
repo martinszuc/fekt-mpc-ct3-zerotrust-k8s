@@ -18,19 +18,24 @@ Controlled experiment: each scenario adds exactly one control, every attack test
 
 - Cluster: 3 VMs (Lima, Ubuntu 24.04 arm64), k3s v1.36.5, Cilium 1.20.3 with kube-proxy replacement; `make up` reproduces it.
 - App: Bookinfo with MongoDB, one version per service, every call crosses nodes.
-- Scenarios S0, S1, S2a: `make s0|s1|s2a` switches the cluster, `make test` runs all attacks and stores evidence (pcaps, Hubble drops, logs) in `results/`.
+- Scenarios S0, S1, S2a, S2b: `make s0|s1|s2a|s2b` switches the cluster, `make test` runs all attacks and stores evidence (pcaps, Hubble drops, logs) in `results/`.
 
-| Threat | S0 baseline | S1 segmentation + no SA token | S2a + WireGuard |
-|---|---|---|---|
-| T1 frontend reads database directly | succeeds | blocked | blocked |
-| T2 sniffing traffic between nodes | plaintext | plaintext | encrypted |
-| T3 rogue pod with spoofed label (3 variants) | succeeds | succeeds | succeeds |
-| T5 attacker inside a legitimate pod | succeeds | succeeds | succeeds |
-| T6 ServiceAccount token against API | succeeds | blocked | blocked |
+| Threat | S0 baseline | S1 segmentation + no SA token | S2a + WireGuard | S2b + Istio mTLS |
+|---|---|---|---|---|
+| T1 frontend reads database directly | succeeds | blocked | blocked | blocked |
+| T2 sniffing traffic between nodes | plaintext | plaintext | encrypted, metadata hidden | encrypted, metadata visible |
+| T3 rogue pod outside the mesh | succeeds | succeeds | succeeds | blocked |
+| T3 rogue pod in the mesh (SA default) | succeeds | succeeds | succeeds | succeeds |
+| T3 rogue pod reusing the legitimate SA | succeeds | succeeds | succeeds | succeeds |
+| T5 attacker inside a legitimate pod | succeeds | succeeds | succeeds | succeeds |
+| T6 ServiceAccount token against API | succeeds | blocked | blocked | blocked |
 
-All 36 checks match the expected outcome (`results/attacks.csv`).
-Key observation so far: NetworkPolicy trusts labels, and WireGuard authenticates nodes, not workloads, so T3 still works in S2a.
-Expected next: mTLS (S2b) stops only the rogue pod outside the mesh; a rogue pod inside the mesh is authenticated, so only authorization (S3) stops it, and a rogue pod reusing the legitimate ServiceAccount is not stopped by any scenario (needs admission control, documented as a limit).
+All 48 checks match the expected outcome (`results/attacks.csv`).
+Key observations so far:
+
+- NetworkPolicy trusts labels, and WireGuard authenticates nodes, not workloads, so T3 still works in S2a.
+- mTLS stops only the rogue pod outside the mesh. A rogue pod in the mesh is authenticated, so only authorization (S3) can stop it. A rogue pod reusing the legitimate ServiceAccount is not stopped by any scenario (needs admission control, documented as a limit).
+- WireGuard hides who talks to whom on the node link; with mTLS the inner pod IPs and ports stay readable (266 frames in the S2b capture vs 0 in S2a).
 
 ## Decisions and findings
 
@@ -45,8 +50,7 @@ Expected next: mTLS (S2b) stops only the rogue pod outside the mesh; a rogue pod
 
 | Until | Goal |
 |---|---|
-| 05.11 | S2b Istio sidecar mTLS STRICT (T2, T3 blocked) |
-| 12.11 | S3 L7 authorization (T4), T5 limit, analysis chapter |
+| 05.11 | S3 L7 authorization (T3 in-mesh, T4), analysis chapter |
 | 20.11 | Benchmarks for all scenarios, graphs, results chapter |
 | 25.11 | Final text, bibliography (ČSN ISO 690), demo video |
 

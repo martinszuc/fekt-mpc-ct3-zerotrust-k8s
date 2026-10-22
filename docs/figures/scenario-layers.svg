@@ -61,7 +61,6 @@
         <rect x="48" y="216" width="640" height="72" rx="6" fill="#ffffff" stroke="#111111" stroke-width="1"/>
         <rect x="56" y="224" width="28" height="12" rx="2" fill="none" stroke="#111111" stroke-width="0.8" stroke-opacity="0.40"/>
         <text x="70" y="233" fill="#111111" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">S2B</text>
-        <text x="680" y="233" fill="#5b6273" font-size="7" font-family="'Geist Mono', monospace" text-anchor="end" letter-spacing="0.14em">EXPECTED · NOT RUN YET</text>
         <text x="104" y="248" fill="#111111" font-size="12" font-weight="600" font-family="'Geist', sans-serif">Workload authentication</text>
         <text x="104" y="264" fill="#4a5468" font-size="9" font-family="'Geist Mono', monospace">Istio mTLS STRICT</text>
         <text x="312" y="248" fill="#4a5468" font-size="8" font-family="'Geist Mono', monospace" letter-spacing="0.14em">STOPS</text>
@@ -74,7 +73,7 @@
         <rect x="48" y="328" width="640" height="72" rx="6" fill="#ffffff" stroke="#111111" stroke-width="1"/>
         <rect x="56" y="336" width="28" height="12" rx="2" fill="none" stroke="#111111" stroke-width="0.8" stroke-opacity="0.40"/>
         <text x="70" y="345" fill="#111111" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">S3</text>
-        <text x="680" y="345" fill="#5b6273" font-size="7" font-family="'Geist Mono', monospace" text-anchor="end" letter-spacing="0.14em">EXPECTED · NOT RUN YET</text>
+        <text x="680" y="345" fill="#5b6273" font-size="7" font-family="'Geist Mono', monospace" text-anchor="end" letter-spacing="0.14em">EXPECTED · S3 NOT RUN YET</text>
         <text x="104" y="360" fill="#111111" font-size="12" font-weight="600" font-family="'Geist', sans-serif">Authorization</text>
         <text x="104" y="376" fill="#4a5468" font-size="9" font-family="'Geist Mono', monospace">AuthorizationPolicy, L7</text>
         <text x="312" y="360" fill="#4a5468" font-size="8" font-family="'Geist Mono', monospace" letter-spacing="0.14em">STOPS</text>
