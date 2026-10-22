@@ -3,7 +3,7 @@ export KUBECONFIG := $(CURDIR)/.kube/config
 # MacTeX binaries are not on PATH in non-login shells
 export PATH := /Library/TeX/texbin:$(PATH)
 
-.PHONY: up down status app s0 s1 s2a test bench plot pdf
+.PHONY: up down status app s0 s1 s2a test bench plot figures pdf
 
 up:
 	infra/up.sh
@@ -38,6 +38,9 @@ bench:
 
 plot:
 	@echo "not implemented yet (scripts/)"; exit 1
+
+figures:
+	scripts/figures.sh
 
 pdf:
 	cd docs/report && latexmk -pdf -interaction=nonstopmode -halt-on-error sablona-prace.tex
