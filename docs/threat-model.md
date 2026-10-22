@@ -67,24 +67,24 @@ Not tested: Repudiation (only partly covered by Hubble flow logs from S1 and Env
 
 ## Expected and observed outcomes
 
-Cells: expected outcome of the attack; `ok` = matched in `results/attacks.csv` (rerun 22.10), `-` = not run yet.
+Cells: expected outcome of the attack; `ok` = matched in `results/attacks.csv` (S0 to S2a rerun 22.10, S2b 23.10), `-` = not run yet.
 
 | Threat | S0 | S1 | S2a | S2b | S3 |
 |---|---|---|---|---|---|
-| T1 lateral movement | succeeds, ok | blocked, ok | blocked, ok | blocked, - | blocked, - |
-| T2 sniffing | succeeds, ok | succeeds, ok | blocked, ok | blocked, - | blocked, - |
-| T3 no-identity | succeeds, ok | succeeds, ok | succeeds, ok | blocked, - | blocked, - |
-| T3 default-sa | succeeds, ok | succeeds, ok | succeeds, ok | succeeds, - | blocked, - |
-| T3 reused-sa | succeeds, ok | succeeds, ok | succeeds, ok | succeeds, - | succeeds, - |
+| T1 lateral movement | succeeds, ok | blocked, ok | blocked, ok | blocked, ok | blocked, - |
+| T2 sniffing | succeeds, ok | succeeds, ok | blocked, ok | blocked, ok | blocked, - |
+| T3 no-identity | succeeds, ok | succeeds, ok | succeeds, ok | blocked, ok | blocked, - |
+| T3 default-sa | succeeds, ok | succeeds, ok | succeeds, ok | succeeds, ok | blocked, - |
+| T3 reused-sa | succeeds, ok | succeeds, ok | succeeds, ok | succeeds, ok | succeeds, - |
 | T4 disallowed method | succeeds, - | succeeds, - | succeeds, - | succeeds, - | blocked, - |
-| T5 valid identity | succeeds, ok | succeeds, ok | succeeds, ok | succeeds, - | succeeds, - |
-| T6 token abuse | succeeds, ok | blocked, ok | blocked, ok | blocked, - | blocked, - |
+| T5 valid identity | succeeds, ok | succeeds, ok | succeeds, ok | succeeds, ok | succeeds, - |
+| T6 token abuse | succeeds, ok | blocked, ok | blocked, ok | blocked, ok | blocked, - |
 
 Notes from the evidence:
 
 - T1: no credentials needed; productpage reads `test.ratings` directly. S1 drops are visible in Hubble (`Policy denied DROPPED`).
-- T2: S0/S1 captures show review text and MongoDB queries inside VXLAN; S2a captures contain only WireGuard (UDP 51871). The verdict is about payload; the evidence also counts metadata (inner pod IPs and ports), which WireGuard hides but mesh mTLS leaves readable inside VXLAN. WireGuard does not encrypt same-node traffic, mTLS does.
-- T3: shows why segmentation by labels is not authentication, and (S2b) why authentication is not authorization.
+- T2: S0/S1 captures show review text and MongoDB queries inside VXLAN; S2a captures contain only WireGuard (UDP 51871). The verdict is about payload; the evidence also counts metadata (inner pod IPs and ports), which WireGuard hides but mesh mTLS leaves readable inside VXLAN (S2b capture: 266 frames with readable inner pod IPs and ports, 139 of them TLS; S2a: 0). WireGuard does not encrypt same-node traffic, mTLS does.
+- T3: shows why segmentation by labels is not authentication, and (S2b) why authentication is not authorization. In S2b the pod outside the mesh fails with `Connection reset by peer` (sidecar rejects plaintext), while T1 still fails with a timeout and a Hubble `Policy denied` drop: two different controls, visible in the evidence.
 - T5: the attacker runs as an ephemeral container in the real reviews pod, so it shares the pod's network identity and, from S2b, its sidecar.
 - T6: in S0 the token authenticates as `system:serviceaccount:bookinfo:bookinfo-productpage` but RBAC already denies reading Secrets (403); the threat is reconnaissance and a credential that works from outside the pod (token lifetime 1 year with the default token-expiration extension). S1 has two controls here: no token mounted and no network path to the API server.
 - T4 test is not written yet (needs S3); it will reuse the T5 ephemeral container. ratings-v2 answers `POST` with 501 (writes are only implemented for in-memory v1), so the verdict is whether the request reaches the application (any ratings response) or is rejected by the sidecar (403 `RBAC: access denied`), not whether data changes.

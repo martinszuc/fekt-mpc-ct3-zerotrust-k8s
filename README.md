@@ -30,7 +30,9 @@ make app      # deploy Bookinfo into namespace bookinfo
 make s0       # switch scenario: S0 baseline (no policies)
 make s1       # switch scenario: S1 default-deny NetworkPolicies, no SA tokens mounted
 make s2a      # switch scenario: S2a = S1 + Cilium WireGuard between nodes
+make s2b      # switch scenario: S2b = S1 + Istio sidecars, mTLS STRICT
 make test     # attack tests against the current scenario, evidence in results/
+make figures  # docs/figures/*.svg to PDF (report) and PNG (slides), needs Chrome
 make down     # delete the VMs
 ```
 
