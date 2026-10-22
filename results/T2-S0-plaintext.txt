@@ -1,59 +1,60 @@
 capture: zt-w1 lima0, 15s, filter udp
-frames total: 341, tunnel frames (8472/51871): 336, frames containing "Reviewer1": 10
+frames total: 344, tunnel frames (8472/51871): 342, frames containing "Reviewer1": 10
 
 ## outer protocols
-frame                                    frames:341 bytes:60793
-  eth                                    frames:341 bytes:60793
-    ip                                   frames:339 bytes:60579
-      udp                                frames:339 bytes:60579
-        data                             frames:1 bytes:86
-        vxlan                            frames:336 bytes:60239
-          eth                            frames:336 bytes:60239
-            ip                           frames:336 bytes:60239
-              tcp                        frames:276 bytes:49454
-                http                     frames:30 bytes:10815
-                  json                   frames:15 bytes:6735
-                mongo                    frames:30 bytes:8465
-                tls                      frames:18 bytes:5556
+frame                                    frames:344 bytes:61192
+  eth                                    frames:344 bytes:61192
+    ip                                   frames:344 bytes:61192
+      udp                                frames:344 bytes:61192
+        ntp                              frames:2 bytes:180
+        vxlan                            frames:342 bytes:61012
+          eth                            frames:342 bytes:61012
+            ip                           frames:342 bytes:61012
+              tcp                        frames:278 bytes:49763
+                tls                      frames:14 bytes:4903
+                http                     frames:34 bytes:11628
+                  json                   frames:15 bytes:6730
+                mongo                    frames:30 bytes:8464
               udp                        frames:60 bytes:10785
                 dns                      frames:60 bytes:10785
-        ssdp                             frames:1 bytes:167
-        mdns                             frames:1 bytes:87
-    ipv6                                 frames:2 bytes:214
-      udp                                frames:2 bytes:214
-        mdns                             frames:2 bytes:214
+              icmp                       frames:4 bytes:464
+===================================================================
 
 ## decoded inner HTTP (src dst method uri status)
-10.42.1.210	10.42.2.23	GET	/details/0	
-10.42.2.23	10.42.1.210		/details/0	200
-10.42.1.210	10.42.2.164	GET	/reviews/0	
-10.42.2.164	10.42.1.240	GET	/ratings/0	
-10.42.1.240	10.42.2.164		/ratings/0	200
-10.42.2.164	10.42.1.210		/reviews/0	200
-10.42.1.210	10.42.2.23	GET	/details/0	
-10.42.2.23	10.42.1.210		/details/0	200
-10.42.1.210	10.42.2.164	GET	/reviews/0	
-10.42.2.164	10.42.1.240	GET	/ratings/0	
-10.42.1.240	10.42.2.164		/ratings/0	200
-10.42.2.164	10.42.1.210		/reviews/0	200
-10.42.1.210	10.42.2.23	GET	/details/0	
-10.42.2.23	10.42.1.210		/details/0	200
-10.42.1.210	10.42.2.164	GET	/reviews/0	
-10.42.2.164	10.42.1.240	GET	/ratings/0	
-10.42.1.240	10.42.2.164		/ratings/0	200
-10.42.2.164	10.42.1.210		/reviews/0	200
-10.42.1.210	10.42.2.23	GET	/details/0	
-10.42.2.23	10.42.1.210		/details/0	200
+10.42.1.181	10.42.2.140	GET	/details/0	
+10.42.2.140	10.42.1.181		/details/0	200
+10.42.1.181	10.42.2.44	GET	/reviews/0	
+10.42.2.44	10.42.1.202	GET	/ratings/0	
+10.42.1.202	10.42.2.44		/ratings/0	200
+10.42.2.44	10.42.1.181		/reviews/0	200
+10.42.1.181	10.42.2.140	GET	/details/0	
+10.42.2.140	10.42.1.181		/details/0	200
+10.42.1.181	10.42.2.44	GET	/reviews/0	
+10.42.2.44	10.42.1.202	GET	/ratings/0	
+10.42.1.202	10.42.2.44		/ratings/0	200
+10.42.2.44	10.42.1.181		/reviews/0	200
+10.42.1.181	10.42.2.140	GET	/details/0	
+10.42.2.140	10.42.1.181		/details/0	200
+10.42.1.181	10.42.2.44	GET	/reviews/0	
+10.42.2.44	10.42.1.202	GET	/ratings/0	
+10.42.1.202	10.42.2.44		/ratings/0	200
+10.42.2.44	10.42.1.181		/reviews/0	200
+10.42.1.181	10.42.2.140	GET	/details/0	
+10.42.2.140	10.42.1.181		/details/0	200
 
 ## readable payload containing "Reviewer1"
 {"id":0,"ratings":{"Reviewer1":5,"Reviewer2":4}}
-{"id": "0","podname": "reviews-v3-785fcf6fb8-g76xv","clustername": "null","reviews": [{  "reviewer": "Reviewer1",  "text": "An extremely entertaining play by Shakespeare. The slapstick humour is refreshing!", "rating": {"stars": 5, "color": "red"}},{  "reviewer": "Reviewer2",  "text": "Absolutely fu
+{"id": "0","podname": "reviews-v3-88d9df7ff-96c9h","clustername": "null","reviews": [{  "reviewer": "Reviewer1",  "text": "An extremely entertaining play by Shakespeare. The slapstick humour is refreshing!", "rating": {"stars": 5, "color": "red"}},{  "reviewer": "Reviewer2",  "text": "Absolutely fun
 
 
 ## decoded inner MongoDB (src dst opcode)
-10.42.1.240	10.42.2.199	2004
-10.42.2.199	10.42.1.240	1
-10.42.1.240	10.42.2.199	2013
-10.42.2.199	10.42.1.240	2013
-10.42.1.240	10.42.2.199	2013
-10.42.2.199	10.42.1.240	2013
+10.42.1.202	10.42.2.20	2004
+10.42.2.20	10.42.1.202	1
+10.42.1.202	10.42.2.20	2013
+10.42.2.20	10.42.1.202	2013
+10.42.1.202	10.42.2.20	2013
+10.42.2.20	10.42.1.202	2013
+
+## cilium encryption status
+Encryption: Disabled (3/3 nodes)
+

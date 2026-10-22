@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# switches the cluster to exactly one scenario: infra/scenario.sh S0|S1
+# switches the cluster to exactly one scenario: infra/scenario.sh S0|S1|S2a
 set -euo pipefail
 cd "$(dirname "$0")/.."
 source infra/config.env
@@ -24,18 +24,47 @@ sa_automount() {
   fi
 }
 
+# S2a: Cilium WireGuard; only reconfigure when the state differs (agent restart)
+wireguard() {
+  local now
+  now=$(kubectl -n kube-system get cm cilium-config -o jsonpath='{.data.enable-wireguard}')
+  if [[ $1 == on && $now != true ]]; then infra/cilium.sh manifests/s2a-wireguard/cilium-values.yaml
+  elif [[ $1 == off && $now == true ]]; then infra/cilium.sh
+  fi
+}
+
+# legitimate path end to end (productpage -> details, reviews -> ratings -> mongodb)
+app_ready() {
+  local i
+  for i in $(seq 60); do
+    kubectl -n "$NS" exec deploy/productpage-v1 -c productpage -- python -c \
+      "import urllib.request as u; b=u.urlopen('http://localhost:9080/productpage',timeout=3).read().decode(); exit(b.count('glyphicon-star')!=9)" \
+      2>/dev/null && return
+    sleep 2
+  done
+  echo "app not healthy after scenario switch" >&2; exit 1
+}
+
 case ${1:-} in
   S0)
     kubectl delete -k manifests/s1-segmentation --ignore-not-found
     sa_automount ""
+    wireguard off
     ;;
   S1)
     kubectl apply -k manifests/s1-segmentation
     sa_automount false
+    wireguard off
     ;;
-  *) echo "usage: $0 S0|S1" >&2; exit 2 ;;
+  S2a)
+    kubectl apply -k manifests/s1-segmentation
+    sa_automount false
+    wireguard on
+    ;;
+  *) echo "usage: $0 S0|S1|S2a" >&2; exit 2 ;;
 esac
 
 # annotation, not label: namespace labels are part of Cilium identities
 kubectl annotate ns "$NS" zt-scenario="$1" --overwrite
 sleep "$SETTLE"
+app_ready

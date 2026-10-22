@@ -1,0 +1,5 @@
+# S2a: Cilium transparent encryption, pod-to-pod traffic between nodes over WireGuard
+# nodeEncryption stays off: T2 concerns pod traffic; host traffic (kubelet, API) is out of scope
+encryption:
+  enabled: true
+  type: wireguard

@@ -1,7 +1,7 @@
 SHELL := /usr/bin/env bash
 export KUBECONFIG := $(CURDIR)/.kube/config
 
-.PHONY: up down status app s0 s1 test bench plot
+.PHONY: up down status app s0 s1 s2a test bench plot
 
 up:
 	infra/up.sh
@@ -24,6 +24,9 @@ s0:
 
 s1:
 	infra/scenario.sh S1
+
+s2a:
+	infra/scenario.sh S2a
 
 test:
 	tests/run.sh
