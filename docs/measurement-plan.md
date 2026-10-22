@@ -12,15 +12,25 @@ Goal: the cost of each control, attributed to exactly one change. Not implemente
 | S2b vs S2a | Workload-level vs node-level encryption (core comparison) |
 | S3 vs S2b | L7 authorization in the proxy |
 
+S2b adds two things at once: sidecar proxies and mTLS. To split them, S2b is also measured with mTLS turned off (`PeerAuthentication` mode `DISABLE`, sidecars stay). This variant, S2b-plain, is measurement only, with no attack tests:
+
+| Delta | Control measured |
+|---|---|
+| S2b-plain vs S1 | Sidecar proxies (userspace L7 hop), no encryption |
+| S2b vs S2b-plain | mTLS in the proxy |
+
 ## Metrics and paths
 
 | Metric | Tool | Paths |
 |---|---|---|
 | Latency p50, p95, p99, errors | fortio client at constant QPS | (a) fortio to fortio echo server, same-node; (b) same, cross-node; (c) fortio to productpage, full app (4 cross-node hops) |
-| Throughput (Gbit/s, retransmits) | iperf3, TCP, 1 stream | same-node, cross-node |
+| Throughput (Gbit/s, retransmits) | iperf3, TCP, 1 stream | same-node, cross-node; (d) node to node on the host network, once, as the ceiling of the VM link |
 | CPU and memory | `kubectl top` (metrics-server, 15 s resolution) | nodes, Cilium agents, sidecars (`istio-proxy`), app pods during the latency runs |
 
 Paths (a) and (b) isolate per-hop network cost; (c) shows the effect on a real request.
+Path (d) runs without pods or CNI. socket_vmnet switches frames in userspace, so if pod throughput in S0 already sits near (d), the link (not the control) is the bottleneck and throughput differences must be read as CPU cost instead.
+
+Derived metric: CPU cost per unit of work (node CPU millicores per 1000 requests for latency runs, per Gbit/s for iperf3 runs). On a laptop this is more robust than absolute latency or throughput.
 Benchmark pods are pinned with `nodeSelector` (client on zt-w1, server on zt-w1 or zt-w2), like the app.
 In S1+ they get their own allow rules; in S2b/S3 they get sidecars, so the client-side proxy is part of the cost.
 
@@ -53,5 +63,8 @@ Raw fortio JSON and iperf3 JSON stay next to the CSVs; `make plot` builds the fi
 - VMs on one laptop (Apple M4 Pro, vz): absolute numbers are not representative, only relative differences between scenarios are.
 - Cross-node traffic never leaves the host (socket_vmnet), so "network" latency is mostly CPU and virtualization cost.
 - WireGuard lowers the pod MTU (cilium_wg0 1405); that is part of the S2a cost, not a separate variable.
+- WireGuard encrypts only traffic between nodes; mesh mTLS also encrypts same-node traffic. The same-node path therefore measures S2a with no encryption at all, which must be stated next to the result.
+- vz offers no vCPU pinning; the host schedules VM threads across P and E cores. Interleaved rounds and 5 repeats are the defense; spread is reported, not hidden.
+- The Istio compatibility settings of Cilium (`socketLB.hostNamespaceOnly`, `cni.exclusive: false`) are set in every scenario, including S0, so they are not part of any delta.
 - metrics-server samples every 15 s, so resource numbers are averages over the run, not peaks.
 - fortio at constant QPS reports queueing delay when a scenario approaches saturation; calibration (step 1) is meant to prevent this.

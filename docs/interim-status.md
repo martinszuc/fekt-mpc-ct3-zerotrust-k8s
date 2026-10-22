@@ -24,17 +24,22 @@ Controlled experiment: each scenario adds exactly one control, every attack test
 |---|---|---|---|
 | T1 frontend reads database directly | succeeds | blocked | blocked |
 | T2 sniffing traffic between nodes | plaintext | plaintext | encrypted |
-| T3 rogue pod with spoofed label | succeeds | succeeds | succeeds |
+| T3 rogue pod with spoofed label (3 variants) | succeeds | succeeds | succeeds |
+| T5 attacker inside a legitimate pod | succeeds | succeeds | succeeds |
 | T6 ServiceAccount token against API | succeeds | blocked | blocked |
 
-All 27 checks match the expected outcome (`results/attacks.csv`).
-Key observation so far: WireGuard protects the link between nodes but authenticates nodes, not workloads, so T3 still works in S2a; S2b mTLS is expected to block it.
+All 36 checks match the expected outcome (`results/attacks.csv`).
+Key observation so far: NetworkPolicy trusts labels, and WireGuard authenticates nodes, not workloads, so T3 still works in S2a.
+Expected next: mTLS (S2b) stops only the rogue pod outside the mesh; a rogue pod inside the mesh is authenticated, so only authorization (S3) stops it, and a rogue pod reusing the legitimate ServiceAccount is not stopped by any scenario (needs admission control, documented as a limit).
 
 ## Decisions and findings
 
 - Online Boutique has no arm64 images (releases v0.10.3 to v0.10.7); Bookinfo (Istio samples) is used instead.
 - The host network bridge does not see traffic between VMs, so T2 is captured on the node interface inside the VM.
 - Kubernetes NetworkPolicy trusts pod labels: anyone who can create a pod with the right label passes S1 (T3).
+- S1 adds two controls (segmentation, no ServiceAccount token); each T6 check is attributed to exactly one of them, and neither has a data-path cost.
+- Cilium's Istio compatibility settings are part of the base configuration in every scenario, so S2b changes only the mesh.
+- S2b will also be measured with mTLS disabled (sidecars only) to separate proxy cost from encryption cost.
 
 ## Next steps
 
