@@ -7,7 +7,16 @@ Controlled experiment: what each zero-trust layer in Kubernetes (segmentation, t
 macOS on Apple Silicon (arm64), Homebrew, ~12 vCPU and 24 GB RAM free for the VMs.
 
 ```bash
-brew install lima kubectl helm cilium-cli hubble fortio iperf3 wireshark jq yq
+brew install lima socket_vmnet kubectl helm cilium-cli hubble fortio iperf3 wireshark jq yq
+```
+
+One-time socket_vmnet setup (needs sudo, nothing runs at login):
+
+```bash
+sudo mkdir -p /opt/socket_vmnet/bin
+sudo install -o root -g wheel -m 0755 "$(brew --prefix)/opt/socket_vmnet/bin/socket_vmnet" /opt/socket_vmnet/bin/socket_vmnet
+limactl sudoers > etc_sudoers.d_lima
+sudo install -o root -g wheel -m 0444 etc_sudoers.d_lima /etc/sudoers.d/lima
 ```
 
 Exact versions: [docs/versions.md](docs/versions.md).

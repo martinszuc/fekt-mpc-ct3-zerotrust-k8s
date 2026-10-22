@@ -16,7 +16,7 @@ Recorded 22.10.2026. Change only between experiment runs, never within one.
 |---|---|---|
 | Lima | 2.2.1 | host tool |
 | VM image | Ubuntu 24.04 arm64 (Lima `template:ubuntu-24.04`) | `infra/config.env` |
-| VM type / network | vz, vzNAT | `infra/config.env` |
+| VM type / network | vz, socket_vmnet 1.2.2 `lima:shared` (192.168.105.0/24) | `infra/config.env` |
 | VM sizing | 3 nodes, each 4 vCPU / 8 GiB / 30 GiB | `infra/config.env` |
 | k3s | v1.36.5+k3s1 | `infra/config.env` |
 | Cilium | 1.20.3 (Helm chart) | `infra/config.env` |
