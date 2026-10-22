@@ -35,3 +35,15 @@ time,scenario,threat,check,expected,observed,verdict,evidence
 2026-10-22T18:12:36Z,S2a,T6,api-reachable,blocked,blocked,PASS,results/T6-S2a-sa-token.txt
 2026-10-22T18:12:36Z,S2a,T6,api-authenticated,blocked,blocked,PASS,results/T6-S2a-sa-token.txt
 2026-10-22T18:12:36Z,S2a,T6,api-read-secrets,blocked,blocked,PASS,results/T6-S2a-sa-token.txt
+2026-10-22T23:28:28Z,S2b,T1,frontend-to-db,blocked,blocked,PASS,results/T1-S2b-lateral.txt
+2026-10-22T23:28:32Z,S2b,T1,frontend-to-ratings,blocked,blocked,PASS,results/T1-S2b-lateral.txt
+2026-10-22T23:28:32Z,S2b,T1,frontend-to-details-allowed,succeeded,succeeded,PASS,results/T1-S2b-lateral.txt
+2026-10-22T23:28:49Z,S2b,T2,cross-node-sniff,blocked,blocked,PASS,results/T2-S2b-encrypted.pcap
+2026-10-22T23:28:53Z,S2b,T3,rogue-no-identity-to-ratings,blocked,blocked,PASS,results/T3-S2b-rogue-pod.txt
+2026-10-22T23:28:58Z,S2b,T3,rogue-default-sa-to-ratings,succeeded,succeeded,PASS,results/T3-S2b-rogue-pod.txt
+2026-10-22T23:29:03Z,S2b,T3,rogue-reused-sa-to-ratings,succeeded,succeeded,PASS,results/T3-S2b-rogue-pod.txt
+2026-10-22T23:29:03Z,S2b,T5,reviews-reads-ratings,succeeded,succeeded,PASS,results/T5-S2b-valid-identity.txt
+2026-10-22T23:29:03Z,S2b,T6,token-mounted,blocked,blocked,PASS,results/T6-S2b-sa-token.txt
+2026-10-22T23:29:07Z,S2b,T6,api-reachable,blocked,blocked,PASS,results/T6-S2b-sa-token.txt
+2026-10-22T23:29:07Z,S2b,T6,api-authenticated,blocked,blocked,PASS,results/T6-S2b-sa-token.txt
+2026-10-22T23:29:08Z,S2b,T6,api-read-secrets,blocked,blocked,PASS,results/T6-S2b-sa-token.txt

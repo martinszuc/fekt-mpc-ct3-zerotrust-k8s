@@ -1,0 +1,5 @@
+## compromised reviews (reviews-v3-5584476575-gt7hw, ephemeral container attacker-1792711743) -> ratings:9080
+OK HTTP 200 {"id":0,"ratings":{"Reviewer1":5,"Reviewer2":4}}
+
+## pod identity
+SA bookinfo-reviews, labels {"app":"reviews","pod-template-hash":"5584476575","security.istio.io/tlsMode":"istio","service.istio.io/canonical-name":"reviews","service.istio.io/canonical-revision":"v3","version":"v3"}
