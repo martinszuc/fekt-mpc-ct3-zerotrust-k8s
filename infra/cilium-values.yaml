@@ -7,6 +7,13 @@ routingMode: tunnel
 tunnelProtocol: vxlan
 operator:
   replicas: 1
+# Istio compatibility, set in every scenario so S2b changes only the mesh:
+# service translation at the pod's socket would bypass the sidecar's redirect rules
+socketLB:
+  hostNamespaceOnly: true
+# keep other CNI configs (istio-cni chains after Cilium)
+cni:
+  exclusive: false
 hubble:
   enabled: true
   relay:
