@@ -72,15 +72,7 @@ chmod 600 "$KUBECONFIG_PATH"
 export KUBECONFIG="$PWD/$KUBECONFIG_PATH"
 
 log "installing Cilium $CILIUM_VERSION"
-helm upgrade --install cilium cilium \
-  --repo https://helm.cilium.io --version "$CILIUM_VERSION" \
-  --namespace kube-system \
-  -f infra/cilium-values.yaml \
-  --set k8sServiceHost="$CP_IP" \
-  --set devices="{$NODE_IFACE}" \
-  --wait --timeout 10m
-
-cilium status --wait --wait-duration 10m
+infra/cilium.sh
 kubectl wait --for=condition=Ready nodes --all --timeout=5m
 kubectl get nodes -o wide
 log "cluster ready; export KUBECONFIG=$PWD/$KUBECONFIG_PATH"

@@ -1,54 +1,58 @@
 capture: zt-w1 lima0, 15s, filter udp
-frames total: 314, tunnel frames (8472/51871): 313, frames containing "Reviewer1": 10
+frames total: 312, tunnel frames (8472/51871): 311, frames containing "Reviewer1": 10
 
 ## outer protocols
-frame                                    frames:314 bytes:54090
-  eth                                    frames:314 bytes:54090
-    ip                                   frames:314 bytes:54090
-      udp                                frames:314 bytes:54090
-        vxlan                            frames:313 bytes:54004
-          eth                            frames:313 bytes:54004
-            ip                           frames:313 bytes:54004
-              tcp                        frames:253 bytes:43219
+frame                                    frames:312 bytes:53991
+  eth                                    frames:312 bytes:53991
+    ip                                   frames:312 bytes:53991
+      udp                                frames:312 bytes:53991
+        vxlan                            frames:311 bytes:53905
+          eth                            frames:311 bytes:53905
+            ip                           frames:311 bytes:53905
+              tcp                        frames:251 bytes:43120
                 http                     frames:30 bytes:10815
                   json                   frames:15 bytes:6735
-                mongo                    frames:30 bytes:8464
+                mongo                    frames:30 bytes:8463
               udp                        frames:60 bytes:10785
                 dns                      frames:60 bytes:10785
         data                             frames:1 bytes:86
 ===================================================================
 
 ## decoded inner HTTP (src dst method uri status)
-10.42.1.190	10.42.2.170	GET	/details/0	
-10.42.2.170	10.42.1.190		/details/0	200
-10.42.1.190	10.42.2.73	GET	/reviews/0	
-10.42.2.73	10.42.1.145	GET	/ratings/0	
-10.42.1.145	10.42.2.73		/ratings/0	200
-10.42.2.73	10.42.1.190		/reviews/0	200
-10.42.1.190	10.42.2.170	GET	/details/0	
-10.42.2.170	10.42.1.190		/details/0	200
-10.42.1.190	10.42.2.73	GET	/reviews/0	
-10.42.2.73	10.42.1.145	GET	/ratings/0	
-10.42.1.145	10.42.2.73		/ratings/0	200
-10.42.2.73	10.42.1.190		/reviews/0	200
-10.42.1.190	10.42.2.170	GET	/details/0	
-10.42.2.170	10.42.1.190		/details/0	200
-10.42.1.190	10.42.2.73	GET	/reviews/0	
-10.42.2.73	10.42.1.145	GET	/ratings/0	
-10.42.1.145	10.42.2.73		/ratings/0	200
-10.42.2.73	10.42.1.190		/reviews/0	200
-10.42.1.190	10.42.2.170	GET	/details/0	
-10.42.2.170	10.42.1.190		/details/0	200
+10.42.1.231	10.42.2.5	GET	/details/0	
+10.42.2.5	10.42.1.231		/details/0	200
+10.42.1.231	10.42.2.70	GET	/reviews/0	
+10.42.2.70	10.42.1.31	GET	/ratings/0	
+10.42.1.31	10.42.2.70		/ratings/0	200
+10.42.2.70	10.42.1.231		/reviews/0	200
+10.42.1.231	10.42.2.5	GET	/details/0	
+10.42.2.5	10.42.1.231		/details/0	200
+10.42.1.231	10.42.2.70	GET	/reviews/0	
+10.42.2.70	10.42.1.31	GET	/ratings/0	
+10.42.1.31	10.42.2.70		/ratings/0	200
+10.42.2.70	10.42.1.231		/reviews/0	200
+10.42.1.231	10.42.2.5	GET	/details/0	
+10.42.2.5	10.42.1.231		/details/0	200
+10.42.1.231	10.42.2.70	GET	/reviews/0	
+10.42.2.70	10.42.1.31	GET	/ratings/0	
+10.42.1.31	10.42.2.70		/ratings/0	200
+10.42.2.70	10.42.1.231		/reviews/0	200
+10.42.1.231	10.42.2.5	GET	/details/0	
+10.42.2.5	10.42.1.231		/details/0	200
 
 ## readable payload containing "Reviewer1"
 {"id":0,"ratings":{"Reviewer1":5,"Reviewer2":4}}
-{"id": "0","podname": "reviews-v3-7fc4b95df9-gw6dh","clustername": "null","reviews": [{  "reviewer": "Reviewer1",  "text": "An extremely entertaining play by Shakespeare. The slapstick humour is refreshing!", "rating": {"stars": 5, "color": "red"}},{  "reviewer": "Reviewer2",  "text": "Absolutely fu
+{"id": "0","podname": "reviews-v3-588984b686-zzlbq","clustername": "null","reviews": [{  "reviewer": "Reviewer1",  "text": "An extremely entertaining play by Shakespeare. The slapstick humour is refreshing!", "rating": {"stars": 5, "color": "red"}},{  "reviewer": "Reviewer2",  "text": "Absolutely fu
 
 
 ## decoded inner MongoDB (src dst opcode)
-10.42.1.145	10.42.2.173	2004
-10.42.2.173	10.42.1.145	1
-10.42.1.145	10.42.2.173	2013
-10.42.2.173	10.42.1.145	2013
-10.42.1.145	10.42.2.173	2013
-10.42.2.173	10.42.1.145	2013
+10.42.1.31	10.42.2.195	2004
+10.42.2.195	10.42.1.31	1
+10.42.1.31	10.42.2.195	2013
+10.42.2.195	10.42.1.31	2013
+10.42.1.31	10.42.2.195	2013
+10.42.2.195	10.42.1.31	2013
+
+## cilium encryption status
+Encryption: Disabled (3/3 nodes)
+

@@ -35,7 +35,7 @@ txt=${final%.pcap}.txt
   echo "frames total: $(tshark -r "$final" 2>/dev/null | wc -l | tr -d ' '), tunnel frames (8472/51871): $tunnel, frames containing \"$MARKER\": $hits"
   echo
   echo "## outer protocols"
-  tshark -r "$final" -q -z io,phs -d udp.port==8472,vxlan 2>/dev/null | sed -n '/^frame/,$p' | head -20
+  tshark -r "$final" -q -z io,phs -d udp.port==8472,vxlan -d udp.port==51871,wg 2>/dev/null | sed -n '/^frame/,$p' | head -20
   echo
   echo "## decoded inner HTTP (src dst method uri status)"
   tshark -r "$final" -d udp.port==8472,vxlan -Y http -T fields -E occurrence=l \
@@ -48,6 +48,9 @@ txt=${final%.pcap}.txt
   echo "## decoded inner MongoDB (src dst opcode)"
   tshark -r "$final" -d udp.port==8472,vxlan -Y mongo -T fields -E occurrence=l \
     -e ip.src -e ip.dst -e mongo.opcode 2>/dev/null | head -6
+  echo
+  echo "## cilium encryption status"
+  cilium encryption status 2>&1
 } > "$txt"
 record T2 cross-node-sniff "$expect" "$observed" "$final"
 exit $FAILED
