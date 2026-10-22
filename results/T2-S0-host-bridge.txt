@@ -1,0 +1,23 @@
+# negative result: host socket_vmnet bridge as T2 vantage point (CAPTURE=host, run once 22.10, since removed)
+# only host mDNS was captured while the app generated cross-node traffic (in-VM capture of the same run type: ~300 VXLAN frames).
+# socket_vmnet appears to switch VM-to-VM frames itself, so they never reach bridge100; T2 is captured on the node NIC inside the VM.
+
+capture: host bridge100, 15s, filter udp
+frames total: 8, frames containing "Reviewer1": 0
+
+## outer protocols
+frame                                    frames:8 bytes:1792
+  eth                                    frames:8 bytes:1792
+    ip                                   frames:4 bytes:856
+      udp                                frames:4 bytes:856
+        mdns                             frames:4 bytes:856
+    ipv6                                 frames:4 bytes:936
+      udp                                frames:4 bytes:936
+        mdns                             frames:4 bytes:936
+===================================================================
+
+## decoded inner HTTP (src dst method uri status)
+
+## readable payload containing "Reviewer1"
+
+## decoded inner MongoDB (src dst opcode)
