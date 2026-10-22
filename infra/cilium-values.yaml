@@ -1,0 +1,15 @@
+# S0 baseline: Cilium as sole CNI, no policies, no encryption
+kubeProxyReplacement: true
+k8sServicePort: 6443
+ipam:
+  mode: kubernetes
+routingMode: tunnel
+tunnelProtocol: vxlan
+operator:
+  replicas: 1
+hubble:
+  enabled: true
+  relay:
+    enabled: true
+encryption:
+  enabled: false
