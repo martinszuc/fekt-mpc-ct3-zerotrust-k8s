@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 960 600" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="testbed-title testbed-desc" id="testbed-root">
+        <title id="testbed-title">Testbed: Bookinfo on three VMs</title>
+        <desc id="testbed-desc">Three Lima VMs on one socket_vmnet network run k3s with Cilium; Bookinfo is pinned so every call between productpage, details, reviews, ratings and MongoDB crosses nodes, with attacker positions in the frontend pod, on the node link, and as a pod creator.</desc>
+        <defs>
+      <style>@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&amp;family=Geist:wght@400;500;600&amp;family=Geist+Mono:wght@400;500;600&amp;family=Noto+Serif:ital@0;1&amp;family=Noto+Sans+KR:wght@400;500;600&amp;family=Noto+Serif+KR:wght@400&amp;family=Noto+Sans+TC:wght@400;500;600&amp;family=Noto+Serif+TC:wght@400&amp;display=swap');
+      #testbed-root { --color-paper:   #f5f3ee;
+      --color-ink:     #111111;
+      --color-muted:   #4a5468;
+      --color-accent:  #de0024;
+      --font-sans:     'Geist', system-ui, sans-serif;
+      --font-serif:    'Instrument Serif', serif;
+      --font-mono:     'Geist Mono', ui-monospace, monospace; }
+      #testbed-root { font-family: var(--font-sans); color: var(--color-ink); }
+      #testbed-root .diagram-container { width: 100%; overflow-x: auto; }
+      #testbed-root .diagram-container { overflow-x: visible; }</style>
+          <marker id="testbed-arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#4a5468"/></marker>
+          <marker id="testbed-arrow-accent" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#de0024"/></marker>
+          <marker id="testbed-arrow-link" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#00399e"/></marker>
+        </defs>
+
+        <rect width="100%" height="100%" fill="#f5f3ee"/>
+
+        <!-- Zone: macOS host -->
+        <rect x="48" y="96" width="864" height="436" rx="8" fill="#111111" stroke="#111111" stroke-width="0.8" stroke-dasharray="4,4" fill-opacity="0.02" stroke-opacity="0.20"/>
+        <rect x="64" y="90" width="200" height="12" fill="#f5f3ee"/>
+        <text x="164" y="99" fill="#111111" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.14em" fill-opacity="0.55">MACOS HOST · K3S · CILIUM 1.20.3</text>
+
+        <!-- Network paths (behind nodes) -->
+        <!-- client -> productpage, crosses the host boundary -->
+        <line x1="404" y1="64" x2="404" y2="128" stroke="#00399e" stroke-width="1.2" marker-end="url(#testbed-arrow-link)"/>
+        <!-- productpage -> details -->
+        <line x1="504" y1="202" x2="664" y2="202" stroke="#4a5468" stroke-width="1.2" marker-end="url(#testbed-arrow)"/>
+        <!-- productpage -> reviews -->
+        <path d="M 504,214 H 592 Q 600,214 600,222 V 242 Q 600,250 608,250 H 664" fill="none" stroke="#4a5468" stroke-width="1.2" marker-end="url(#testbed-arrow)"/>
+        <!-- reviews -> ratings -->
+        <path d="M 664,262 H 576 Q 568,262 568,270 V 290 Q 568,298 560,298 H 504" fill="none" stroke="#4a5468" stroke-width="1.2" marker-end="url(#testbed-arrow)"/>
+        <!-- ratings -> mongodb -->
+        <line x1="504" y1="310" x2="664" y2="310" stroke="#4a5468" stroke-width="1.2" marker-end="url(#testbed-arrow)"/>
+        <!-- productpage -> API server (T6) -->
+        <line x1="304" y1="208" x2="232" y2="208" stroke="#4a5468" stroke-width="1" stroke-dasharray="5,4" marker-end="url(#testbed-arrow)"/>
+        <!-- node NICs to the shared switch -->
+        <line x1="152" y1="332" x2="152" y2="376" stroke="#4a5468" stroke-width="1"/>
+        <line x1="404" y1="332" x2="404" y2="376" stroke="#4a5468" stroke-width="1"/>
+        <line x1="764" y1="332" x2="764" y2="376" stroke="#4a5468" stroke-width="1"/>
+        <!-- passive capture (T2) -->
+        <line x1="404" y1="424" x2="404" y2="464" stroke="#4a5468" stroke-width="1" stroke-dasharray="5,4" marker-end="url(#testbed-arrow)"/>
+
+        <!-- Path labels -->
+        <rect x="412" y="72" width="56" height="12" rx="2" fill="#f5f3ee"/>
+        <text x="440" y="81" fill="#00399e" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">HTTP:9080</text>
+
+        <rect x="552" y="182" width="64" height="12" rx="2" fill="#f5f3ee"/>
+        <text x="584" y="191" fill="#5b6273" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">GET /DETAILS</text>
+
+        <rect x="508" y="222" width="64" height="12" rx="2" fill="#f5f3ee"/>
+        <text x="540" y="231" fill="#5b6273" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">GET /REVIEWS</text>
+
+        <rect x="576" y="277" width="64" height="12" rx="2" fill="#f5f3ee"/>
+        <text x="608" y="286" fill="#5b6273" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">GET /RATINGS</text>
+
+        <rect x="552" y="318" width="64" height="12" rx="2" fill="#f5f3ee"/>
+        <text x="584" y="327" fill="#5b6273" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">MONGO:27017</text>
+
+        <rect x="240" y="188" width="56" height="12" rx="2" fill="#f5f3ee"/>
+        <text x="268" y="197" fill="#5b6273" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">HTTPS:6443</text>
+
+        <rect x="412" y="348" width="56" height="12" rx="2" fill="#f5f3ee"/>
+        <text x="440" y="357" fill="#5b6273" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">VXLAN:8472</text>
+
+        <rect x="412" y="438" width="48" height="12" rx="2" fill="#f5f3ee"/>
+        <text x="436" y="447" fill="#5b6273" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">CAPTURE</text>
+
+        <!-- Node: client (external) -->
+        <rect x="304" y="16" width="200" height="48" rx="6" fill="#f5f3ee"/>
+        <rect x="304" y="16" width="200" height="48" rx="6" fill="#111111" stroke="#111111" stroke-width="1" fill-opacity="0.03" stroke-opacity="0.30"/>
+        <rect x="312" y="24" width="28" height="12" rx="2" fill="none" stroke="#111111" stroke-width="0.8" stroke-opacity="0.22"/>
+        <text x="326" y="33" fill="#5b6273" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">EXT</text>
+        <text x="404" y="38" fill="#111111" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">client</text>
+        <text x="404" y="54" fill="#4a5468" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">fortio · curl</text>
+
+        <!-- Node: zt-cp -->
+        <rect x="72" y="128" width="160" height="204" rx="6" fill="#f5f3ee"/>
+        <rect x="72" y="128" width="160" height="204" rx="6" fill="#ffffff" stroke="#111111" stroke-width="1"/>
+        <rect x="80" y="136" width="24" height="12" rx="2" fill="none" stroke="#111111" stroke-width="0.8" stroke-opacity="0.40"/>
+        <text x="92" y="145" fill="#111111" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">VM</text>
+        <text x="152" y="168" fill="#111111" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">zt-cp</text>
+        <text x="152" y="184" fill="#4a5468" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">.105.2 · control plane</text>
+        <rect x="80" y="196" width="144" height="24" rx="4" fill="#111111" stroke="#4a5468" stroke-width="0.8" fill-opacity="0.05"/>
+        <text x="88" y="212" fill="#111111" font-size="12" font-family="'Geist', sans-serif">API server</text>
+        <text x="216" y="212" fill="#4a5468" font-size="9" font-family="'Geist Mono', monospace" text-anchor="end">v1.36.5</text>
+
+        <!-- Node: zt-w1 -->
+        <rect x="304" y="128" width="200" height="204" rx="6" fill="#f5f3ee"/>
+        <rect x="304" y="128" width="200" height="204" rx="6" fill="#ffffff" stroke="#111111" stroke-width="1"/>
+        <rect x="312" y="136" width="24" height="12" rx="2" fill="none" stroke="#111111" stroke-width="0.8" stroke-opacity="0.40"/>
+        <text x="324" y="145" fill="#111111" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">VM</text>
+        <text x="404" y="168" fill="#111111" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">zt-w1</text>
+        <text x="404" y="184" fill="#4a5468" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">.105.3 · 4 vCPU · 8 GiB</text>
+        <!-- productpage: AT1 foothold (focal) -->
+        <rect x="312" y="196" width="184" height="24" rx="4" fill="#de0024" stroke="#de0024" stroke-width="1" fill-opacity="0.07"/>
+        <text x="320" y="212" fill="#111111" font-size="12" font-family="'Geist', sans-serif">productpage</text>
+        <text x="488" y="212" fill="#4a5468" font-size="9" font-family="'Geist Mono', monospace" text-anchor="end">v1 · 1.20.3</text>
+        <rect x="312" y="292" width="184" height="24" rx="4" fill="#111111" stroke="#4a5468" stroke-width="0.8" fill-opacity="0.05"/>
+        <text x="320" y="308" fill="#111111" font-size="12" font-family="'Geist', sans-serif">ratings</text>
+        <text x="488" y="308" fill="#4a5468" font-size="9" font-family="'Geist Mono', monospace" text-anchor="end">v2 · 1.20.3</text>
+
+        <!-- Node: zt-w2 -->
+        <rect x="664" y="128" width="200" height="204" rx="6" fill="#f5f3ee"/>
+        <rect x="664" y="128" width="200" height="204" rx="6" fill="#ffffff" stroke="#111111" stroke-width="1"/>
+        <rect x="672" y="136" width="24" height="12" rx="2" fill="none" stroke="#111111" stroke-width="0.8" stroke-opacity="0.40"/>
+        <text x="684" y="145" fill="#111111" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">VM</text>
+        <text x="764" y="168" fill="#111111" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">zt-w2</text>
+        <text x="764" y="184" fill="#4a5468" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">.105.4 · 4 vCPU · 8 GiB</text>
+        <rect x="672" y="196" width="184" height="24" rx="4" fill="#111111" stroke="#4a5468" stroke-width="0.8" fill-opacity="0.05"/>
+        <text x="680" y="212" fill="#111111" font-size="12" font-family="'Geist', sans-serif">details</text>
+        <text x="848" y="212" fill="#4a5468" font-size="9" font-family="'Geist Mono', monospace" text-anchor="end">v1 · 1.20.3</text>
+        <rect x="672" y="244" width="184" height="24" rx="4" fill="#111111" stroke="#4a5468" stroke-width="0.8" fill-opacity="0.05"/>
+        <text x="680" y="260" fill="#111111" font-size="12" font-family="'Geist', sans-serif">reviews</text>
+        <text x="848" y="260" fill="#4a5468" font-size="9" font-family="'Geist Mono', monospace" text-anchor="end">v3 · 1.20.3</text>
+        <rect x="672" y="292" width="184" height="24" rx="4" fill="#111111" stroke="#4a5468" stroke-width="0.8" fill-opacity="0.05"/>
+        <text x="680" y="308" fill="#111111" font-size="12" font-family="'Geist', sans-serif">mongodb</text>
+        <text x="848" y="308" fill="#4a5468" font-size="9" font-family="'Geist Mono', monospace" text-anchor="end">8.0.8 · no auth</text>
+
+        <!-- Node: socket_vmnet switch -->
+        <rect x="72" y="376" width="792" height="48" rx="6" fill="#f5f3ee"/>
+        <rect x="72" y="376" width="792" height="48" rx="6" fill="#111111" stroke="#4a5468" stroke-width="1" fill-opacity="0.05"/>
+        <rect x="80" y="384" width="28" height="12" rx="2" fill="none" stroke="#4a5468" stroke-width="0.8" stroke-opacity="0.50"/>
+        <text x="94" y="393" fill="#4a5468" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">NET</text>
+        <text x="468" y="398" fill="#111111" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">node link (socket_vmnet, lima:shared)</text>
+        <text x="468" y="414" fill="#4a5468" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">192.168.105.0/24 · every pod call above crosses it</text>
+
+        <!-- Node: AT2 sniffer (focal) -->
+        <rect x="304" y="464" width="200" height="48" rx="6" fill="#f5f3ee"/>
+        <rect x="304" y="464" width="200" height="48" rx="6" fill="#de0024" stroke="#de0024" stroke-width="1" fill-opacity="0.07"/>
+        <rect x="312" y="472" width="28" height="12" rx="2" fill="none" stroke="#de0024" stroke-width="0.8" stroke-opacity="0.50"/>
+        <text x="326" y="481" fill="#de0024" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">AT2</text>
+        <text x="412" y="486" fill="#111111" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">sniffer</text>
+        <text x="412" y="502" fill="#4a5468" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">tcpdump · zt-w1 lima0</text>
+
+        <!-- Callouts -->
+        <text x="56" y="40" fill="#de0024" font-size="14" font-style="italic" font-family="'Instrument Serif', serif">AT1: code execution in the</text>
+        <text x="56" y="58" fill="#de0024" font-size="14" font-style="italic" font-family="'Instrument Serif', serif">internet-facing frontend</text>
+        <path d="M 196,64 Q 260,72 340,124" fill="none" stroke="#de0024" stroke-width="1" stroke-dasharray="4,3" stroke-opacity="0.50"/>
+        <circle cx="340" cy="124" r="2" fill="#de0024"/>
+
+        <text x="904" y="40" fill="#111111" font-size="14" font-style="italic" font-family="'Instrument Serif', serif" text-anchor="end">AT3: may create pods in bookinfo,</text>
+        <text x="904" y="58" fill="#111111" font-size="14" font-style="italic" font-family="'Instrument Serif', serif" text-anchor="end">picks their labels and ServiceAccount</text>
+        <path d="M 820,64 Q 800,96 800,124" fill="none" stroke="#111111" stroke-width="1" stroke-dasharray="4,3" stroke-opacity="0.40"/>
+        <circle cx="800" cy="124" r="2" fill="#111111"/>
+
+        <!-- Legend -->
+        <line x1="48" y1="552" x2="912" y2="552" stroke="#111111" stroke-width="0.8" stroke-opacity="0.10"/>
+        <text x="48" y="576" fill="#4a5468" font-size="8" font-family="'Geist Mono', monospace" letter-spacing="0.14em">LEGEND</text>
+        <rect x="128" y="566" width="20" height="14" rx="3" fill="#de0024" stroke="#de0024" stroke-width="1" fill-opacity="0.07"/>
+        <text x="156" y="576" fill="#4a5468" font-size="9" font-family="'Geist Mono', monospace">attacker position</text>
+        <line x1="296" y1="573" x2="328" y2="573" stroke="#4a5468" stroke-width="1.2" marker-end="url(#testbed-arrow)"/>
+        <text x="336" y="576" fill="#4a5468" font-size="9" font-family="'Geist Mono', monospace">pod call, cross-node</text>
+        <line x1="488" y1="573" x2="520" y2="573" stroke="#00399e" stroke-width="1.2" marker-end="url(#testbed-arrow-link)"/>
+        <text x="528" y="576" fill="#4a5468" font-size="9" font-family="'Geist Mono', monospace">enters the host</text>
+        <line x1="656" y1="573" x2="688" y2="573" stroke="#4a5468" stroke-width="1" stroke-dasharray="5,4" marker-end="url(#testbed-arrow)"/>
+        <text x="696" y="576" fill="#4a5468" font-size="9" font-family="'Geist Mono', monospace">attack-only path (T2, T6)</text>
+      </svg>
