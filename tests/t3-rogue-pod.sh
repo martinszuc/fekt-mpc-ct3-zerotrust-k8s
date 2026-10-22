@@ -46,7 +46,14 @@ spec:
         periodSeconds: 60
 YAML
   kubectl -n "$NS" wait --for=jsonpath='{.status.phase}'=Running pod/"$pod" --timeout=3m >/dev/null
-  sleep 3   # Cilium identity (and mesh certificate, if injected) for the new pod
+  # injected sidecar must hold its certificate before the call (classic or native sidecar)
+  for _ in $(seq 60); do
+    kubectl -n "$NS" get pod "$pod" -o json | jq -e '
+      [(.status.containerStatuses // [])[], (.status.initContainerStatuses // [])[] | select(.name=="istio-proxy")]
+      | all(.ready)' >/dev/null && break
+    sleep 2
+  done
+  sleep 3   # Cilium identity for the new pod
   res=$(kubectl -n "$NS" exec -i "$pod" -c attacker -- python - http http://ratings:9080/ratings/0 < tests/probe.py 2>&1) \
     && observed=succeeded || observed=blocked
   { echo "## $variant: rogue pod (app=reviews, inject=$inject, SA $sa) -> ratings:9080"

@@ -1,0 +1,8 @@
+# workloads in bookinfo accept only mTLS from mesh identities
+apiVersion: security.istio.io/v1
+kind: PeerAuthentication
+metadata:
+  name: default
+spec:
+  mtls:
+    mode: STRICT
