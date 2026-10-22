@@ -1,0 +1,10 @@
+# S2b: Istio control plane, sidecar mode (init container redirect, no istio-cni)
+# pinned to the control-plane VM so it does not compete with the app nodes
+nodeSelector:
+  kubernetes.io/hostname: lima-zt-cp
+autoscaleEnabled: false
+replicaCount: 1
+meshConfig:
+  defaultConfig:
+    # app starts only after its sidecar is ready (no startup race in tests and benchmarks)
+    holdApplicationUntilProxyStarts: true

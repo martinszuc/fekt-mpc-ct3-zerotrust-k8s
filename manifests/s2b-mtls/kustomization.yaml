@@ -1,0 +1,7 @@
+# S2b: S1 + Istio sidecars with mTLS STRICT (applied on top of s1-segmentation)
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: bookinfo
+resources:
+  - allow-istiod.yaml
+  - peer-authentication.yaml
