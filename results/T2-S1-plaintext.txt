@@ -1,24 +1,28 @@
-capture: node (zt-w1 lima0), 15s, filter udp
-frames total: 315, frames containing "Reviewer1": 10
+capture: zt-w1 lima0, 15s, filter udp
+frames total: 331, tunnel frames (8472/51871): 330, frames containing "Reviewer1": 10
 
 ## outer protocols
-frame                                    frames:315 bytes:54429
-  eth                                    frames:315 bytes:54429
-    ip                                   frames:315 bytes:54429
-      udp                                frames:315 bytes:54429
-        vxlan                            frames:315 bytes:54429
-          eth                            frames:315 bytes:54429
-            ip                           frames:315 bytes:54429
-              tcp                        frames:253 bytes:43412
+frame                                    frames:331 bytes:58540
+  eth                                    frames:331 bytes:58540
+    ip                                   frames:331 bytes:58540
+      udp                                frames:331 bytes:58540
+        vxlan                            frames:330 bytes:58454
+          eth                            frames:330 bytes:58454
+            ip                           frames:330 bytes:58454
+              icmp                       frames:2 bytes:232
+              tcp                        frames:268 bytes:47437
                 http                     frames:32 bytes:11224
                   json                   frames:15 bytes:6735
                 mongo                    frames:30 bytes:8464
+                tls                      frames:10 bytes:3445
               udp                        frames:60 bytes:10785
                 dns                      frames:60 bytes:10785
-              icmp                       frames:2 bytes:232
+        data                             frames:1 bytes:86
 ===================================================================
 
 ## decoded inner HTTP (src dst method uri status)
+10.42.2.252	10.42.0.114	GET	/hello	
+10.42.0.114	10.42.2.252		/hello	200
 10.42.1.70	10.42.2.180	GET	/details/0	
 10.42.2.180	10.42.1.70		/details/0	200
 10.42.1.70	10.42.2.185	GET	/reviews/0	
@@ -37,8 +41,6 @@ frame                                    frames:315 bytes:54429
 10.42.2.185	10.42.1.244	GET	/ratings/0	
 10.42.1.244	10.42.2.185		/ratings/0	200
 10.42.2.185	10.42.1.70		/reviews/0	200
-10.42.1.70	10.42.2.180	GET	/details/0	
-10.42.2.180	10.42.1.70		/details/0	200
 
 ## readable payload containing "Reviewer1"
 {"id":0,"ratings":{"Reviewer1":5,"Reviewer2":4}}

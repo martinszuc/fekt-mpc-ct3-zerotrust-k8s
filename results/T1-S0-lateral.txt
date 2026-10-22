@@ -7,4 +7,4 @@ OK HTTP 200 {"id":0,"ratings":{"Reviewer1":5,"Reviewer2":4}}
 ## frontend-to-details-allowed: productpage -> http http://details:9080/details/0
 OK HTTP 200 {"id":0,"author":"William Shakespeare","year":1595,"type":"paperback","pages":200,"publisher":"PublisherA","language":"English","ISBN-10":"1234567890","ISBN-13":"123-1234567890"}
 
-## hubble: dropped flows from productpage since 2026-10-22T14:03:33Z (agent on lima-zt-w1)
+## hubble: dropped flows from productpage since 2026-10-22T14:15:42Z (agent on lima-zt-w1)

@@ -47,7 +47,7 @@ export KUBECONFIG=$PWD/.kube/config
 | `tests/t2-sniff.sh` | T2: capture of cross-node traffic on the node link | plaintext in S0/S1, blocked from S2a/S2b |
 
 Each run appends to `results/attacks.csv` and writes evidence as `results/<threat>-<scenario>-*`.
-T2 captures inside VM `zt-w1` by default; `CAPTURE=host make test` captures on the host bridge `bridge100` instead (runs `sudo tcpdump`).
+T2 captures on the node NIC inside VM `zt-w1`. The host bridge `bridge100` does not see VM-to-VM frames (`results/T2-S0-host-bridge.txt`).
 
 The app is pinned to fixed nodes so every call crosses nodes: productpage and ratings on `zt-w1`, details, reviews and mongodb on `zt-w2`.
 
