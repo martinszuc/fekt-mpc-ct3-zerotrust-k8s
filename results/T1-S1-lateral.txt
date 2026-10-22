@@ -1,0 +1,21 @@
+## frontend-to-db: productpage -> mongo mongodb 27017
+FAIL TimeoutError timed out
+command terminated with exit code 1
+
+## frontend-to-ratings: productpage -> http http://ratings:9080/ratings/0
+FAIL URLError <urlopen error timed out>
+command terminated with exit code 1
+
+## frontend-to-details-allowed: productpage -> http http://details:9080/details/0
+OK HTTP 200 {"id":0,"author":"William Shakespeare","year":1595,"type":"paperback","pages":200,"publisher":"PublisherA","language":"English","ISBN-10":"1234567890","ISBN-13":"123-1234567890"}
+
+## hubble: dropped flows from productpage since 2026-10-22T14:03:56Z (agent on lima-zt-w1)
+Oct 22 14:03:56.688: bookinfo/productpage-v1-55578dc984-hf77z:37062 (ID:30465) <> bookinfo/mongodb-v1-57b96fdc95-jsdnw:27017 (ID:19897) Policy denied DROPPED (TCP Flags: SYN)
+Oct 22 14:03:57.705: bookinfo/productpage-v1-55578dc984-hf77z:37062 (ID:30465) <> bookinfo/mongodb-v1-57b96fdc95-jsdnw:27017 (ID:19897) Policy denied DROPPED (TCP Flags: SYN)
+Oct 22 14:03:58.725: bookinfo/productpage-v1-55578dc984-hf77z:37062 (ID:30465) <> bookinfo/mongodb-v1-57b96fdc95-jsdnw:27017 (ID:19897) Policy denied DROPPED (TCP Flags: SYN)
+Oct 22 14:03:59.748: bookinfo/productpage-v1-55578dc984-hf77z:37062 (ID:30465) <> bookinfo/mongodb-v1-57b96fdc95-jsdnw:27017 (ID:19897) Policy denied DROPPED (TCP Flags: SYN)
+Oct 22 14:04:00.770: bookinfo/productpage-v1-55578dc984-hf77z:37062 (ID:30465) <> bookinfo/mongodb-v1-57b96fdc95-jsdnw:27017 (ID:19897) Policy denied DROPPED (TCP Flags: SYN)
+Oct 22 14:04:01.097: bookinfo/productpage-v1-55578dc984-hf77z:56826 (ID:30465) <> bookinfo/ratings-v2-684564c65d-zm866:9080 (ID:26299) Policy denied DROPPED (TCP Flags: SYN)
+Oct 22 14:04:02.115: bookinfo/productpage-v1-55578dc984-hf77z:56826 (ID:30465) <> bookinfo/ratings-v2-684564c65d-zm866:9080 (ID:26299) Policy denied DROPPED (TCP Flags: SYN)
+Oct 22 14:04:03.149: bookinfo/productpage-v1-55578dc984-hf77z:56826 (ID:30465) <> bookinfo/ratings-v2-684564c65d-zm866:9080 (ID:26299) Policy denied DROPPED (TCP Flags: SYN)
+Oct 22 14:04:04.196: bookinfo/productpage-v1-55578dc984-hf77z:56826 (ID:30465) <> bookinfo/ratings-v2-684564c65d-zm866:9080 (ID:26299) Policy denied DROPPED (TCP Flags: SYN)

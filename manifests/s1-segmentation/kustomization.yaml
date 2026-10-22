@@ -1,0 +1,7 @@
+# S1: default-deny segmentation (Kubernetes NetworkPolicy, enforced by Cilium)
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: bookinfo
+resources:
+  - default-deny.yaml
+  - allow-app.yaml
