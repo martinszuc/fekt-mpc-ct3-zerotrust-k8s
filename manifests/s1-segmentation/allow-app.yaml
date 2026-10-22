@@ -1,0 +1,93 @@
+# one policy per workload; only the call graph productpage -> details, reviews -> ratings -> mongodb
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: productpage
+spec:
+  podSelector:
+    matchLabels: {app: productpage}
+  policyTypes: [Ingress, Egress]
+  # public entry point
+  ingress:
+    - ports:
+        - {protocol: TCP, port: 9080}
+  egress:
+    - to:
+        - podSelector:
+            matchLabels: {app: details}
+        - podSelector:
+            matchLabels: {app: reviews}
+      ports:
+        - {protocol: TCP, port: 9080}
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: details
+spec:
+  podSelector:
+    matchLabels: {app: details}
+  policyTypes: [Ingress]
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels: {app: productpage}
+      ports:
+        - {protocol: TCP, port: 9080}
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: reviews
+spec:
+  podSelector:
+    matchLabels: {app: reviews}
+  policyTypes: [Ingress, Egress]
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels: {app: productpage}
+      ports:
+        - {protocol: TCP, port: 9080}
+  egress:
+    - to:
+        - podSelector:
+            matchLabels: {app: ratings}
+      ports:
+        - {protocol: TCP, port: 9080}
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: ratings
+spec:
+  podSelector:
+    matchLabels: {app: ratings}
+  policyTypes: [Ingress, Egress]
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels: {app: reviews}
+      ports:
+        - {protocol: TCP, port: 9080}
+  egress:
+    - to:
+        - podSelector:
+            matchLabels: {app: mongodb}
+      ports:
+        - {protocol: TCP, port: 27017}
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: mongodb
+spec:
+  podSelector:
+    matchLabels: {app: mongodb}
+  policyTypes: [Ingress]
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels: {app: ratings}
+      ports:
+        - {protocol: TCP, port: 27017}

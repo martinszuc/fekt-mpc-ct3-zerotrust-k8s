@@ -1,0 +1,54 @@
+capture: node (zt-w1 lima0), 15s, filter udp
+frames total: 310, frames containing "Reviewer1": 10
+
+## outer protocols
+frame                                    frames:310 bytes:53833
+  eth                                    frames:310 bytes:53833
+    ip                                   frames:310 bytes:53833
+      udp                                frames:310 bytes:53833
+        vxlan                            frames:310 bytes:53833
+          eth                            frames:310 bytes:53833
+            ip                           frames:310 bytes:53833
+              tcp                        frames:248 bytes:42816
+                http                     frames:32 bytes:11224
+                  json                   frames:15 bytes:6735
+                mongo                    frames:30 bytes:8465
+              icmp                       frames:2 bytes:232
+              udp                        frames:60 bytes:10785
+                dns                      frames:60 bytes:10785
+===================================================================
+
+## decoded inner HTTP (src dst method uri status)
+10.42.2.252	10.42.1.253	GET	/hello	
+10.42.1.253	10.42.2.252		/hello	200
+10.42.1.70	10.42.2.180	GET	/details/0	
+10.42.2.180	10.42.1.70		/details/0	200
+10.42.1.70	10.42.2.185	GET	/reviews/0	
+10.42.2.185	10.42.1.244	GET	/ratings/0	
+10.42.1.244	10.42.2.185		/ratings/0	200
+10.42.2.185	10.42.1.70		/reviews/0	200
+10.42.1.70	10.42.2.180	GET	/details/0	
+10.42.2.180	10.42.1.70		/details/0	200
+10.42.1.70	10.42.2.185	GET	/reviews/0	
+10.42.2.185	10.42.1.244	GET	/ratings/0	
+10.42.1.244	10.42.2.185		/ratings/0	200
+10.42.2.185	10.42.1.70		/reviews/0	200
+10.42.1.70	10.42.2.180	GET	/details/0	
+10.42.2.180	10.42.1.70		/details/0	200
+10.42.1.70	10.42.2.185	GET	/reviews/0	
+10.42.2.185	10.42.1.244	GET	/ratings/0	
+10.42.1.244	10.42.2.185		/ratings/0	200
+10.42.2.185	10.42.1.70		/reviews/0	200
+
+## readable payload containing "Reviewer1"
+{"id":0,"ratings":{"Reviewer1":5,"Reviewer2":4}}
+{"id": "0","podname": "reviews-v3-7c4577755d-jl7r7","clustername": "null","reviews": [{  "reviewer": "Reviewer1",  "text": "An extremely entertaining play by Shakespeare. The slapstick humour is refreshing!", "rating": {"stars": 5, "color": "red"}},{  "reviewer": "Reviewer2",  "text": "Absolutely fu
+
+
+## decoded inner MongoDB (src dst opcode)
+10.42.1.244	10.42.2.220	2004
+10.42.2.220	10.42.1.244	1
+10.42.1.244	10.42.2.220	2013
+10.42.2.220	10.42.1.244	2013
+10.42.1.244	10.42.2.220	2013
+10.42.2.220	10.42.1.244	2013

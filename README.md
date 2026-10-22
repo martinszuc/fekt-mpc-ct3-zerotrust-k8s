@@ -26,6 +26,10 @@ Exact versions: [docs/versions.md](docs/versions.md).
 ```bash
 make up       # 3 Lima VMs (vz, Ubuntu 24.04) + k3s + Cilium (scenario S0 baseline)
 make status   # VMs, nodes, Cilium health
+make app      # deploy Bookinfo into namespace bookinfo
+make s0       # switch scenario: S0 baseline (no policies)
+make s1       # switch scenario: S1 default-deny NetworkPolicies
+make test     # attack tests against the current scenario, evidence in results/
 make down     # delete the VMs
 ```
 
@@ -35,13 +39,25 @@ After `make up`, point kubectl at the cluster:
 export KUBECONFIG=$PWD/.kube/config
 ```
 
+## Attack tests
+
+| Test | Threat | Expected |
+|---|---|---|
+| `tests/t1-lateral.sh` | T1: productpage reads MongoDB and calls ratings directly | succeeds in S0, blocked from S1 |
+| `tests/t2-sniff.sh` | T2: capture of cross-node traffic on the node link | plaintext in S0/S1, blocked from S2a/S2b |
+
+Each run appends to `results/attacks.csv` and writes evidence as `results/<threat>-<scenario>-*`.
+T2 captures inside VM `zt-w1` by default; `CAPTURE=host make test` captures on the host bridge `bridge100` instead (runs `sudo tcpdump`).
+
+The app is pinned to fixed nodes so every call crosses nodes: productpage and ratings on `zt-w1`, details, reviews and mongodb on `zt-w2`.
+
 ## Layout
 
 | Path | Content |
 |---|---|
 | `infra/` | VM sizing, pinned versions, cluster bootstrap |
 | `manifests/` | demo app and per-scenario controls (S1 to S3) |
-| `tests/` | attack scripts mapped to threats T1 to T5 |
+| `tests/` | attack scripts mapped to threats T1 to T6 |
 | `bench/` | fortio and iperf3 runners |
 | `results/` | raw CSV, packet captures, logs |
 | `scripts/` | aggregation and plotting |

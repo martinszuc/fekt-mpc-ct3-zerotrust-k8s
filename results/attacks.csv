@@ -1,0 +1,9 @@
+time,scenario,threat,check,expected,observed,verdict,evidence
+2026-10-22T14:03:33Z,S0,T1,frontend-to-db,succeeded,succeeded,PASS,results/T1-S0-lateral.txt
+2026-10-22T14:03:33Z,S0,T1,frontend-to-ratings,succeeded,succeeded,PASS,results/T1-S0-lateral.txt
+2026-10-22T14:03:33Z,S0,T1,frontend-to-details-allowed,succeeded,succeeded,PASS,results/T1-S0-lateral.txt
+2026-10-22T14:03:50Z,S0,T2,cross-node-sniff,succeeded,succeeded,PASS,results/T2-S0-plaintext.pcap
+2026-10-22T14:04:00Z,S1,T1,frontend-to-db,blocked,blocked,PASS,results/T1-S1-lateral.txt
+2026-10-22T14:04:05Z,S1,T1,frontend-to-ratings,blocked,blocked,PASS,results/T1-S1-lateral.txt
+2026-10-22T14:04:05Z,S1,T1,frontend-to-details-allowed,succeeded,succeeded,PASS,results/T1-S1-lateral.txt
+2026-10-22T14:04:21Z,S1,T2,cross-node-sniff,succeeded,succeeded,PASS,results/T2-S1-plaintext.pcap
