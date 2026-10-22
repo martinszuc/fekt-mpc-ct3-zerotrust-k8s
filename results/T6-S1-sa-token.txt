@@ -1,0 +1,34 @@
+## token-mounted: productpage token
+FAIL FileNotFoundError [Errno 2] No such file or directory: '/var/run/secrets/kubernetes.io/serviceaccount/token'
+command terminated with exit code 1
+
+## api-reachable: productpage api-reach
+FAIL URLError <urlopen error timed out>
+command terminated with exit code 1
+
+## api-authenticated: productpage api-whoami
+FAIL FileNotFoundError [Errno 2] No such file or directory: '/var/run/secrets/kubernetes.io/serviceaccount/token'
+command terminated with exit code 1
+
+## api-read-secrets: productpage api-secrets bookinfo
+FAIL FileNotFoundError [Errno 2] No such file or directory: '/var/run/secrets/kubernetes.io/serviceaccount/token'
+command terminated with exit code 1
+
+## RBAC: effective permissions of bookinfo-productpage (admin view)
+Resources                                       Non-Resource URLs                      Resource Names   Verbs
+selfsubjectreviews.authentication.k8s.io        []                                     []               [create]
+selfsubjectaccessreviews.authorization.k8s.io   []                                     []               [create]
+selfsubjectrulesreviews.authorization.k8s.io    []                                     []               [create]
+(non-resource URLs omitted: discovery, /version, health, openid)
+
+## RBAC: bindings that name a bookinfo ServiceAccount
+none
+
+## automountServiceAccountToken per SA
+SA                     AUTOMOUNT
+bookinfo-details       false
+bookinfo-mongodb       false
+bookinfo-productpage   false
+bookinfo-ratings-v2    false
+bookinfo-reviews       false
+default                false

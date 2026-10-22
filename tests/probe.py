@@ -1,8 +1,11 @@
-# attacker tooling, runs inside the compromised pod: python - http URL | python - mongo HOST PORT
+# attacker tooling, runs inside the compromised pod: python - <action> [args]
+# actions: http URL | mongo HOST PORT | token | api-reach | api-whoami | api-secrets NS
 # prints "OK <detail>" or "FAIL <reason>"
-import json, socket, struct, sys, urllib.request
+import base64, json, socket, ssl, struct, sys, time, urllib.error, urllib.request
 
 TIMEOUT = 4
+API = "https://kubernetes.default.svc"
+SA_TOKEN = "/var/run/secrets/kubernetes.io/serviceaccount/token"
 
 
 def bson_enc(d):
@@ -62,8 +65,45 @@ def http(url):
     return f"HTTP {r.status} {r.read(200).decode(errors='replace')}"
 
 
+def token():
+    # never print the token itself, only whose it is
+    claims = base64.urlsafe_b64decode(open(SA_TOKEN).read().split(".")[1] + "==")
+    c = json.loads(claims)
+    return f"SA token mounted, sub={c['sub']}, expires {time.strftime('%FT%TZ', time.gmtime(c['exp']))}"
+
+
+def api(path, body=None, auth=True):
+    h = {"Content-Type": "application/json"}
+    if auth:
+        h["Authorization"] = "Bearer " + open(SA_TOKEN).read().strip()
+    req = urllib.request.Request(API + path, json.dumps(body).encode() if body else None, h)
+    # attacker does not care about the server certificate
+    return urllib.request.urlopen(req, timeout=TIMEOUT, context=ssl._create_unverified_context())
+
+
+def api_reach():
+    try:
+        return f"anonymous GET /version: HTTP {api('/version', auth=False).status}"
+    except urllib.error.HTTPError as e:
+        return f"anonymous GET /version: HTTP {e.code} (API server answered)"
+
+
+def api_whoami():
+    r = api("/apis/authentication.k8s.io/v1/selfsubjectreviews",
+            {"apiVersion": "authentication.k8s.io/v1", "kind": "SelfSubjectReview"})
+    u = json.load(r)["status"]["userInfo"]
+    return f"authenticated as {u['username']}, groups {u.get('groups')}"
+
+
+def api_secrets(ns):
+    return f"listed {len(json.load(api(f'/api/v1/namespaces/{ns}/secrets'))['items'])} secrets in {ns}"
+
+
+ACTIONS = {"http": http, "mongo": mongo, "token": token,
+           "api-reach": api_reach, "api-whoami": api_whoami, "api-secrets": api_secrets}
+
 try:
-    print("OK", {"http": http, "mongo": mongo}[sys.argv[1]](*sys.argv[2:]))
+    print("OK", ACTIONS[sys.argv[1]](*sys.argv[2:]))
 except Exception as e:
     print("FAIL", type(e).__name__, e)
     sys.exit(1)

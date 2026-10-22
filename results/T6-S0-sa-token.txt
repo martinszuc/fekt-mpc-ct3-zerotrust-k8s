@@ -1,0 +1,31 @@
+## token-mounted: productpage token
+OK SA token mounted, sub=system:serviceaccount:bookinfo:bookinfo-productpage, expires 2027-10-22T14:24:53Z
+
+## api-reachable: productpage api-reach
+OK anonymous GET /version: HTTP 401 (API server answered)
+
+## api-authenticated: productpage api-whoami
+OK authenticated as system:serviceaccount:bookinfo:bookinfo-productpage, groups ['system:serviceaccounts', 'system:serviceaccounts:bookinfo', 'system:authenticated']
+
+## api-read-secrets: productpage api-secrets bookinfo
+FAIL HTTPError HTTP Error 403: Forbidden
+command terminated with exit code 1
+
+## RBAC: effective permissions of bookinfo-productpage (admin view)
+Resources                                       Non-Resource URLs                      Resource Names   Verbs
+selfsubjectreviews.authentication.k8s.io        []                                     []               [create]
+selfsubjectaccessreviews.authorization.k8s.io   []                                     []               [create]
+selfsubjectrulesreviews.authorization.k8s.io    []                                     []               [create]
+(non-resource URLs omitted: discovery, /version, health, openid)
+
+## RBAC: bindings that name a bookinfo ServiceAccount
+none
+
+## automountServiceAccountToken per SA
+SA                     AUTOMOUNT
+bookinfo-details       <none>
+bookinfo-mongodb       <none>
+bookinfo-productpage   <none>
+bookinfo-ratings-v2    <none>
+bookinfo-reviews       <none>
+default                <none>

@@ -28,7 +28,7 @@ make up       # 3 Lima VMs (vz, Ubuntu 24.04) + k3s + Cilium (scenario S0 baseli
 make status   # VMs, nodes, Cilium health
 make app      # deploy Bookinfo into namespace bookinfo
 make s0       # switch scenario: S0 baseline (no policies)
-make s1       # switch scenario: S1 default-deny NetworkPolicies
+make s1       # switch scenario: S1 default-deny NetworkPolicies, no SA tokens mounted
 make test     # attack tests against the current scenario, evidence in results/
 make down     # delete the VMs
 ```
@@ -45,6 +45,7 @@ export KUBECONFIG=$PWD/.kube/config
 |---|---|---|
 | `tests/t1-lateral.sh` | T1: productpage reads MongoDB and calls ratings directly | succeeds in S0, blocked from S1 |
 | `tests/t2-sniff.sh` | T2: capture of cross-node traffic on the node link | plaintext in S0/S1, blocked from S2a/S2b |
+| `tests/t6-sa-token.sh` | T6: productpage uses its ServiceAccount token against the API server | token usable in S0, blocked from S1; reading Secrets is denied by RBAC in every scenario |
 
 Each run appends to `results/attacks.csv` and writes evidence as `results/<threat>-<scenario>-*`.
 T2 captures on the node NIC inside VM `zt-w1`. The host bridge `bridge100` does not see VM-to-VM frames (`results/T2-S0-host-bridge.txt`).

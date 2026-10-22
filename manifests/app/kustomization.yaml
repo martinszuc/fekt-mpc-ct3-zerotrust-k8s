@@ -9,6 +9,7 @@ resources:
   - upstream/bookinfo.yaml
   - upstream/bookinfo-db.yaml
   - upstream/bookinfo-ratings-v2.yaml
+  - serviceaccounts.yaml
 configMapGenerator:
   - name: mongodb-init
     files:
@@ -32,6 +33,13 @@ patches:
       kind: Deployment
       metadata:
         name: ratings-v1
+  # SA of the removed ratings-v1
+  - patch: |-
+      $patch: delete
+      apiVersion: v1
+      kind: ServiceAccount
+      metadata:
+        name: bookinfo-ratings
   # mongo entrypoint runs initdb only if the first arg is "mongod"; seed ratings from our script
   - target:
       kind: Deployment
@@ -46,6 +54,13 @@ patches:
       - op: add
         path: /spec/template/spec/volumes/-
         value: {name: init, configMap: {name: mongodb-init}}
+      - op: add
+        path: /spec/template/spec/serviceAccountName
+        value: bookinfo-mongodb
+      # upstream has no probe; Ready must mean mongod accepts connections
+      - op: add
+        path: /spec/template/spec/containers/0/readinessProbe
+        value: {tcpSocket: {port: 27017}, periodSeconds: 2}
   - target:
       kind: Deployment
       name: productpage-v1|ratings-v2
