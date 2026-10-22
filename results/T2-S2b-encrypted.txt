@@ -1,0 +1,41 @@
+capture: zt-w1 lima0, 15s, filter udp
+frames total: 328, tunnel frames (8472/51871): 328, frames containing "Reviewer1": 0
+
+## metadata exposure
+VXLAN frames with readable inner pod IP/TCP headers: 266
+of which inner payload is TLS (mesh mTLS): 139
+inner pod-to-pod conversations (src dst dport):
+10.42.0.32	10.42.1.253	4240
+10.42.1.124	10.42.2.177	9080
+10.42.1.124	10.42.2.69	9080
+10.42.1.133	10.42.2.136	27017
+10.42.2.69	10.42.1.133	9080
+
+## outer protocols
+frame                                    frames:328 bytes:137732
+  eth                                    frames:328 bytes:137732
+    ip                                   frames:328 bytes:137732
+      udp                                frames:328 bytes:137732
+        vxlan                            frames:328 bytes:137732
+          eth                            frames:328 bytes:137732
+            ip                           frames:328 bytes:137732
+              tcp                        frames:266 bytes:126715
+                tls                      frames:139 bytes:110264
+                  tls                    frames:1 bytes:1514
+                http                     frames:2 bytes:409
+              udp                        frames:60 bytes:10785
+                dns                      frames:60 bytes:10785
+              icmp                       frames:2 bytes:232
+===================================================================
+
+## decoded inner HTTP (src dst method uri status)
+10.42.0.32	10.42.1.253	GET	/hello	
+10.42.1.253	10.42.0.32		/hello	200
+
+## readable payload containing "Reviewer1"
+
+## decoded inner MongoDB (src dst opcode)
+
+## cilium encryption status
+Encryption: Disabled (3/3 nodes)
+
