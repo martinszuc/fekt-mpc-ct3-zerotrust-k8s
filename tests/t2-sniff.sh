@@ -34,6 +34,14 @@ txt=${final%.pcap}.txt
   echo "capture: $NODE $NODE_IFACE, ${SECONDS_}s, filter udp"
   echo "frames total: $(tshark -r "$final" 2>/dev/null | wc -l | tr -d ' '), tunnel frames (8472/51871): $tunnel, frames containing \"$MARKER\": $hits"
   echo
+  # verdict above is about payload; this is about metadata (who talks to whom, on which port)
+  echo "## metadata exposure"
+  echo "VXLAN frames with readable inner pod IP/TCP headers: $(tshark -r "$final" -d udp.port==8472,vxlan -Y 'vxlan && tcp' 2>/dev/null | wc -l | tr -d ' ')"
+  echo "of which inner payload is TLS (mesh mTLS): $(tshark -r "$final" -d udp.port==8472,vxlan -Y 'vxlan && tls' 2>/dev/null | wc -l | tr -d ' ')"
+  echo "inner pod-to-pod conversations (src dst dport):"
+  tshark -r "$final" -d udp.port==8472,vxlan -Y 'vxlan && tcp.flags.syn==1 && tcp.flags.ack==0' -T fields -E occurrence=l \
+    -e ip.src -e ip.dst -e tcp.dstport 2>/dev/null | sort -u | head -10
+  echo
   echo "## outer protocols"
   tshark -r "$final" -q -z io,phs -d udp.port==8472,vxlan -d udp.port==51871,wg 2>/dev/null | sed -n '/^frame/,$p' | head -20
   echo

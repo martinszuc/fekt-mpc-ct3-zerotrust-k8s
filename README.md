@@ -48,7 +48,8 @@ export KUBECONFIG=$PWD/.kube/config
 |---|---|---|
 | `tests/t1-lateral.sh` | T1: productpage reads MongoDB and calls ratings directly | succeeds in S0, blocked from S1 |
 | `tests/t2-sniff.sh` | T2: capture of cross-node traffic on the node link | plaintext in S0/S1, blocked from S2a/S2b |
-| `tests/t3-rogue-pod.sh` | T3: rogue pod with spoofed label `app=reviews` and no workload identity calls ratings | succeeds in S0/S1/S2a, blocked from S2b |
+| `tests/t3-rogue-pod.sh` | T3: rogue pod with spoofed label `app=reviews` calls ratings, three variants: outside the mesh / in the mesh as SA `default` / in the mesh as SA `bookinfo-reviews` | blocked from S2b / blocked from S3 / never blocked (limit) |
+| `tests/t5-valid-identity.sh` | T5: attacker inside the real reviews pod (ephemeral container) reads ratings | never blocked (limit) |
 | `tests/t6-sa-token.sh` | T6: productpage uses its ServiceAccount token against the API server | token usable in S0, blocked from S1; reading Secrets is denied by RBAC in every scenario |
 
 Each run appends to `results/attacks.csv` and writes evidence as `results/<threat>-<scenario>-*`.
