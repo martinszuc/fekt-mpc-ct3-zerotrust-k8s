@@ -37,10 +37,13 @@ txt=${final%.pcap}.txt
   # verdict above is about payload; this is about metadata (who talks to whom, on which port)
   echo "## metadata exposure"
   echo "VXLAN frames with readable inner pod IP/TCP headers: $(tshark -r "$final" -d udp.port==8472,vxlan -Y 'vxlan && tcp' 2>/dev/null | wc -l | tr -d ' ')"
-  echo "of which inner payload is TLS (mesh mTLS): $(tshark -r "$final" -d udp.port==8472,vxlan -Y 'vxlan && tls' 2>/dev/null | wc -l | tr -d ' ')"
-  echo "inner pod-to-pod conversations (src dst dport):"
-  tshark -r "$final" -d udp.port==8472,vxlan -Y 'vxlan && tcp.flags.syn==1 && tcp.flags.ack==0' -T fields -E occurrence=l \
-    -e ip.src -e ip.dst -e tcp.dstport 2>/dev/null | sort -u | head -10
+  # app ports only: kubelet and health-check TLS would otherwise count as mesh mTLS
+  echo "of which app traffic (9080, 27017) with TLS payload (mesh mTLS): $(tshark -r "$final" -d udp.port==8472,vxlan -Y 'vxlan && tls && (tcp.port==9080 || tcp.port==27017)' 2>/dev/null | wc -l | tr -d ' ')"
+  # any segment, not only SYNs: pooled keep-alive connections predate the capture; lower port taken as the server
+  echo "inner pod-to-pod conversations (client server port):"
+  tshark -r "$final" -d udp.port==8472,vxlan -Y 'vxlan && tcp' -T fields -E occurrence=l \
+    -e ip.src -e ip.dst -e tcp.srcport -e tcp.dstport 2>/dev/null \
+    | awk -v OFS='\t' '{ if ($3 < $4) print $2, $1, $3; else print $1, $2, $4 }' | sort -u | head -20
   echo
   echo "## outer protocols"
   tshark -r "$final" -q -z io,phs -d udp.port==8472,vxlan -d udp.port==51871,wg 2>/dev/null | sed -n '/^frame/,$p' | head -20
