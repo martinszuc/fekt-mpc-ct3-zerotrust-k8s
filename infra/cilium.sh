@@ -4,7 +4,9 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 source infra/config.env
-export KUBECONFIG=${KUBECONFIG:-$PWD/$KUBECONFIG_PATH}
+# forced, never inherited: the default kubeconfig on the host points at another cluster
+export KUBECONFIG=$PWD/$KUBECONFIG_PATH
+[[ -f $KUBECONFIG ]] || { echo "missing $KUBECONFIG, run make up" >&2; exit 1; }
 
 CP_IP=$(kubectl get node "lima-$CP_NODE" -o jsonpath='{.status.addresses[?(@.type=="InternalIP")].address}')
 args=(-f infra/cilium-values.yaml)
