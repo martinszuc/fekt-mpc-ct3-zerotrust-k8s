@@ -1,5 +1,5 @@
-## compromised reviews (reviews-v3-5b7f58776b-59jnb, ephemeral container attacker-1792692678) -> ratings:9080
+## compromised reviews (reviews-v3-5649c4cf58-jgj7v, ephemeral container attacker-1792766172) -> ratings:9080
 OK HTTP 200 {"id":0,"ratings":{"Reviewer1":5,"Reviewer2":4}}
 
 ## pod identity
-SA bookinfo-reviews, labels {"app":"reviews","pod-template-hash":"5b7f58776b","version":"v3"}
+SA bookinfo-reviews, labels {"app":"reviews","pod-template-hash":"5649c4cf58","version":"v3"}

@@ -35,7 +35,7 @@ Key observations so far:
 
 - NetworkPolicy trusts labels, and WireGuard authenticates nodes, not workloads, so T3 still works in S2a.
 - mTLS stops only the rogue pod outside the mesh. A rogue pod in the mesh is authenticated, so only authorization (S3) can stop it. A rogue pod reusing the legitimate ServiceAccount is not stopped by any scenario (needs admission control, documented as a limit).
-- WireGuard hides who talks to whom on the node link; with mTLS the inner pod IPs and ports stay readable (266 frames in the S2b capture vs 0 in S2a).
+- WireGuard hides who talks to whom on the node link; with mTLS the inner pod IPs and ports stay readable (224 frames in the S2b capture vs 0 in S2a), including which pods connect to istiod.
 
 ## Decisions and findings
 
