@@ -3,7 +3,9 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 source infra/config.env
-export KUBECONFIG=${KUBECONFIG:-$PWD/$KUBECONFIG_PATH}
+# forced, never inherited: the default kubeconfig on the host points at another cluster
+export KUBECONFIG=$PWD/$KUBECONFIG_PATH
+[[ -f $KUBECONFIG ]] || { echo "missing $KUBECONFIG, run make up" >&2; exit 1; }
 NS=bookinfo
 SETTLE=${SETTLE:-5}   # seconds for Cilium to regenerate endpoints after a policy change
 
