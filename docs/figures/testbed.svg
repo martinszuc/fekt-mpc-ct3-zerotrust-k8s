@@ -37,13 +37,13 @@
         <path d="M 664,262 H 576 Q 568,262 568,270 V 290 Q 568,298 560,298 H 504" fill="none" stroke="#4a5468" stroke-width="1.2" marker-end="url(#testbed-arrow)"/>
         <!-- ratings -> mongodb -->
         <line x1="504" y1="310" x2="664" y2="310" stroke="#4a5468" stroke-width="1.2" marker-end="url(#testbed-arrow)"/>
-        <!-- productpage -> API server (T6) -->
+        <!-- productpage -> API server (token abuse) -->
         <line x1="304" y1="208" x2="232" y2="208" stroke="#4a5468" stroke-width="1" stroke-dasharray="5,4" marker-end="url(#testbed-arrow)"/>
         <!-- node NICs to the shared switch -->
         <line x1="152" y1="332" x2="152" y2="376" stroke="#4a5468" stroke-width="1"/>
         <line x1="404" y1="332" x2="404" y2="376" stroke="#4a5468" stroke-width="1"/>
         <line x1="764" y1="332" x2="764" y2="376" stroke="#4a5468" stroke-width="1"/>
-        <!-- passive capture (T2) -->
+        <!-- passive capture (network sniffing) -->
         <line x1="404" y1="424" x2="404" y2="464" stroke="#4a5468" stroke-width="1" stroke-dasharray="5,4" marker-end="url(#testbed-arrow)"/>
 
         <!-- Path labels -->
@@ -97,7 +97,7 @@
         <text x="324" y="145" fill="#111111" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">VM</text>
         <text x="404" y="168" fill="#111111" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">zt-w1</text>
         <text x="404" y="184" fill="#4a5468" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">.105.3 · 4 vCPU · 8 GiB</text>
-        <!-- productpage: AT1 foothold (focal) -->
+        <!-- productpage: compromised frontend foothold (focal) -->
         <rect x="312" y="196" width="184" height="24" rx="4" fill="#de0024" stroke="#de0024" stroke-width="1" fill-opacity="0.07"/>
         <text x="320" y="212" fill="#111111" font-size="12" font-family="'Geist', sans-serif">productpage</text>
         <text x="488" y="212" fill="#4a5468" font-size="9" font-family="'Geist Mono', monospace" text-anchor="end">v1 · 1.20.3</text>
@@ -130,21 +130,19 @@
         <text x="468" y="398" fill="#111111" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">node link (socket_vmnet, lima:shared)</text>
         <text x="468" y="414" fill="#4a5468" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">192.168.105.0/24 · every pod call above crosses it</text>
 
-        <!-- Node: AT2 sniffer (focal) -->
+        <!-- Node: network observer (focal) -->
         <rect x="304" y="464" width="200" height="48" rx="6" fill="#f5f3ee"/>
         <rect x="304" y="464" width="200" height="48" rx="6" fill="#de0024" stroke="#de0024" stroke-width="1" fill-opacity="0.07"/>
-        <rect x="312" y="472" width="28" height="12" rx="2" fill="none" stroke="#de0024" stroke-width="0.8" stroke-opacity="0.50"/>
-        <text x="326" y="481" fill="#de0024" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">AT2</text>
-        <text x="412" y="486" fill="#111111" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">sniffer</text>
+        <text x="412" y="486" fill="#111111" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">network observer</text>
         <text x="412" y="502" fill="#4a5468" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">tcpdump · zt-w1 lima0</text>
 
         <!-- Callouts -->
-        <text x="56" y="40" fill="#de0024" font-size="14" font-style="italic" font-family="'Instrument Serif', serif">AT1: code execution in the</text>
-        <text x="56" y="58" fill="#de0024" font-size="14" font-style="italic" font-family="'Instrument Serif', serif">internet-facing frontend</text>
+        <text x="56" y="40" fill="#de0024" font-size="14" font-style="italic" font-family="'Instrument Serif', serif">Compromised frontend: code execution in the</text>
+        <text x="56" y="58" fill="#de0024" font-size="14" font-style="italic" font-family="'Instrument Serif', serif">internet-facing productpage</text>
         <path d="M 196,64 Q 260,72 340,124" fill="none" stroke="#de0024" stroke-width="1" stroke-dasharray="4,3" stroke-opacity="0.50"/>
         <circle cx="340" cy="124" r="2" fill="#de0024"/>
 
-        <text x="904" y="40" fill="#111111" font-size="14" font-style="italic" font-family="'Instrument Serif', serif" text-anchor="end">AT3: may create pods in bookinfo,</text>
+        <text x="904" y="40" fill="#111111" font-size="14" font-style="italic" font-family="'Instrument Serif', serif" text-anchor="end">Pod creator: may create pods in bookinfo,</text>
         <text x="904" y="58" fill="#111111" font-size="14" font-style="italic" font-family="'Instrument Serif', serif" text-anchor="end">picks their labels and ServiceAccount</text>
         <path d="M 820,64 Q 800,96 800,124" fill="none" stroke="#111111" stroke-width="1" stroke-dasharray="4,3" stroke-opacity="0.40"/>
         <circle cx="800" cy="124" r="2" fill="#111111"/>
@@ -159,5 +157,5 @@
         <line x1="488" y1="573" x2="520" y2="573" stroke="#00399e" stroke-width="1.2" marker-end="url(#testbed-arrow-link)"/>
         <text x="528" y="576" fill="#4a5468" font-size="9" font-family="'Geist Mono', monospace">enters the host</text>
         <line x1="656" y1="573" x2="688" y2="573" stroke="#4a5468" stroke-width="1" stroke-dasharray="5,4" marker-end="url(#testbed-arrow)"/>
-        <text x="696" y="576" fill="#4a5468" font-size="9" font-family="'Geist Mono', monospace">attack-only path (T2, T6)</text>
+        <text x="696" y="576" fill="#4a5468" font-size="9" font-family="'Geist Mono', monospace">attack-only path (sniffing, token abuse)</text>
       </svg>
