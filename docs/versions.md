@@ -19,8 +19,8 @@ Recorded 22.10.2026. Change only between experiment runs, never within one.
 | VM type / network | vz, socket_vmnet 1.2.2 `lima:shared` (192.168.105.0/24) | `infra/config.env` |
 | VM sizing | 3 nodes, each 4 vCPU / 8 GiB / 30 GiB | `infra/config.env` |
 | k3s | v1.36.5+k3s1 | `infra/config.env` |
-| Cilium | 1.20.3 (Helm chart); kube-proxy replacement, VXLAN, `socketLB.hostNamespaceOnly: true`, `cni.exclusive: false` (Istio compatibility, all scenarios) | `infra/config.env`, `infra/cilium-values.yaml` |
-| S2a encryption | Cilium WireGuard, in-kernel module (Linux 6.8.0-142), pod traffic only (`nodeEncryption: false`), `cilium_wg0` MTU 1405 | `manifests/s2a-wireguard/` |
+| Cilium | 1.20.3 (Helm chart); kube-proxy replacement, VXLAN, `socketLB.hostNamespaceOnly: true`, `cni.exclusive: false` (Istio compatibility, all configurations) | `infra/config.env`, `infra/cilium-values.yaml` |
+| Node encryption | Cilium WireGuard, in-kernel module (Linux 6.8.0-142), pod traffic only (`nodeEncryption: false`), `cilium_wg0` MTU 1405 | `manifests/s2a-wireguard/` |
 | Service mesh | Istio 1.30.7 (Helm charts `base`, `istiod`), sidecar mode, native sidecars, init-container redirect (no istio-cni), istiod on zt-cp; 1.31.x charts not yet published in the Helm repo (23.10) | `infra/config.env`, `manifests/s2b-mtls/` |
 | Demo app | Bookinfo from Istio samples tag 1.31.3, images 1.20.3 (productpage-v1, details-v1, reviews-v3, ratings-v2) | `manifests/app/upstream/` |
 | Database | Bookinfo MongoDB image 1.20.3 (mongod v8.0.8) | `manifests/app/upstream/` |

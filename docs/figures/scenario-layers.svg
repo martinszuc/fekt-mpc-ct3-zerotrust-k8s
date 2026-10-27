@@ -36,48 +36,40 @@
         <rect x="528" y="414" width="80" height="12" rx="2" fill="#f5f3ee"/>
         <text x="568" y="423" fill="#de0024" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">LEGITIMATE SA</text>
 
-        <!-- Input: S0 baseline -->
+        <!-- Input: baseline -->
         <rect x="48" y="16" width="640" height="48" rx="6" fill="#f5f3ee"/>
         <rect x="48" y="16" width="640" height="48" rx="6" fill="#4a5468" stroke="#5b6273" stroke-width="1" fill-opacity="0.10"/>
-        <rect x="56" y="24" width="28" height="12" rx="2" fill="none" stroke="#5b6273" stroke-width="0.8" stroke-opacity="0.50"/>
-        <text x="70" y="33" fill="#5b6273" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">S0</text>
         <text x="104" y="38" fill="#111111" font-size="12" font-weight="600" font-family="'Geist', sans-serif">Any pod reads ratings and MongoDB</text>
         <text x="104" y="54" fill="#4a5468" font-size="9" font-family="'Geist Mono', monospace">baseline: Cilium only, no policies; MongoDB has no authentication</text>
 
-        <!-- Layer S1 -->
+        <!-- Layer: segmentation -->
         <rect x="48" y="104" width="640" height="72" rx="6" fill="#f5f3ee"/>
         <rect x="48" y="104" width="640" height="72" rx="6" fill="#ffffff" stroke="#111111" stroke-width="1"/>
-        <rect x="56" y="112" width="28" height="12" rx="2" fill="none" stroke="#111111" stroke-width="0.8" stroke-opacity="0.40"/>
-        <text x="70" y="121" fill="#111111" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">S1</text>
         <text x="104" y="136" fill="#111111" font-size="12" font-weight="600" font-family="'Geist', sans-serif">Segmentation</text>
         <text x="104" y="152" fill="#4a5468" font-size="9" font-family="'Geist Mono', monospace">default-deny NetworkPolicy</text>
         <text x="312" y="136" fill="#4a5468" font-size="8" font-family="'Geist Mono', monospace" letter-spacing="0.14em">STOPS</text>
-        <text x="368" y="136" fill="#111111" font-size="9" font-family="'Geist Mono', monospace">pods without the allowed label (T1)</text>
+        <text x="368" y="136" fill="#111111" font-size="9" font-family="'Geist Mono', monospace">pods without the allowed label (lateral movement)</text>
         <text x="312" y="156" fill="#4a5468" font-size="8" font-family="'Geist Mono', monospace" letter-spacing="0.14em">MISSES</text>
-        <text x="368" y="156" fill="#111111" font-size="9" font-family="'Geist Mono', monospace">pod that copies app=reviews (T3)</text>
+        <text x="368" y="156" fill="#111111" font-size="9" font-family="'Geist Mono', monospace">pod that copies app=reviews (spoofing)</text>
 
-        <!-- Layer S2b -->
+        <!-- Layer: mesh mTLS -->
         <rect x="48" y="216" width="640" height="72" rx="6" fill="#f5f3ee"/>
         <rect x="48" y="216" width="640" height="72" rx="6" fill="#ffffff" stroke="#111111" stroke-width="1"/>
-        <rect x="56" y="224" width="28" height="12" rx="2" fill="none" stroke="#111111" stroke-width="0.8" stroke-opacity="0.40"/>
-        <text x="70" y="233" fill="#111111" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">S2B</text>
-        <text x="104" y="248" fill="#111111" font-size="12" font-weight="600" font-family="'Geist', sans-serif">Workload authentication</text>
-        <text x="104" y="264" fill="#4a5468" font-size="9" font-family="'Geist Mono', monospace">Istio mTLS STRICT</text>
+        <text x="104" y="248" fill="#111111" font-size="12" font-weight="600" font-family="'Geist', sans-serif">Mesh mTLS</text>
+        <text x="104" y="264" fill="#4a5468" font-size="9" font-family="'Geist Mono', monospace">Istio, STRICT mode</text>
         <text x="312" y="248" fill="#4a5468" font-size="8" font-family="'Geist Mono', monospace" letter-spacing="0.14em">STOPS</text>
-        <text x="368" y="248" fill="#111111" font-size="9" font-family="'Geist Mono', monospace">pods outside the mesh (T3 no-identity)</text>
+        <text x="368" y="248" fill="#111111" font-size="9" font-family="'Geist Mono', monospace">pods outside the mesh (spoofing)</text>
         <text x="312" y="268" fill="#4a5468" font-size="8" font-family="'Geist Mono', monospace" letter-spacing="0.14em">MISSES</text>
         <text x="368" y="268" fill="#111111" font-size="9" font-family="'Geist Mono', monospace">any pod in the mesh, e.g. SA default</text>
 
-        <!-- Layer S3 -->
+        <!-- Layer: L7 authorization -->
         <rect x="48" y="328" width="640" height="72" rx="6" fill="#f5f3ee"/>
         <rect x="48" y="328" width="640" height="72" rx="6" fill="#ffffff" stroke="#111111" stroke-width="1"/>
-        <rect x="56" y="336" width="28" height="12" rx="2" fill="none" stroke="#111111" stroke-width="0.8" stroke-opacity="0.40"/>
-        <text x="70" y="345" fill="#111111" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">S3</text>
-        <text x="680" y="345" fill="#5b6273" font-size="7" font-family="'Geist Mono', monospace" text-anchor="end" letter-spacing="0.14em">EXPECTED · S3 NOT RUN YET</text>
-        <text x="104" y="360" fill="#111111" font-size="12" font-weight="600" font-family="'Geist', sans-serif">Authorization</text>
-        <text x="104" y="376" fill="#4a5468" font-size="9" font-family="'Geist Mono', monospace">AuthorizationPolicy, L7</text>
+        <text x="680" y="345" fill="#5b6273" font-size="7" font-family="'Geist Mono', monospace" text-anchor="end" letter-spacing="0.14em">EXPECTED · NOT RUN YET</text>
+        <text x="104" y="360" fill="#111111" font-size="12" font-weight="600" font-family="'Geist', sans-serif">L7 authorization</text>
+        <text x="104" y="376" fill="#4a5468" font-size="9" font-family="'Geist Mono', monospace">Istio AuthorizationPolicy</text>
         <text x="312" y="360" fill="#4a5468" font-size="8" font-family="'Geist Mono', monospace" letter-spacing="0.14em">STOPS</text>
-        <text x="368" y="360" fill="#111111" font-size="9" font-family="'Geist Mono', monospace">wrong principal, wrong method (T3, T4)</text>
+        <text x="368" y="360" fill="#111111" font-size="9" font-family="'Geist Mono', monospace">wrong principal, wrong method</text>
         <text x="312" y="380" fill="#4a5468" font-size="8" font-family="'Geist Mono', monospace" letter-spacing="0.14em">MISSES</text>
         <text x="368" y="380" fill="#111111" font-size="9" font-family="'Geist Mono', monospace">workload running as bookinfo-reviews</text>
 
@@ -87,11 +79,11 @@
         <rect x="56" y="448" width="40" height="12" rx="2" fill="none" stroke="#de0024" stroke-width="0.8" stroke-opacity="0.50"/>
         <text x="76" y="457" fill="#de0024" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">LIMIT</text>
         <text x="104" y="472" fill="#111111" font-size="12" font-weight="600" font-family="'Geist', sans-serif">Residual: the legitimate identity reads ratings</text>
-        <text x="104" y="490" fill="#4a5468" font-size="9" font-family="'Geist Mono', monospace">T3 reused-sa, T5 · needs admission control or RBAC on ServiceAccount use</text>
+        <text x="104" y="490" fill="#4a5468" font-size="9" font-family="'Geist Mono', monospace">stolen ServiceAccount, compromised service · needs admission control or RBAC on SA use</text>
 
-        <!-- Callout: S2a sibling -->
-        <text x="720" y="234" fill="#111111" font-size="14" font-style="italic" font-family="'Instrument Serif', serif">S2a (WireGuard) is the sibling</text>
-        <text x="720" y="252" fill="#111111" font-size="14" font-style="italic" font-family="'Instrument Serif', serif">of S2b: it hides the node link (T2)</text>
+        <!-- Callout: node encryption alternative -->
+        <text x="720" y="234" fill="#111111" font-size="14" font-style="italic" font-family="'Instrument Serif', serif">Node encryption (WireGuard) is the</text>
+        <text x="720" y="252" fill="#111111" font-size="14" font-style="italic" font-family="'Instrument Serif', serif">alternative: it hides the node link</text>
         <text x="720" y="270" fill="#111111" font-size="14" font-style="italic" font-family="'Instrument Serif', serif">but authenticates nodes, not pods,</text>
         <text x="720" y="288" fill="#111111" font-size="14" font-style="italic" font-family="'Instrument Serif', serif">so on this thread nothing changes.</text>
         <path d="M 716,229 Q 704,236 692,244" fill="none" stroke="#111111" stroke-width="1" stroke-dasharray="4,3" stroke-opacity="0.40"/>
@@ -101,7 +93,7 @@
         <line x1="48" y1="540" x2="912" y2="540" stroke="#111111" stroke-width="0.8" stroke-opacity="0.10"/>
         <text x="48" y="564" fill="#4a5468" font-size="8" font-family="'Geist Mono', monospace" letter-spacing="0.14em">LEGEND</text>
         <rect x="128" y="554" width="20" height="14" rx="3" fill="#ffffff" stroke="#111111" stroke-width="1"/>
-        <text x="156" y="564" fill="#4a5468" font-size="9" font-family="'Geist Mono', monospace">control added by the scenario</text>
+        <text x="156" y="564" fill="#4a5468" font-size="9" font-family="'Geist Mono', monospace">defense added at this step</text>
         <line x1="360" y1="561" x2="392" y2="561" stroke="#4a5468" stroke-width="1.2" marker-end="url(#scenario-layers-arrow)"/>
         <text x="400" y="564" fill="#4a5468" font-size="9" font-family="'Geist Mono', monospace">what passes to the next layer</text>
         <rect x="600" y="554" width="20" height="14" rx="3" fill="#de0024" stroke="#de0024" stroke-width="1" fill-opacity="0.07"/>
