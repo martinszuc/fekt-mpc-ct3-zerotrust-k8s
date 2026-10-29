@@ -40,7 +40,8 @@ FAILED=0
 attacker_in_reviews() {
   local pod ctr
   pod=$(kubectl -n "$NS" get pod -l app=reviews,version=v3 -o jsonpath='{.items[0].metadata.name}')
-  ctr=attacker-$(date +%s)
+  # unique per script: T4 and T5 may hit the same pod within one second
+  ctr=attacker-$(date +%s)-$$
   kubectl -n "$NS" debug "pod/$pod" -c "$ctr" --image=registry.istio.io/release/examples-bookinfo-productpage-v1:1.20.3 \
     -- sleep 600 >/dev/null
   for _ in $(seq 180); do
