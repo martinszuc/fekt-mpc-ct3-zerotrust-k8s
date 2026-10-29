@@ -1,4 +1,6 @@
 .kube/
+.idea
+.claude
 *.log
 .DS_Store
 docs/report/*.aux
