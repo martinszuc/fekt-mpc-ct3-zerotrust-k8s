@@ -1,0 +1,8 @@
+## compromised reviews (reviews-v3-7d77c4f876-5nxpl, ephemeral container attacker-1793239519-40087) -> POST ratings:9080/ratings/0
+OK HTTP 501 {"error":"Post not implemented for database backed ratings"}
+
+## same container, allowed operation: GET ratings:9080/ratings/0
+OK HTTP 200 {"id":0,"ratings":{"Reviewer1":5,"Reviewer2":4}}
+
+## authorization policies in bookinfo
+No resources found in bookinfo namespace.

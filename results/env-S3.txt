@@ -1,0 +1,107 @@
+scenario S3, run_id 20261029T020536Z-S3, git 38377b9, 2026-10-29T02:05:36Z
+
+## host
+macOS 26.7.2 (25G330), arm64
+limactl version 2.2.1
+Client Version: v1.37.1
+helm v4.3.1+gc0d08d0
+cilium-cli: v0.20.1 compiled with go1.27.1 on darwin/arm64
+TShark (Wireshark) 4.6.9 (Git commit 2d548b197c75).
+
+## VMs
+NAME     STATUS     SSH                VMTYPE    ARCH       CPUS    MEMORY    DISK     DIR
+zt-cp    Running    127.0.0.1:54018    vz        aarch64    4       8GiB      30GiB    ~/.lima/zt-cp
+zt-w1    Running    127.0.0.1:54028    vz        aarch64    4       8GiB      30GiB    ~/.lima/zt-w1
+zt-w2    Running    127.0.0.1:54036    vz        aarch64    4       8GiB      30GiB    ~/.lima/zt-w2
+
+## nodes
+NAME         STATUS   ROLES           AGE     VERSION        INTERNAL-IP     EXTERNAL-IP   OS-IMAGE             KERNEL-VERSION              CONTAINER-RUNTIME
+lima-zt-cp   Ready    control-plane   6d12h   v1.36.5+k3s1   192.168.105.2   <none>        Ubuntu 24.04.5 LTS   6.8.0-142-generic (arm64)   containerd://2.3.4-k3s1.36
+lima-zt-w1   Ready    <none>          6d12h   v1.36.5+k3s1   192.168.105.3   <none>        Ubuntu 24.04.5 LTS   6.8.0-142-generic (arm64)   containerd://2.3.4-k3s1.36
+lima-zt-w2   Ready    <none>          6d12h   v1.36.5+k3s1   192.168.105.4   <none>        Ubuntu 24.04.5 LTS   6.8.0-147-generic (arm64)   containerd://2.3.4-k3s1.36
+
+## node zt-cp
+Linux lima-zt-cp 6.8.0-142-generic #142-Ubuntu SMP PREEMPT_DYNAMIC Wed Sep  2 14:30:29 UTC 2026 aarch64 aarch64 aarch64 GNU/Linux
+lima0: mtu 1500
+cilium_net@cilium_host: mtu 1500
+cilium_host@cilium_net: mtu 1500
+cilium_vxlan: mtu 1500
+cilium_wg0: none
+
+## node zt-w1
+Linux lima-zt-w1 6.8.0-142-generic #142-Ubuntu SMP PREEMPT_DYNAMIC Wed Sep  2 14:30:29 UTC 2026 aarch64 aarch64 aarch64 GNU/Linux
+lima0: mtu 1500
+cilium_net@cilium_host: mtu 1500
+cilium_host@cilium_net: mtu 1500
+cilium_vxlan: mtu 1500
+cilium_wg0: none
+
+## node zt-w2
+Linux lima-zt-w2 6.8.0-147-generic #147-Ubuntu SMP PREEMPT_DYNAMIC Thu Sep 24 11:39:52 UTC 2026 aarch64 aarch64 aarch64 GNU/Linux
+lima0: mtu 1500
+cilium_net@cilium_host: mtu 1500
+cilium_host@cilium_net: mtu 1500
+cilium_vxlan: mtu 1500
+cilium_wg0: none
+
+## cilium
+quay.io/cilium/cilium:v1.20.3@sha256:95cfa5c2427cc6b452c00908778d0566311f572589284af949d06a013db1a849
+enable-wireguard= (empty: off)
+bpf-lb-sock-hostns-only=true
+cni-exclusive=false
+kube-proxy-replacement=true
+kube-proxy-replacement-healthz-bind-address=
+packetization-layer-pmtud-mode=blackhole
+routing-mode=tunnel
+tunnel-protocol=vxlan
+tunnel-source-port-range=0-0
+
+## istio
+NAME      	NAMESPACE   	REVISION	UPDATED                             	STATUS  	CHART        	APP VERSION
+istio-base	istio-system	10      	2026-10-29 03:05:28.216699 +0100 CET	deployed	base-1.30.7  	1.30.7     
+istiod    	istio-system	2       	2026-10-29 03:05:30.151257 +0100 CET	deployed	istiod-1.30.7	1.30.7     
+istiod registry.istio.io/release/pilot:1.30.7
+
+## policies in bookinfo
+NAME           POD-SELECTOR      AGE
+allow-dns      <none>            2m1s
+allow-istiod   <none>            115s
+default-deny   <none>            2m1s
+details        app=details       2m1s
+mongodb        app=mongodb       2m1s
+productpage    app=productpage   2m1s
+ratings        app=ratings       2m1s
+reviews        app=reviews       2m1s
+NAME                                           MODE     AGE
+peerauthentication.security.istio.io/default   STRICT   115s
+
+NAME                                                  ACTION   AGE
+authorizationpolicy.security.istio.io/allow-nothing            8s
+authorizationpolicy.security.istio.io/details         ALLOW    8s
+authorizationpolicy.security.istio.io/mongodb         ALLOW    8s
+authorizationpolicy.security.istio.io/productpage     ALLOW    8s
+authorizationpolicy.security.istio.io/ratings         ALLOW    8s
+authorizationpolicy.security.istio.io/reviews         ALLOW    8s
+namespace labels: {"istio-injection":"enabled","kubernetes.io/metadata.name":"bookinfo"}
+
+## workloads in bookinfo
+details-v1-6b8c6cf774-vnrs8 node=lima-zt-w2 sa=bookinfo-details
+  details registry.istio.io/release/examples-bookinfo-details-v1@sha256:a49731e1fc05d7c24a4103709f41d64180bed989b251625f4c31ba63022e303b
+  istio-init registry.istio.io/release/proxyv2@sha256:f8f963340f92550b7b67228b0319fba7963a98137bdaace3f593da186427e717
+  istio-proxy registry.istio.io/release/proxyv2@sha256:f8f963340f92550b7b67228b0319fba7963a98137bdaace3f593da186427e717
+mongodb-v1-765449ffc-m7n9t node=lima-zt-w2 sa=bookinfo-mongodb
+  mongodb registry.istio.io/release/examples-bookinfo-mongodb@sha256:7f5ef5a825048f5f777da521c9756c8d0f007c58358c87b8629456832bbf73ad
+  istio-init registry.istio.io/release/proxyv2@sha256:f8f963340f92550b7b67228b0319fba7963a98137bdaace3f593da186427e717
+  istio-proxy registry.istio.io/release/proxyv2@sha256:f8f963340f92550b7b67228b0319fba7963a98137bdaace3f593da186427e717
+productpage-v1-94d8b7479-g2w8p node=lima-zt-w1 sa=bookinfo-productpage
+  productpage registry.istio.io/release/examples-bookinfo-productpage-v1@sha256:1e339866b782d22b063539d19c87b4682291c889e67c3d4abdea947bef917958
+  istio-init registry.istio.io/release/proxyv2@sha256:f8f963340f92550b7b67228b0319fba7963a98137bdaace3f593da186427e717
+  istio-proxy registry.istio.io/release/proxyv2@sha256:f8f963340f92550b7b67228b0319fba7963a98137bdaace3f593da186427e717
+ratings-v2-6d45c67548-q5npk node=lima-zt-w1 sa=bookinfo-ratings-v2
+  ratings registry.istio.io/release/examples-bookinfo-ratings-v2@sha256:cb361115b5ea27a765a5bdc7623e235cc37839289f477e1c0aefa4425b0749ff
+  istio-init registry.istio.io/release/proxyv2@sha256:f8f963340f92550b7b67228b0319fba7963a98137bdaace3f593da186427e717
+  istio-proxy registry.istio.io/release/proxyv2@sha256:f8f963340f92550b7b67228b0319fba7963a98137bdaace3f593da186427e717
+reviews-v3-7d77c4f876-5nxpl node=lima-zt-w2 sa=bookinfo-reviews
+  reviews registry.istio.io/release/examples-bookinfo-reviews-v3@sha256:3b3415c5e7cc7cef3ad1741fa595f2f26627bddf2117dcee1429fa2a422df1b7
+  istio-init registry.istio.io/release/proxyv2@sha256:f8f963340f92550b7b67228b0319fba7963a98137bdaace3f593da186427e717
+  istio-proxy registry.istio.io/release/proxyv2@sha256:f8f963340f92550b7b67228b0319fba7963a98137bdaace3f593da186427e717

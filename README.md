@@ -31,6 +31,7 @@ make s0       # baseline: no policies
 make s1       # segmentation: default-deny NetworkPolicies, no SA tokens mounted
 make s2a      # node encryption: segmentation + Cilium WireGuard between nodes
 make s2b      # mesh mTLS: segmentation + Istio sidecars, mTLS STRICT
+make s3       # L7 authorization: mesh mTLS + Istio AuthorizationPolicy (allow-nothing + call graph)
 make test     # attack tests against the current configuration, evidence in results/
 make figures  # docs/figures/*.svg to PDF (report) and PNG (slides), needs Chrome
 make down     # delete the VMs
@@ -50,11 +51,13 @@ export KUBECONFIG=$PWD/.kube/config
 |---|---|---|
 | `tests/t1-lateral.sh` | Lateral movement: productpage reads MongoDB and calls ratings directly | succeeds in the baseline, blocked from segmentation on |
 | `tests/t2-sniff.sh` | Network sniffing: capture of cross-node traffic on the node link | plaintext in baseline and segmentation, blocked by node encryption and mesh mTLS |
-| `tests/t3-rogue-pod.sh` | Identity spoofing: rogue pod with copied label `app=reviews` calls ratings, three variants: outside the mesh / in the mesh as SA `default` / in the mesh with the stolen SA `bookinfo-reviews` | blocked by mesh mTLS / blocked by L7 authorization / never blocked (limit) |
+| `tests/t3-rogue-pod.sh` | Identity spoofing: rogue pod with copied label `app=reviews` calls ratings, three variants: outside the mesh / in the mesh as SA `default` / in the mesh with the stolen SA `bookinfo-reviews`; plus an unlabeled pod as negative control | blocked by mesh mTLS / blocked by L7 authorization / never blocked (limit); control blocked from segmentation on |
+| `tests/t4-unauthorized-op.sh` | Unauthorized operation: attacker inside the real reviews pod sends `POST /ratings/0` (reviews only needs `GET`) | reaches the app everywhere except L7 authorization (sidecar 403 `RBAC: access denied`) |
 | `tests/t5-valid-identity.sh` | Compromised service: attacker inside the real reviews pod (ephemeral container) reads ratings | never blocked (limit) |
 | `tests/t6-sa-token.sh` | Token abuse: productpage uses its ServiceAccount token against the API server | token usable in the baseline, blocked from segmentation on; reading Secrets is denied by RBAC everywhere |
 
-Each run appends to `results/attacks.csv` and writes evidence as `results/<attack code>-<configuration code>-*`; the codes are mapped in [docs/threat-model.md](docs/threat-model.md#codes-used-in-the-repository).
+Each run appends to `results/attacks.csv` (one `run_id` per `make test`, plus the tested `git_sha`, `-dirty` if `infra/`, `manifests/` or `tests/` differ from it), writes the environment to `results/env-<configuration code>.txt` and evidence as `results/<attack code>-<configuration code>-*`; the codes are mapped in [docs/threat-model.md](docs/threat-model.md#codes-used-in-the-repository).
+A check whose evidence proves nothing (for example a capture without the probe traffic) is recorded as `error` and fails.
 Network sniffing captures on the node NIC inside VM `zt-w1`. The host bridge `bridge100` does not see VM-to-VM frames (`results/T2-S0-host-bridge.txt`).
 
 The app is pinned to fixed nodes so every call crosses nodes: productpage and ratings on `zt-w1`, details, reviews and mongodb on `zt-w2`.

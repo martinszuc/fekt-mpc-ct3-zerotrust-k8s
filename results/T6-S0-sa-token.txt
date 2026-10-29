@@ -1,5 +1,5 @@
 ## token-mounted: productpage token
-OK SA token mounted, sub=system:serviceaccount:bookinfo:bookinfo-productpage, expires 2027-10-23T14:33:49Z
+OK SA token mounted, sub=system:serviceaccount:bookinfo:bookinfo-productpage, expires 2027-10-29T02:02:15Z
 
 ## api-reachable: productpage api-reach
 OK anonymous GET /version: HTTP 401 (API server answered)

@@ -1,5 +1,7 @@
 capture: zt-w1 lima0, 15s, filter udp
-frames total: 325, tunnel frames (8472/51871): 323, frames containing "Reviewer1": 0
+requests with the full call graph: 5/5
+frames total: 336, VXLAN (8472): 0, WireGuard (51871): 336, frames containing "Reviewer1": 0
+inner HTTP/MongoDB in plaintext: 0, app-port TLS (9080, 27017): 0
 
 ## metadata exposure
 VXLAN frames with readable inner pod IP/TCP headers: 0
@@ -7,12 +9,11 @@ of which app traffic (9080, 27017) with TLS payload (mesh mTLS): 0
 inner pod-to-pod conversations (client server port):
 
 ## outer protocols
-frame                                    frames:325 bytes:78146
-  eth                                    frames:325 bytes:78146
-    ip                                   frames:325 bytes:78146
-      udp                                frames:325 bytes:78146
-        wg                               frames:323 bytes:77966
-        ntp                              frames:2 bytes:180
+frame                                    frames:336 bytes:82816
+  eth                                    frames:336 bytes:82816
+    ip                                   frames:336 bytes:82816
+      udp                                frames:336 bytes:82816
+        wg                               frames:336 bytes:82816
 ===================================================================
 
 ## decoded inner HTTP (src dst method uri status)
