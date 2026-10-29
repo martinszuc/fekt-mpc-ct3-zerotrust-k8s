@@ -62,6 +62,7 @@ Labels are chosen by whoever creates the pod, so they are not identity (segmenta
 | Outside the mesh | `rogue-no-identity` | sidecar opted out, SA `default` | Mesh mTLS (STRICT) | no certificate, plaintext rejected |
 | Other ServiceAccount | `rogue-default-sa` | in the mesh, SA `default` | L7 authorization | valid certificate (authenticated) but not the allowed principal |
 | Stolen ServiceAccount | `rogue-reused-sa` | in the mesh, SA `bookinfo-reviews` | none | indistinguishable from reviews; needs admission control or RBAC on pod creation and SA use (out of scope, limit) |
+| Unlabeled (negative control) | `rogue-unlabeled` | outside the mesh, SA `default`, no `app` label | Segmentation | without the copied label the rogue pod is just another pod; shows that the label is what lets the other variants through segmentation |
 
 ### Attribution of token abuse checks
 
@@ -80,27 +81,29 @@ Not tested: Repudiation (only partly covered by Hubble flow logs from segmentati
 
 ## Expected and observed outcomes
 
-Cells: expected outcome of the attack; `ok` = matched in `results/attacks.csv` (full rerun 23.10), `-` = not run yet.
+Cells: expected outcome of the attack; `ok` = matched in `results/attacks.csv` (full rerun 29.10 at commit 38377b9, all 70 checks pass; rows carry `run_id` and `git_sha`).
 
 | Attack | Baseline | Segmentation | Node encryption | Mesh mTLS | L7 authorization |
 |---|---|---|---|---|---|
-| Lateral movement | succeeds, ok | blocked, ok | blocked, ok | blocked, ok | blocked, - |
-| Network sniffing | succeeds, ok | succeeds, ok | blocked, ok | blocked, ok | blocked, - |
-| Spoofing, outside the mesh | succeeds, ok | succeeds, ok | succeeds, ok | blocked, ok | blocked, - |
-| Spoofing, other ServiceAccount | succeeds, ok | succeeds, ok | succeeds, ok | succeeds, ok | blocked, - |
-| Spoofing, stolen ServiceAccount | succeeds, ok | succeeds, ok | succeeds, ok | succeeds, ok | succeeds, - |
-| Unauthorized operation | succeeds, - | succeeds, - | succeeds, - | succeeds, - | blocked, - |
-| Compromised service | succeeds, ok | succeeds, ok | succeeds, ok | succeeds, ok | succeeds, - |
-| Token abuse | succeeds, ok | blocked, ok | blocked, ok | blocked, ok | blocked, - |
+| Lateral movement | succeeds, ok | blocked, ok | blocked, ok | blocked, ok | blocked, ok |
+| Network sniffing | succeeds, ok | succeeds, ok | blocked, ok | blocked, ok | blocked, ok |
+| Spoofing, outside the mesh | succeeds, ok | succeeds, ok | succeeds, ok | blocked, ok | blocked, ok |
+| Spoofing, other ServiceAccount | succeeds, ok | succeeds, ok | succeeds, ok | succeeds, ok | blocked, ok |
+| Spoofing, stolen ServiceAccount | succeeds, ok | succeeds, ok | succeeds, ok | succeeds, ok | succeeds, ok |
+| Spoofing control, unlabeled pod | succeeds, ok | blocked, ok | blocked, ok | blocked, ok | blocked, ok |
+| Unauthorized operation | succeeds, ok | succeeds, ok | succeeds, ok | succeeds, ok | blocked, ok |
+| Compromised service | succeeds, ok | succeeds, ok | succeeds, ok | succeeds, ok | succeeds, ok |
+| Token abuse | succeeds, ok | blocked, ok | blocked, ok | blocked, ok | blocked, ok |
 
 Notes from the evidence:
 
 - Lateral movement: no credentials needed; productpage reads `test.ratings` directly. With segmentation the drops are visible in Hubble (`Policy denied DROPPED`).
-- Network sniffing: baseline and segmentation captures show review text and MongoDB queries inside VXLAN; node encryption captures contain only WireGuard (UDP 51871). The verdict is about payload; the evidence also counts metadata (inner pod IPs and ports), which WireGuard hides but mesh mTLS leaves readable inside VXLAN (mesh mTLS capture: 224 frames with readable inner pod IPs and ports, 106 of them mTLS on the app ports; the TCP connections to istiod (15012) also show which pods are in the mesh; node encryption: 0). WireGuard does not encrypt same-node traffic, mTLS does.
-- Identity spoofing: shows why segmentation by labels is not authentication, and with mesh mTLS why authentication is not authorization. With mesh mTLS the pod outside the mesh fails with `Connection reset by peer` (sidecar rejects plaintext), while lateral movement still fails with a timeout and a Hubble `Policy denied` drop: two different controls, visible in the evidence.
+- Network sniffing: a check counts as blocked only with proof: all 5 user requests returned the full page (call graph through MongoDB), no app data on the wire, and the capture shows either only WireGuard (no VXLAN frames) or mTLS on the app ports with no plaintext HTTP or MongoDB; anything else is recorded as `error`. Baseline and segmentation captures show review text and MongoDB queries inside VXLAN; node encryption captures contain only WireGuard (UDP 51871). The verdict is about payload; the evidence also counts metadata (inner pod IPs and ports), which WireGuard hides but mesh mTLS leaves readable inside VXLAN (mesh mTLS capture of 29.10: 253 frames with readable inner pod IPs and ports, 110 of them mTLS on the app ports; the TCP connections to istiod (15012) also show which pods are in the mesh; node encryption: 0). WireGuard does not encrypt same-node traffic, mTLS does.
+- Identity spoofing: shows why segmentation by labels is not authentication, and with mesh mTLS why authentication is not authorization. With mesh mTLS the pod outside the mesh fails with `Connection reset by peer` (sidecar rejects plaintext), while lateral movement still fails with a timeout and a Hubble `Policy denied` drop: two different controls, visible in the evidence. With L7 authorization the pod with another ServiceAccount gets `403 RBAC: access denied` from the ratings sidecar; the one with the stolen ServiceAccount still gets the ratings (200). The unlabeled control pod times out from segmentation on, so the copied label is what the other variants rely on.
 - Compromised service: the attacker runs as an ephemeral container in the real reviews pod, so it shares the pod's network identity and, with the mesh, its sidecar.
 - Token abuse: in the baseline the token authenticates as `system:serviceaccount:bookinfo:bookinfo-productpage` but RBAC already denies reading Secrets (403); the threat is reconnaissance and a credential that works from outside the pod (token lifetime 1 year with the default token-expiration extension). Segmentation has two controls here: no token mounted and no network path to the API server.
-- Unauthorized operation: test not written yet (needs L7 authorization); it will reuse the compromised service ephemeral container. ratings-v2 answers `POST` with 501 (writes are only implemented for in-memory v1), so the verdict is whether the request reaches the application (any ratings response) or is rejected by the sidecar (403 `RBAC: access denied`), not whether data changes.
+- Unauthorized operation: the attacker is the same ephemeral container in the reviews pod as for the compromised service. ratings-v2 answers `POST` with 501 (writes are only implemented for in-memory v1), so the verdict is whether the request reaches the application (any ratings response) or is rejected by the sidecar (403 `RBAC: access denied`), not whether data changes. With L7 authorization the same container still reads `GET /ratings/0` (200): the policy denies the operation, not the caller. Segmentation, node encryption and mesh mTLS cannot see the method, so the write reaches the application in all of them.
+- L7 authorization policies (`manifests/s3-authz/`): `allow-nothing` for the namespace, then one ALLOW per workload: productpage from anyone (public entry, reads and login form), details and reviews from principal `bookinfo-productpage` (`GET`), ratings from `bookinfo-reviews` (`GET /ratings/*`), MongoDB from `bookinfo-ratings-v2` (TCP, port 27017, no L7 fields). Kubelet probes and istiod are unaffected (probes are rewritten to the sidecar agent, istiod is called by the sidecars, not into them).
 
 ## Codes used in the repository
 
@@ -113,12 +116,12 @@ Scripts, `make` targets and evidence files use short codes. This table is the on
 | S2a | Node encryption | `make s2a`, `manifests/s2a-wireguard/` | |
 | S2b | Mesh mTLS | `make s2b`, `manifests/s2b-mtls/` | |
 | S2b-plain | Mesh without mTLS | planned | |
-| S3 | L7 authorization | planned, `manifests/s3-authz/` | |
+| S3 | L7 authorization | `make s3`, `manifests/s3-authz/` | |
 | T1 | Lateral movement | | `tests/t1-lateral.sh` |
 | T2 | Network sniffing | | `tests/t2-sniff.sh` |
 | T3 | Identity spoofing | | `tests/t3-rogue-pod.sh` |
-| T4 | Unauthorized operation | | planned |
+| T4 | Unauthorized operation | | `tests/t4-unauthorized-op.sh` |
 | T5 | Compromised service | | `tests/t5-valid-identity.sh` |
 | T6 | Token abuse | | `tests/t6-sa-token.sh` |
 
-Evidence is named `results/<attack code>-<configuration code>-*`, for example `results/T2-S2a-encrypted.pcap` is network sniffing with node encryption.
+Evidence is named `results/<attack code>-<configuration code>-*`, for example `results/T2-S2a-encrypted.pcap` is network sniffing with node encryption. `results/env-<configuration code>.txt` records the environment of the last run in each configuration (versions, Cilium encryption settings, MTUs, kernels, image digests).

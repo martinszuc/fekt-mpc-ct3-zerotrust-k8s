@@ -1,0 +1,24 @@
+## unlabeled: rogue pod (app=none, inject=false, SA default) -> ratings:9080
+FAIL URLError <urlopen error timed out>
+command terminated with exit code 1
+NAME              READY   STATUS    RESTARTS   AGE   IP           NODE         NOMINATED NODE   READINESS GATES   LABELS
+rogue-unlabeled   0/1     Running   0          7s    10.42.2.23   lima-zt-w2   <none>           <none>            sidecar.istio.io/inject=false
+
+## no-identity: rogue pod (app=reviews, inject=false, SA default) -> ratings:9080
+FAIL ConnectionResetError [Errno 104] Connection reset by peer
+command terminated with exit code 1
+NAME                READY   STATUS    RESTARTS   AGE   IP           NODE         NOMINATED NODE   READINESS GATES   LABELS
+rogue-no-identity   0/1     Running   0          3s    10.42.2.42   lima-zt-w2   <none>           <none>            app=reviews,sidecar.istio.io/inject=false
+
+## default-sa: rogue pod (app=reviews, inject=true, SA default) -> ratings:9080
+FAIL HTTPError HTTP Error 403: Forbidden
+command terminated with exit code 1
+OK HTTP 403 RBAC: access denied
+NAME               READY   STATUS    RESTARTS   AGE   IP           NODE         NOMINATED NODE   READINESS GATES   LABELS
+rogue-default-sa   1/2     Running   0          6s    10.42.2.78   lima-zt-w2   <none>           <none>            app=reviews,security.istio.io/tlsMode=istio,service.istio.io/canonical-name=reviews,service.istio.io/canonical-revision=latest,sidecar.istio.io/inject=true
+
+## reused-sa: rogue pod (app=reviews, inject=true, SA bookinfo-reviews) -> ratings:9080
+OK HTTP 200 {"id":0,"ratings":{"Reviewer1":5,"Reviewer2":4}}
+NAME              READY   STATUS    RESTARTS   AGE   IP            NODE         NOMINATED NODE   READINESS GATES   LABELS
+rogue-reused-sa   1/2     Running   0          7s    10.42.2.175   lima-zt-w2   <none>           <none>            app=reviews,security.istio.io/tlsMode=istio,service.istio.io/canonical-name=reviews,service.istio.io/canonical-revision=latest,sidecar.istio.io/inject=true
+

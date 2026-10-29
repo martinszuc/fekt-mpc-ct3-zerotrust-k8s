@@ -1,0 +1,14 @@
+## compromised reviews (reviews-v3-7d77c4f876-5nxpl, ephemeral container attacker-1793239589-41458) -> POST ratings:9080/ratings/0
+OK HTTP 403 RBAC: access denied
+
+## same container, allowed operation: GET ratings:9080/ratings/0
+OK HTTP 200 {"id":0,"ratings":{"Reviewer1":5,"Reviewer2":4}}
+
+## authorization policies in bookinfo
+NAME            ACTION   AGE
+allow-nothing            58s
+details         ALLOW    58s
+mongodb         ALLOW    58s
+productpage     ALLOW    58s
+ratings         ALLOW    58s
+reviews         ALLOW    58s

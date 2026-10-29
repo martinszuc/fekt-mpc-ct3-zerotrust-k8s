@@ -1,15 +1,21 @@
+## unlabeled: rogue pod (app=none, inject=false, SA default) -> ratings:9080
+FAIL URLError <urlopen error timed out>
+command terminated with exit code 1
+NAME              READY   STATUS    RESTARTS   AGE   IP            NODE         NOMINATED NODE   READINESS GATES   LABELS
+rogue-unlabeled   0/1     Running   0          8s    10.42.2.163   lima-zt-w2   <none>           <none>            sidecar.istio.io/inject=false
+
 ## no-identity: rogue pod (app=reviews, inject=false, SA default) -> ratings:9080
 OK HTTP 200 {"id":0,"ratings":{"Reviewer1":5,"Reviewer2":4}}
 NAME                READY   STATUS    RESTARTS   AGE   IP           NODE         NOMINATED NODE   READINESS GATES   LABELS
-rogue-no-identity   0/1     Running   0          3s    10.42.2.38   lima-zt-w2   <none>           <none>            app=reviews,sidecar.istio.io/inject=false
+rogue-no-identity   0/1     Running   0          4s    10.42.2.10   lima-zt-w2   <none>           <none>            app=reviews,sidecar.istio.io/inject=false
 
 ## default-sa: rogue pod (app=reviews, inject=true, SA default) -> ratings:9080
 OK HTTP 200 {"id":0,"ratings":{"Reviewer1":5,"Reviewer2":4}}
-NAME               READY   STATUS    RESTARTS   AGE   IP           NODE         NOMINATED NODE   READINESS GATES   LABELS
-rogue-default-sa   0/1     Running   0          3s    10.42.2.76   lima-zt-w2   <none>           <none>            app=reviews,sidecar.istio.io/inject=true
+NAME               READY   STATUS    RESTARTS   AGE   IP            NODE         NOMINATED NODE   READINESS GATES   LABELS
+rogue-default-sa   0/1     Running   0          4s    10.42.2.111   lima-zt-w2   <none>           <none>            app=reviews,sidecar.istio.io/inject=true
 
 ## reused-sa: rogue pod (app=reviews, inject=true, SA bookinfo-reviews) -> ratings:9080
 OK HTTP 200 {"id":0,"ratings":{"Reviewer1":5,"Reviewer2":4}}
 NAME              READY   STATUS    RESTARTS   AGE   IP            NODE         NOMINATED NODE   READINESS GATES   LABELS
-rogue-reused-sa   0/1     Running   0          4s    10.42.2.141   lima-zt-w2   <none>           <none>            app=reviews,sidecar.istio.io/inject=true
+rogue-reused-sa   0/1     Running   0          4s    10.42.2.108   lima-zt-w2   <none>           <none>            app=reviews,sidecar.istio.io/inject=true
 

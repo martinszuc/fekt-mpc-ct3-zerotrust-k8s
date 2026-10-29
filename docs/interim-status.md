@@ -37,6 +37,15 @@ Key observations so far:
 - mTLS stops only the rogue pod outside the mesh. A rogue pod in the mesh is authenticated, so only L7 authorization can stop it. A rogue pod with the stolen ServiceAccount is not stopped by any configuration (needs admission control, documented as a limit).
 - WireGuard hides who talks to whom on the node link; with mTLS the inner pod IPs and ports stay readable (224 frames in the mesh mTLS capture vs 0 with node encryption), including which pods connect to istiod.
 
+## Since the interim check (29.10)
+
+- Scope confirmed by the consultant on 27.10.
+- L7 authorization done: Istio `AuthorizationPolicy` allow-nothing plus one ALLOW per workload (principal, method, path), `make s3`.
+- New attack test, unauthorized operation: the compromised reviews pod writes ratings (`POST`); only L7 authorization stops it (403), while the same container can still read (`GET`, 200).
+- With L7 authorization the rogue pod in the mesh with another ServiceAccount is blocked (403); the one with the stolen ServiceAccount still succeeds (limit).
+- Tests hardened: network sniffing is "blocked" only with proof (traffic ran, capture shows only WireGuard or mTLS on the app ports), unlabeled rogue pod as negative control, every result row carries a run id and git commit, environment snapshot per configuration.
+- Full rerun of all five configurations: all 70 checks match (`results/attacks.csv`).
+
 ## Decisions and findings
 
 - Online Boutique has no arm64 images (releases v0.10.3 to v0.10.7); Bookinfo (Istio samples) is used instead.
@@ -50,7 +59,7 @@ Key observations so far:
 
 | Until | Goal |
 |---|---|
-| 05.11 | L7 authorization (rogue pod in the mesh, unauthorized operation), analysis chapter |
+| 05.11 | ~~L7 authorization~~ (done 29.10), analysis chapter, benchmark harness |
 | 20.11 | Benchmarks for all configurations, graphs, results chapter |
 | 25.11 | Final text, bibliography (ČSN ISO 690), demo video |
 
