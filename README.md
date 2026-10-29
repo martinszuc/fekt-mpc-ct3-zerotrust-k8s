@@ -32,7 +32,10 @@ make s1       # segmentation: default-deny NetworkPolicies, no SA tokens mounted
 make s2a      # node encryption: segmentation + Cilium WireGuard between nodes
 make s2b      # mesh mTLS: segmentation + Istio sidecars, mTLS STRICT
 make s3       # L7 authorization: mesh mTLS + Istio AuthorizationPolicy (allow-nothing + call graph)
+make s2b-plain  # mesh without mTLS: sidecars, mTLS DISABLE (measurement only)
 make test     # attack tests against the current configuration, evidence in results/
+make bench    # benchmarks of the current configuration (or SCENARIO="S0 S1 ..."), results/bench/
+make plot     # summary CSVs and figures in docs/figures/bench/
 make figures  # docs/figures/*.svg to PDF (report) and PNG (slides), needs Chrome
 make down     # delete the VMs
 ```
@@ -44,6 +47,24 @@ After `make up`, point kubectl at the cluster:
 ```bash
 export KUBECONFIG=$PWD/.kube/config
 ```
+
+## Benchmarks
+
+```bash
+podman machine stop                                        # bench refuses to run otherwise
+make bench QUICK=1                                         # smoke run, ~10 min, results/bench-quick/
+make bench SCENARIO="S0 S1 S2a S2b-plain S2b S3" ROUNDS=1  # full run, ~80 min per configuration
+make bench-link                                            # path (d): node to node on the host network, once
+make plot                                                  # BENCH_DIR=results/bench-quick for the smoke run
+```
+
+Suites: `idle` (CPU baseline), `iperf3`, `latency` (fixed QPS), `payload` (64 B to 64 KiB), `qps` (sweep to saturation).
+Knobs (`SUITES`, `REPEATS`, `QPS_ECHO`, `QPS_APP`, ...) are environment variables, defaults at the top of `bench/run.sh`.
+Benchmark pods run in `bookinfo` (client and same-node servers on `zt-w1`, cross-node servers on `zt-w2`), so every control applies to them.
+CPU comes from cgroup `cpu.stat` and `/proc/stat` on each node (`bench/node-snapshot.sh` via `limactl shell`), read right before and after each run.
+`make plot` uses the latest run by default; `RUN_ID=a,b` selects runs (for example the main run plus `make bench-link`).
+Dry run without a cluster: `scripts/fake-bench.py && make plot BENCH_DIR=results/bench-fake` (synthetic data through the same record, aggregate and plot steps).
+`make s2b-plain` needs the `S2b-plain` case in `infra/scenario.sh`; `make bench` refuses configurations the script does not know.
 
 ## Attack tests
 

@@ -1,0 +1,10 @@
+# clients send plaintext too; auto mTLS would otherwise still pick mTLS between sidecars
+apiVersion: networking.istio.io/v1
+kind: DestinationRule
+metadata:
+  name: mesh-plaintext
+spec:
+  host: "*.bookinfo.svc.cluster.local"
+  trafficPolicy:
+    tls:
+      mode: DISABLE

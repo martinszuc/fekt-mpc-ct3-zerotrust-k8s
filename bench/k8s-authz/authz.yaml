@@ -1,0 +1,54 @@
+# L7 authorization for the benchmark pods, applied by bench/deploy.sh in S3 only
+# ALLOW policies add up, so these sit next to the app policies in manifests/s3-authz without changing them
+apiVersion: security.istio.io/v1
+kind: AuthorizationPolicy
+metadata:
+  name: bench-fortio-server
+spec:
+  selector:
+    matchLabels: {app: fortio-server}
+  action: ALLOW
+  rules:
+    - from:
+        - source:
+            principals: [cluster.local/ns/bookinfo/sa/bench-client]
+      # L7 match, like the app policies: the proxy parses the request for every call
+      to:
+        - operation:
+            methods: [GET, POST]
+            paths: [/echo*]
+---
+# TCP: identity only (HTTP fields never match plain TCP)
+apiVersion: security.istio.io/v1
+kind: AuthorizationPolicy
+metadata:
+  name: bench-iperf3-server
+spec:
+  selector:
+    matchLabels: {app: iperf3-server}
+  action: ALLOW
+  rules:
+    - from:
+        - source:
+            principals: [cluster.local/ns/bookinfo/sa/bench-client]
+      to:
+        - operation:
+            ports: ["5201"]
+---
+# path (c): the client calls productpage like the public entry point does
+apiVersion: security.istio.io/v1
+kind: AuthorizationPolicy
+metadata:
+  name: bench-productpage
+spec:
+  selector:
+    matchLabels: {app: productpage}
+  action: ALLOW
+  rules:
+    - from:
+        - source:
+            principals: [cluster.local/ns/bookinfo/sa/bench-client]
+      to:
+        - operation:
+            methods: [GET]
+            paths: [/productpage]

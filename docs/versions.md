@@ -26,6 +26,8 @@ Recorded 22.10.2026, host drift and kernels rechecked 29.10.2026. Change only be
 | L7 authorization | Istio `AuthorizationPolicy` (security.istio.io/v1), same Istio version | `manifests/s3-authz/` |
 | Demo app | Bookinfo from Istio samples tag 1.31.3, images 1.20.3 (productpage-v1, details-v1, reviews-v3, ratings-v2) | `manifests/app/upstream/` |
 | Database | Bookinfo MongoDB image 1.20.3 (mongod v8.0.8) | `manifests/app/upstream/` |
+| Benchmark client/server | `fortio/fortio:1.76.0` (multi-arch, linux/arm64) | `bench/k8s/` |
+| iperf3 pods | `nicolaka/netshoot:v0.14` (multi-arch, linux/arm64; iperf3 version recorded per run in `results/bench/versions.csv`) | `bench/k8s/`, `bench/k8s-link/` |
 
 ## Host tools
 
@@ -40,3 +42,4 @@ Recorded 22.10.2026, host drift and kernels rechecked 29.10.2026. Change only be
 | tshark (Wireshark) | 4.6.9 |
 | jq / yq | Homebrew current |
 | python3 | 3.15.0 (3.14.7 until 23.10) |
+| matplotlib (venv `scripts/.venv`) | 3.11.2 |

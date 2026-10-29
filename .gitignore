@@ -17,3 +17,7 @@ docs/report/*.bcf
 docs/report/*.blg
 docs/report/*.run.xml
 docs/report/*-SAVE-ERROR
+scripts/.venv/
+__pycache__/
+results/bench-quick/
+results/bench-fake/
