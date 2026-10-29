@@ -51,6 +51,8 @@ install_agent() {
 }
 
 for n in $NODES; do ensure_vm "$n"; done
+# no automatic updates, pinned kernel (reboots a node only when it changes)
+infra/vm-prep.sh
 
 CP_IP=$(node_ip "$CP_NODE")
 install_server "$CP_IP"

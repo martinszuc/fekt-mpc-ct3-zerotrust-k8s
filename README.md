@@ -26,6 +26,7 @@ Exact versions: [docs/versions.md](docs/versions.md).
 ```bash
 make up       # 3 Lima VMs (vz, Ubuntu 24.04) + k3s + Cilium (baseline)
 make status   # VMs, nodes, Cilium health
+make vm-prep  # part of make up: no automatic apt runs, pinned kernel on every node
 make app      # deploy Bookinfo into namespace bookinfo
 make s0       # baseline: no policies
 make s1       # segmentation: default-deny NetworkPolicies, no SA tokens mounted
