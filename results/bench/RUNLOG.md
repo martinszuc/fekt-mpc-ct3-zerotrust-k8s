@@ -21,12 +21,16 @@ Conditions: kernel 6.8.0-147 on all nodes, identical packages, no automatic upda
 |---|---|---|
 | main | 20261029T031157Z | complete, 04:11 to 08:36, 0 errors, qps_actual at target in every run |
 | link | 20261029T073604Z | complete, 1.356 Gbit/s median |
-| sweeps | 20261029T073939Z | stopped at 10:46 (lid closed): S3, S2b, S2b-plain complete; S2a qps complete, payload partial; S1, S0 not run |
+| sweeps | 20261029T073939Z | paused 10:45 (driver stopped, lid closed): S3, S2b, S2b-plain complete; S2a qps complete, payload partial (dropped from figures) |
+| resume S2a payload | 20261029T104041Z | complete, 11:40 to 11:55 |
+| resume S1 S0 sweeps | 20261029T105456Z | complete, 11:55 to 13:03 |
 
-Figures: `make plot RUN_ID=20261029T031157Z,20261029T073604Z,20261029T073939Z`.
+Resume driver `results/bench/logs/resume-20261029.sh`, output `resume-20261029.log`, same parameters as the overnight sweeps. Before it: zt-w1 clock fixed (all nodes within 0.1 s of the host), Cilium status OK, attack checks 14/14 in L7 authorization (run 20261029T103936Z-S3).
+
+Figures: `make plot RUN_ID=20261029T031157Z,20261029T073604Z,20261029T073939Z,20261029T104041Z,20261029T105456Z DROP=20261029T073939Z/S2a/payload`.
 
 Notes:
 - fortio histogram resolution is the default 1 ms: on the echo paths more than 99 % of samples fall into the first bucket, so p50 to p99.9 there are interpolation artifacts (for example baseline same-node p50 0.507 ms vs mean 0.144 ms). Mean latency is exact. App path buckets are 2 to 5 ms wide. Needs `-r 0.00001` and a rerun of the latency suites.
-- After the lid was closed, zt-w1's clock lagged 36 min although timesyncd reported synchronized; istio-proxy on zt-w1 stayed unready (certificate not yet valid) until `systemctl restart systemd-timesyncd`. Main and link runs ended before that.
+- After the lid was closed, zt-w1's clock lagged 36 min although timesyncd reported synchronized; istio-proxy on zt-w1 stayed unready (certificate not yet valid) until `systemctl restart systemd-timesyncd`. Main and link runs ended before that; the paused sweep had already stopped.
 - Cross-node iperf3 is bound by the VM link (pod 1.27 to 1.34 Gbit/s vs node 1.356); node encryption is the exception at 1.17.
 - Node encryption same-node iperf3 is higher than baseline (107 vs 94.5 Gbit/s, no overlap across 5 rounds); not explained yet.

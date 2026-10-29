@@ -1,5 +1,5 @@
-## compromised reviews (reviews-v3-bcb8654bc-sd47b, ephemeral container attacker-1793243406-71266) -> ratings:9080
+## compromised reviews (reviews-v3-68c85b655b-k8tsc, ephemeral container attacker-1793270429-25874) -> ratings:9080
 OK HTTP 200 {"id":0,"ratings":{"Reviewer1":5,"Reviewer2":4}}
 
 ## pod identity
-SA bookinfo-reviews, labels {"app":"reviews","pod-template-hash":"bcb8654bc","security.istio.io/tlsMode":"istio","service.istio.io/canonical-name":"reviews","service.istio.io/canonical-revision":"v3","version":"v3"}
+SA bookinfo-reviews, labels {"app":"reviews","pod-template-hash":"68c85b655b","security.istio.io/tlsMode":"istio","service.istio.io/canonical-name":"reviews","service.istio.io/canonical-revision":"v3","version":"v3"}
