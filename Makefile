@@ -61,13 +61,13 @@ $(VENV)/.ok: scripts/requirements.txt
 	$(VENV)/bin/pip install -q -r scripts/requirements.txt
 	touch $@
 
-# make plot [BENCH_DIR=results/bench-quick] [RUN_ID=id,id]
+# make plot [BENCH_DIR=results/bench-quick] [RUN_ID=id,id] [DROP=run_id/scenario/suite,...]
 BENCH_DIR ?= results/bench
 # report figures only from the real run; other result dirs keep their figures next to the CSVs
 PLOT_OUT ?= $(if $(filter results/bench,$(BENCH_DIR)),docs/figures/bench,$(BENCH_DIR)/figures)
 plot: $(VENV)/.ok
-	$(VENV)/bin/python scripts/aggregate.py --in $(BENCH_DIR) $(if $(RUN_ID),--run-id $(RUN_ID))
-	$(VENV)/bin/python scripts/plot.py --in $(BENCH_DIR) --out $(PLOT_OUT) $(if $(RUN_ID),--run-id $(RUN_ID))
+	$(VENV)/bin/python scripts/aggregate.py --in $(BENCH_DIR) $(if $(RUN_ID),--run-id $(RUN_ID)) $(if $(DROP),--drop $(DROP))
+	$(VENV)/bin/python scripts/plot.py --in $(BENCH_DIR) --out $(PLOT_OUT) $(if $(RUN_ID),--run-id $(RUN_ID)) $(if $(DROP),--drop $(DROP))
 
 figures:
 	scripts/figures.sh
