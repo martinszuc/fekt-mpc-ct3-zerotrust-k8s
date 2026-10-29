@@ -4,9 +4,9 @@
 
 \usepackage[
 %%% Z následujících voleb jazyka lze použít pouze jednu
-  czech-english,		% originální jazyk je čeština, překlad je anglicky (výchozí)
+  %czech-english,		% originální jazyk je čeština, překlad je anglicky (výchozí)
   %english-czech,	% originální jazyk je angličtina, překlad je česky
-  %slovak-english,	% originální jazyk je slovenština, překlad je anglicky
+  slovak-english,	% originální jazyk je slovenština, překlad je anglicky
   %english-slovak,	% originální jazyk je angličtina, překlad je slovensky
 %
 %%% Z následujících voleb typu práce lze použít pouze jednu
@@ -22,14 +22,20 @@
 %
 ]{thesis}   % Balíček pro sazbu studentských prací
 
+% jediný autor: šablona pre semestrálny projekt predpokladá viacerých
+\makeatletter
+\renewcommand\autortext@slovak{Autor projektu}
+\renewcommand\autortext@english{Author}
+\makeatother
+
 
 %%% Jméno a příjmení autora ve tvaru
 %  [tituly před jménem]{Křestní}{Příjmení}[tituly za jménem]
 % Pokud osoba nemá titul před/za jménem, smažte celý řetězec '[...]'
-\author{Student 1,\  \ }{Student 2\  \ }
+\author{Martin}{Szuc}
 
 %%% Identifikační číslo autora (VUT ID)
-\butid{007}
+\butid{231284}
 
 %%% Pohlaví autora/autorky
 % (nepoužije se ve variantě english-czech ani english-slovak)
@@ -39,7 +45,7 @@
 %%% Jméno a příjmení vedoucího/školitele včetně titulů
 %  [tituly před jménem]{Křestní}{Příjmení}[tituly za jménem]
 % Pokud osoba nemá titul před/za jménem, smažte celý řetězec '[...]'
-\advisor[Ing.]{Jméno}{Příjmení}
+\advisor[Ing.]{David}{Zeman}
 
 %%% Jméno a příjmení oponenta včetně titulů
 %  [tituly před jménem]{Křestní}{Příjmení}[tituly za jménem]
@@ -57,12 +63,12 @@
 %  \def\insertshorttitle{Zkác.\ náz.\ práce}
 %  kde jako parametr vyplníte zkrácený název. Pokud nechcete zkracovat název, budete muset předefinovat,
 %  jak se vytváří patička slidu. Viz odkaz: https://bit.ly/3EJTp5A
-\title{Název semestrálního projektu}
+\title[Zero-trust access and access control in a container environment]{Zero-trust prístup a riadenie prístupu v containerovom prostredí}
 
 %%% Označení oboru studia
 %  Parametr ve složených závorkách {} je název oboru v originálním jazyce,
 %  parametr v hranatých závorkách [] je překlad
-\specialization[Information Security]{Informační bezpečnost}
+\specialization[Information Security]{Informačná bezpečnosť}
 
 %%% Označení ústavu
 %  Parametr ve složených závorkách {} je název ústavu v originálním jazyce,

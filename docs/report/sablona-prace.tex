@@ -111,6 +111,14 @@
 
 \input{nastaveni}  % do tohoto souboru doplňte údaje o sobě, druhu práce, názvu...
 
+\usepackage{booktabs}   % tables
+\usepackage{tabularx}
+\usepackage{csquotes}
+\usepackage[backend=biber,style=iso-numeric,sorting=none]{biblatex} % CSN ISO 690
+\addbibresource{../refs.bib}
+\usepackage{xurl}      % line breaks anywhere in URLs
+\setlength{\emergencystretch}{2em} % fewer overfull lines without \sloppy
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -118,6 +126,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Při načteném balíčku 'hyperref' lze použít příkaz '\pdfsettings':
 \pdfsettings
+\hypersetup{hidelinks}
 %  Nastavení polí je možné provést také ručně příkazem:
 %\hypersetup{
 %  pdftitle={Název studentské práce},    	% Pole 'Document Title'
@@ -146,7 +155,17 @@
 
 \include{text/teorie}
 
-\include{text/reseni}
+\include{text/analyza}
+
+\include{text/model-hrozieb}
+
+\include{text/navrh}
+
+\include{text/vysledky}
+
+\include{text/rezia}
+
+\include{text/obmedzenia}
 
 \include{text/zaver}
 
