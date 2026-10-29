@@ -22,10 +22,11 @@ section() { printf '\n## %s\n' "$1"; }
     limactl shell "$n" uname -a
     # MTUs decide the encapsulation overhead; cilium_wg0 exists only with WireGuard
     limactl shell "$n" sh -c "ip -o link show | awk '/$NODE_IFACE|cilium_|lxc/ {print \$2, \$4, \$5}' | grep -v '^lxc' || true"
-    limactl shell "$n" sh -c "sudo wg show cilium_wg0 2>/dev/null | grep -E 'interface|listening|peer' || echo 'cilium_wg0: none'"
   done
   section "cilium"
   kubectl -n kube-system get ds cilium -o jsonpath='{.spec.template.spec.containers[0].image}{"\n"}'
+  # the VMs have no wireguard-tools; the agents report the WireGuard state
+  cilium encryption status 2>&1
   # the key is absent unless WireGuard was ever enabled
   echo "enable-wireguard=$(kubectl -n kube-system get cm cilium-config -o jsonpath='{.data.enable-wireguard}') (empty: off)"
   kubectl -n kube-system get cm cilium-config -o json | jq -r '.data | to_entries[] | select(.key != "enable-wireguard")
