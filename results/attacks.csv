@@ -310,3 +310,17 @@ time,scenario,threat,check,expected,observed,verdict,evidence,run_id,git_sha
 2026-10-29T03:11:15Z,S2b,T6,api-reachable,blocked,blocked,PASS,results/T6-S2b-sa-token.txt,20261029T031020Z-S2b,6de91d7
 2026-10-29T03:11:15Z,S2b,T6,api-authenticated,blocked,blocked,PASS,results/T6-S2b-sa-token.txt,20261029T031020Z-S2b,6de91d7
 2026-10-29T03:11:15Z,S2b,T6,api-read-secrets,blocked,blocked,PASS,results/T6-S2b-sa-token.txt,20261029T031020Z-S2b,6de91d7
+2026-10-29T10:39:42Z,S3,T1,frontend-to-db,blocked,blocked,PASS,results/T1-S3-lateral.txt,20261029T103936Z-S3,0ebe563
+2026-10-29T10:39:46Z,S3,T1,frontend-to-ratings,blocked,blocked,PASS,results/T1-S3-lateral.txt,20261029T103936Z-S3,0ebe563
+2026-10-29T10:39:47Z,S3,T1,frontend-to-details-allowed,succeeded,succeeded,PASS,results/T1-S3-lateral.txt,20261029T103936Z-S3,0ebe563
+2026-10-29T10:40:03Z,S3,T2,cross-node-sniff,blocked,blocked,PASS,results/T2-S3-encrypted.pcap,20261029T103936Z-S3,0ebe563
+2026-10-29T10:40:11Z,S3,T3,rogue-unlabeled-to-ratings,blocked,blocked,PASS,results/T3-S3-rogue-pod.txt,20261029T103936Z-S3,0ebe563
+2026-10-29T10:40:15Z,S3,T3,rogue-no-identity-to-ratings,blocked,blocked,PASS,results/T3-S3-rogue-pod.txt,20261029T103936Z-S3,0ebe563
+2026-10-29T10:40:22Z,S3,T3,rogue-default-sa-to-ratings,blocked,blocked,PASS,results/T3-S3-rogue-pod.txt,20261029T103936Z-S3,0ebe563
+2026-10-29T10:40:28Z,S3,T3,rogue-reused-sa-to-ratings,succeeded,succeeded,PASS,results/T3-S3-rogue-pod.txt,20261029T103936Z-S3,0ebe563
+2026-10-29T10:40:29Z,S3,T4,reviews-posts-ratings,blocked,blocked,PASS,results/T4-S3-unauthorized-op.txt,20261029T103936Z-S3,0ebe563
+2026-10-29T10:40:29Z,S3,T5,reviews-reads-ratings,succeeded,succeeded,PASS,results/T5-S3-valid-identity.txt,20261029T103936Z-S3,0ebe563
+2026-10-29T10:40:30Z,S3,T6,token-mounted,blocked,blocked,PASS,results/T6-S3-sa-token.txt,20261029T103936Z-S3,0ebe563
+2026-10-29T10:40:34Z,S3,T6,api-reachable,blocked,blocked,PASS,results/T6-S3-sa-token.txt,20261029T103936Z-S3,0ebe563
+2026-10-29T10:40:34Z,S3,T6,api-authenticated,blocked,blocked,PASS,results/T6-S3-sa-token.txt,20261029T103936Z-S3,0ebe563
+2026-10-29T10:40:34Z,S3,T6,api-read-secrets,blocked,blocked,PASS,results/T6-S3-sa-token.txt,20261029T103936Z-S3,0ebe563
