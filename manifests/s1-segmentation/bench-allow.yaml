@@ -1,0 +1,56 @@
+# benchmark pods (bench/k8s): client may reach only the bench servers and productpage
+# istiod egress in the mesh comes from allow-istiod (manifests/s2b-mtls), which selects every pod
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: bench-client
+spec:
+  podSelector:
+    matchLabels: {app: bench-client}
+  policyTypes: [Ingress, Egress]
+  egress:
+    - to:
+        - podSelector:
+            matchLabels: {app: fortio-server}
+      ports:
+        - {protocol: TCP, port: 8080}
+    - to:
+        - podSelector:
+            matchLabels: {app: iperf3-server}
+      ports:
+        - {protocol: TCP, port: 5201}
+    - to:
+        - podSelector:
+            matchLabels: {app: productpage}
+      ports:
+        - {protocol: TCP, port: 9080}
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: fortio-server
+spec:
+  podSelector:
+    matchLabels: {app: fortio-server}
+  policyTypes: [Ingress]
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels: {app: bench-client}
+      ports:
+        - {protocol: TCP, port: 8080}
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: iperf3-server
+spec:
+  podSelector:
+    matchLabels: {app: iperf3-server}
+  policyTypes: [Ingress]
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels: {app: bench-client}
+      ports:
+        - {protocol: TCP, port: 5201}

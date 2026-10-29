@@ -12,3 +12,7 @@ docs/report/*.synctex.gz
 docs/report/*.nav
 docs/report/*.snm
 docs/report/*.pdf
+scripts/.venv/
+__pycache__/
+results/bench-quick/
+results/bench-fake/

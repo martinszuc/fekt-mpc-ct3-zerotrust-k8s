@@ -1,0 +1,43 @@
+# path (d): iperf3 node to node on the host network, no CNI, no policy, no mesh (ceiling of the VM link)
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: link-server
+  labels: {app: link-server}
+spec:
+  replicas: 1
+  selector:
+    matchLabels: {app: link-server}
+  template:
+    metadata:
+      labels: {app: link-server}
+    spec:
+      hostNetwork: true
+      automountServiceAccountToken: false
+      nodeSelector: {kubernetes.io/hostname: lima-zt-w2}
+      containers:
+        - name: iperf3
+          image: nicolaka/netshoot:v0.14
+          # 5202: keeps clear of the pod-network servers on 5201
+          command: [iperf3, -s, -p, "5202"]
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: link-client
+  labels: {app: link-client}
+spec:
+  replicas: 1
+  selector:
+    matchLabels: {app: link-client}
+  template:
+    metadata:
+      labels: {app: link-client}
+    spec:
+      hostNetwork: true
+      automountServiceAccountToken: false
+      nodeSelector: {kubernetes.io/hostname: lima-zt-w1}
+      containers:
+        - name: iperf3
+          image: nicolaka/netshoot:v0.14
+          command: [sleep, infinity]
