@@ -10,13 +10,13 @@ Kľúčovým kritériom porovnania je \emph{základ identity}: podľa čoho prvo
 
 \subsection{Kubernetes NetworkPolicy}
 
-NetworkPolicy (časť~\ref{sec:networkpolicy}) v režime default-deny zastaví laterálny pohyb k službám mimo grafu volaní aplikácie. Spolu s default-deny pre odchádzajúcu prevádzku odstráni aj cestu z podov aplikácie k API serveru, čo je časť ochrany proti zneužitiu tokenu. Identitou je label, ktorý volí ten, kto pod vytvára, takže pod so skopírovaným labelom sa od legitímneho workloadu nelíši. NetworkPolicy nepozná metódy ani cesty HTTP a nezaisťuje dôvernosť prenosu.
+NetworkPolicy (časť~\ref{sec:networkpolicy}) v režime default-deny zastaví laterálny pohyb k službám mimo grafu volaní aplikácie. Spolu s default-deny pre odchádzajúcu prevádzku odstráni aj cestu z podov aplikácie k API serveru, čo je časť ochrany proti zneužitiu ServiceAccount tokenu. Identitou je label, ktorý volí ten, kto pod vytvára, takže pod so skopírovaným labelom sa od legitímneho workloadu nelíši. NetworkPolicy nepozná metódy ani cesty HTTP a nezaisťuje dôvernosť prenosu.
 
 \subsection{Identitné a L7 politiky Cilium}
 
 Číselné identity Cilium (časť~\ref{sec:cilium}) škálujú lepšie než filtrovanie podľa IP adries a prežijú presun podu na iný uzol. Identita sa však stále odvodzuje z labelov, takže slabina voči podvrhnutému labelu zostáva. CiliumNetworkPolicy môže pridať pravidlá L7, napríklad povolenú metódu a cestu HTTP; takúto prevádzku Cilium presmeruje do proxy na uzle~\cite{cilium-policy}. Pravidlo L7 by zastavilo neoprávnenú operáciu aj bez service mesh, volajúci je však stále určený labelmi.
 
-\subsection{Autorizácia L7 v service mesh}
+\subsection{L7 autorizácia v service mesh}
 
 AuthorizationPolicy v Istio vyhodnocuje proxy Envoy pred cieľovým workloadom~\cite{istio-authorizationpolicy}. Pravidlá môžu porovnávať identitu volajúceho overenú cez mTLS, namespace, nároky z JWT a atribúty požiadavky, napríklad metódu a cestu~\cite{istio-security}. Keďže identita volajúceho je kryptograficky overená, pod v mesh s iným ServiceAccountom neprejde ani so skopírovanými labelmi. Ten istý mechanizmus obmedzí overeného volajúceho na metódy, ktoré potrebuje. Ak má politiku každý cieľ, zastaví aj laterálny pohyb medzi workloadmi v mesh. Nepomôže, ak útočník drží povolenú identitu.
 
@@ -41,7 +41,7 @@ JSON Web Token nesie podpísané nároky o subjekte~\cite{rfc7519}; OpenID Conne
 
 \subsection{Projected ServiceAccount tokeny}
 
-Tokeny ServiceAccountu (časť~\ref{sec:sa-rbac}) sú krátkodobé JWT viazané na pod, cieľovú skupinu a čas platnosti; API server ich overuje a tretie strany ich vedia overiť cez discovery endpoint OIDC vydavateľa~\cite{k8s-authentication,k8s-serviceaccounts}. Autentizujú workload voči API serveru alebo inej cieľovej skupine, nie na dátovej ceste medzi službami. Proti zneužitiu tokenu pomáha token vôbec nepripájať, ak workload API server nevolá, a ponechať ServiceAccountu minimálne oprávnenia RBAC~\cite{k8s-serviceaccounts,k8s-rbac}.
+Tokeny ServiceAccountu (časť~\ref{sec:sa-rbac}) sú krátkodobé JWT viazané na pod, cieľovú skupinu a čas platnosti; API server ich overuje a tretie strany ich vedia overiť cez discovery endpoint OIDC vydavateľa~\cite{k8s-authentication,k8s-serviceaccounts}. Autentizujú workload voči API serveru alebo inej cieľovej skupine, nie na dátovej ceste medzi službami. Proti zneužitiu ServiceAccount tokenu pomáha token vôbec nepripájať, ak workload API server nevolá, a ponechať ServiceAccountu minimálne oprávnenia RBAC~\cite{k8s-serviceaccounts,k8s-rbac}.
 
 \subsection{WireGuard a IPsec medzi uzlami}
 
@@ -93,7 +93,7 @@ Tabuľka~\ref{tab:approaches} zhŕňa vlastnosti prístupov a tabuľka~\ref{tab:
   \renewcommand{\arraystretch}{1.15}
   \begin{tabular}{@{}lccccccc@{}}
     \toprule
-    Prístup & \rot{Laterálny pohyb} & \rot{Odpočúvanie siete} & \rot{Podvrhnutie identity mimo mesh} & \rot{Podvrhnutie identity s~iným SA} & \rot{Podvrhnutie identity s~ukradnutým SA} & \rot{Neoprávnená operácia} & \rot{Zneužitie tokenu} \\
+    Prístup & \rot{Laterálny pohyb} & \rot{Odpočúvanie siete} & \rot{Podvrhnutie identity mimo mesh} & \rot{Podvrhnutie identity s~iným SA} & \rot{Podvrhnutie identity s~ukradnutým SA} & \rot{Neoprávnená operácia} & \rot{Zneužitie ServiceAccount tokenu} \\
     \midrule
     NetworkPolicy & + & -- & -- & -- & -- & -- & (+)\textsuperscript{a} \\
     Cilium, identity a L7 & + & -- & -- & -- & -- & (+)\textsuperscript{b} & (+)\textsuperscript{a} \\
@@ -123,7 +123,7 @@ Tabuľka~\ref{tab:approaches} zhŕňa vlastnosti prístupov a tabuľka~\ref{tab:
   \end{minipage}
 \end{table}
 
-Z tabuliek vyplýva vrstvenie, ktoré experiment overuje. Segmentácia podľa labelov zastaví útoky založené na dosiahnuteľnosti, nie však podvrhnutie identity. Šifrovanie medzi uzlami aj mTLS medzi workloadmi zastavia odpočúvanie medzi uzlami, ale iba mTLS autentizuje workload a odmietne pod mimo mesh. mTLS navyše šifruje aj prevádzku na tom istom uzle, kým WireGuard naopak skryje aj vnútorné adresy podov. Autentizácia neznamená autorizáciu, preto pod v mesh s iným ServiceAccountom a neoprávnenú operáciu zastaví až autorizácia L7. Podvrhnutie s ukradnutým ServiceAccountom a kompromitovaná služba zostávajú otvorené v každej konfigurácii: vyžadujú kontrolu nad tým, kto smie vytvárať pody a používať ServiceAccounty, čo je mimo sieťovej vrstvy.
+Z tabuliek vyplýva vrstvenie, ktoré experiment overuje. Segmentácia podľa labelov zastaví útoky založené na dosiahnuteľnosti, nie však podvrhnutie identity. Šifrovanie medzi uzlami aj mTLS medzi službami zastavia odpočúvanie medzi uzlami, ale iba mTLS autentizuje workload a odmietne pod mimo mesh. mTLS navyše šifruje aj prevádzku na tom istom uzle, kým WireGuard naopak skryje aj vnútorné adresy podov. Autentizácia neznamená autorizáciu, preto pod v mesh s iným ServiceAccountom a neoprávnenú operáciu zastaví až L7 autorizácia. Podvrhnutie s ukradnutým ServiceAccountom a kompromitovaná služba zostávajú otvorené v každej konfigurácii: vyžadujú kontrolu nad tým, kto smie vytvárať pody a používať ServiceAccounty, čo je mimo sieťovej vrstvy.
 
 \section{Ekvivalenty v OpenShift}
 \label{sec:openshift}
@@ -141,10 +141,10 @@ Použité prvky majú priame ekvivalenty v Red Hat OpenShift Container Platform,
     \toprule
     Tento projekt & OpenShift Container Platform \\
     \midrule
-    NetworkPolicy vynucovaná Cilium (segmentácia) & NetworkPolicy vynucovaná OVN-Kubernetes; AdminNetworkPolicy a BaselineAdminNetworkPolicy pre pravidlá na úrovni clustra, ktoré nájomca nemôže prepísať~\cite{ocp-network-security} \\
+    NetworkPolicy vynucovaná Cilium (segmentácia siete) & NetworkPolicy vynucovaná OVN-Kubernetes; AdminNetworkPolicy a BaselineAdminNetworkPolicy pre pravidlá na úrovni clustra, ktoré nájomca nemôže prepísať~\cite{ocp-network-security} \\
     Cilium WireGuard (šifrovanie medzi uzlami) & šifrovanie prevádzky podov IPsec v OVN-Kubernetes~\cite{ocp-network-security} \\
-    Istio mTLS a AuthorizationPolicy (mesh mTLS, autorizácia L7) & OpenShift Service Mesh 3, distribúcia Istio od Red Hat s rovnakými bezpečnostnými API~\cite{ossm3-intro} \\
-    RBAC, \texttt{automount\allowbreak ServiceAccount\allowbreak Token} (segmentácia) & rovnaké RBAC a ServiceAccounty Kubernetes; Security Context Constraints navyše obmedzujú oprávnenia podu~\cite{ocp-scc} \\
+    Istio mTLS a AuthorizationPolicy (mTLS medzi službami, L7 autorizácia) & OpenShift Service Mesh 3, distribúcia Istio od Red Hat s rovnakými bezpečnostnými API~\cite{ossm3-intro} \\
+    RBAC, \texttt{automount\allowbreak ServiceAccount\allowbreak Token} (segmentácia siete) & rovnaké RBAC a ServiceAccounty Kubernetes; Security Context Constraints navyše obmedzujú oprávnenia podu~\cite{ocp-scc} \\
     \bottomrule
   \end{tabularx}
 \end{table}

@@ -63,21 +63,21 @@ Tabuľka~\ref{tab:attacks} uvádza útoky, ich kategórie STRIDE a prvok, ktorý
     \toprule
     Útok & Opis & Útočník & STRIDE & Zastaví \\
     \midrule
-    Laterálny pohyb & frontend číta databázu a volá backend, ktorý nikdy nepoužíva & kompromitovaný frontend & E, I, T & segmentácia \\
-    Odpočúvanie siete & záznam prevádzky podov medzi uzlami & pozorovateľ siete & I (T) & šifrovanie medzi uzlami alebo mesh mTLS \\
+    Laterálny pohyb & frontend číta databázu a volá backend, ktorý nikdy nepoužíva & kompromitovaný frontend & E, I, T & segmentácia siete \\
+    Odpočúvanie siete & záznam prevádzky podov medzi uzlami & pozorovateľ siete & I (T) & šifrovanie medzi uzlami alebo mTLS medzi službami \\
     Podvrhnutie identity & podvrhnutý pod skopíruje dôveryhodný label \texttt{app=reviews} a volá \texttt{ratings}; tri varianty v tabuľke~\ref{tab:spoofing} & tvorca podov & S & podľa variantu \\
-    Neoprávnená operácia & kompromitovaný \texttt{reviews} volá \texttt{ratings} metódou, ktorú nepotrebuje (zápis \texttt{POST /ratings/\{id\}}) & útočník v \texttt{reviews} & E, T & autorizácia L7: od identity \texttt{reviews} iba \texttt{GET /ratings/*} \\
+    Neoprávnená operácia & kompromitovaný \texttt{reviews} volá \texttt{ratings} metódou, ktorú nepotrebuje (zápis \texttt{POST /ratings/\{id\}}) & útočník v \texttt{reviews} & E, T & L7 autorizácia: od identity \texttt{reviews} iba \texttt{GET /ratings/*} \\
     Kompromitovaná služba & kompromitovaný \texttt{reviews} číta hodnotenia vlastnou platnou identitou po povolenej ceste & útočník v \texttt{reviews} & I & nič (obmedzenie riešenia) \\
-    Zneužitie tokenu & token ServiceAccountu podu použitý voči API serveru & kompromitovaný frontend & S, E, I & segmentácia (token sa nepripája, cesta k API serveru chýba), RBAC \\
+    Zneužitie ServiceAccount tokenu & token ServiceAccountu podu použitý voči API serveru & kompromitovaný frontend & S, E, I & segmentácia siete (token sa nepripája, cesta k API serveru chýba), RBAC \\
     \bottomrule
   \end{tabularx}
 \end{table}
 
-Popretie (\emph{repudiation}) sa netestuje; čiastočne ho pokrývajú záznamy tokov Hubble od konfigurácie so segmentáciou a prístupové logy Envoy v mesh. Odopretie služby je mimo rozsahu projektu.
+Popretie (\emph{repudiation}) sa netestuje; čiastočne ho pokrývajú záznamy tokov Hubble od konfigurácie so segmentáciou siete a prístupové logy Envoy v mesh. Odopretie služby je mimo rozsahu projektu.
 
 \subsection{Varianty podvrhnutia identity}
 
-Labely volí ten, kto pod vytvára, takže nie sú identitou, a segmentácia im napriek tomu dôveruje. Identitou v mesh je ServiceAccount, no tvorca podov môže zvoliť ľubovoľný ServiceAccount namespace. Samotné mTLS preto nezastaví podvrhnutý pod, ktorý sa do mesh zapojí. Tabuľka~\ref{tab:spoofing} uvádza tri varianty útoku.
+Labely volí ten, kto pod vytvára, takže nie sú identitou, a segmentácia siete im napriek tomu dôveruje. Identitou v mesh je ServiceAccount, no tvorca podov môže zvoliť ľubovoľný ServiceAccount namespace. Samotné mTLS preto nezastaví podvrhnutý pod, ktorý sa do mesh zapojí. Tabuľka~\ref{tab:spoofing} uvádza tri varianty útoku.
 
 \begin{table}[ht!]
   \centering
@@ -89,42 +89,42 @@ Labely volí ten, kto pod vytvára, takže nie sú identitou, a segmentácia im 
     \toprule
     Variant & Podvrhnutý pod & Zastaví & Prečo \\
     \midrule
-    Mimo mesh & bez sidecaru, SA \texttt{default} & mesh mTLS (\texttt{STRICT}) & nemá certifikát, nešifrovaná prevádzka je odmietnutá \\
-    S iným ServiceAccountom & v mesh, SA \texttt{default} & autorizácia L7 & má platný certifikát (je autentizovaný), ale nie povolenú identitu \\
+    Mimo mesh & bez sidecaru, SA \texttt{default} & mTLS medzi službami (\texttt{STRICT}) & nemá certifikát, nešifrovaná prevádzka je odmietnutá \\
+    S iným ServiceAccountom & v mesh, SA \texttt{default} & L7 autorizácia & má platný certifikát (je autentizovaný), ale nie povolenú identitu \\
     S ukradnutým ServiceAccountom & v mesh, SA \texttt{bookinfo-reviews} & nič & nerozlíšiteľný od \texttt{reviews}; vyžaduje admission control alebo RBAC na vytváranie podov a použitie SA (mimo rozsahu) \\
     \bottomrule
   \end{tabularx}
 \end{table}
 
-\subsection{Priradenie kontrol pri zneužití tokenu}
+\subsection{Priradenie kontrol pri zneužití ServiceAccount tokenu}
 
-Segmentácia pridáva dva nezávislé prvky: NetworkPolicy a nepripájanie tokenu. Aby bol každý výsledok priradený práve jednému prvku, test zneužitia tokenu sa skladá zo štyroch kontrol (tabuľka~\ref{tab:token}). Ani jeden z prvkov nezaťažuje dátovú cestu, takže meranie réžie segmentácie neovplyvňujú.
+Segmentácia siete pridáva dva nezávislé prvky: NetworkPolicy a nepripájanie tokenu. Aby bol každý výsledok priradený práve jednému prvku, test zneužitia ServiceAccount tokenu sa skladá zo štyroch kontrol (tabuľka~\ref{tab:token}). Ani jeden z prvkov nezaťažuje dátovú cestu, takže meranie réžie segmentácie siete neovplyvňujú.
 
 \begin{table}[ht!]
   \centering
-  \caption{Kontroly pri zneužití tokenu a prvok, ktorý o nich rozhoduje}
+  \caption{Kontroly pri zneužití ServiceAccount tokenu a prvok, ktorý o nich rozhoduje}
   \label{tab:token}
   \footnotesize
   \renewcommand{\arraystretch}{1.15}
   \begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}X>{\raggedright\arraybackslash}X@{}}
     \toprule
-    Kontrola & Rozhoduje (od konfigurácie so segmentáciou) \\
+    Kontrola & Rozhoduje (od konfigurácie so segmentáciou siete) \\
     \midrule
     Token je pripojený v pode & \texttt{automountServiceAccountToken: false} \\
     API server je dosiahnuteľný (anonymne, bez tokenu) & default-deny pre odchádzajúcu prevádzku \\
     Požiadavka s tokenom je autentizovaná & chýbajúci token (zastavila by ju aj default-deny) \\
-    Čítanie Secrets & RBAC (zamietnuté vo všetkých konfiguráciách vrátane základnej) \\
+    Čítanie Secrets & RBAC (zamietnuté vo všetkých konfiguráciách vrátane konfigurácie bez ochrany) \\
     \bottomrule
   \end{tabularx}
 \end{table}
 
 \section{Vrstvy ochrany}
 
-Obrázok~\ref{fig:scenario-layers} ukazuje, ako jednotlivé vrstvy postupne zužujú množinu útočníkov, ktorí sa dostanú k hodnoteniam. Segmentácia prepustí každý pod s povoleným labelom, mesh mTLS každý pod s identitou mesh a autorizácia L7 každý workload s povoleným ServiceAccountom. Zvyšné riziko, legitímna identita v rukách útočníka, žiadna sieťová vrstva neodstráni.
+Obrázok~\ref{fig:scenario-layers} ukazuje, ako jednotlivé vrstvy postupne zužujú množinu útočníkov, ktorí sa dostanú k hodnoteniam. Segmentácia siete prepustí každý pod s povoleným labelom, mTLS medzi službami každý pod s identitou mesh a L7 autorizácia každý workload s povoleným ServiceAccountom. Zvyšné riziko, legitímna identita v rukách útočníka, žiadna sieťová vrstva neodstráni.
 
 \begin{figure}[ht!]
   \centering
   \includegraphics[width=\textwidth]{../figures/scenario-layers.pdf}
-  \caption{Čo zastaví ktorá vrstva na ceste k hodnoteniam a zvyškové riziko. Šifrovanie medzi uzlami je alternatívou k mesh mTLS; autentizuje uzly, nie pody, a na tejto ceste nič nemení.}
+  \caption{Čo zastaví ktorá vrstva na ceste k hodnoteniam a zvyškové riziko. Šifrovanie medzi uzlami je alternatívou k mTLS medzi službami; autentizuje uzly, nie pody, a na tejto ceste nič nemení.}
   \label{fig:scenario-layers}
 \end{figure}

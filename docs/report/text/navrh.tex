@@ -5,7 +5,7 @@ Experiment má odpovedať na dve otázky: ktorý útok zastaví ktorý prvok a k
 
 \begin{itemize}
   \item každá konfigurácia mení oproti svojej rodičovskej práve jeden ochranný prvok;
-  \item vo všetkých konfiguráciách vrátane základnej beží ten istý CNI plugin (Cilium) s tými istými nastaveniami, takže rozdiel nemôže spôsobiť výmena sieťového riešenia.
+  \item vo všetkých konfiguráciách vrátane konfigurácie bez ochrany beží ten istý CNI plugin (Cilium) s tými istými nastaveniami, takže rozdiel nemôže spôsobiť výmena sieťového riešenia.
 \end{itemize}
 
 \section{Testovacie prostredie}
@@ -46,7 +46,7 @@ Testovanou aplikáciou je Bookinfo~\cite{istio-bookinfo} s verziami \texttt{revi
 \section{Konfigurácie}
 \label{sec:configurations}
 
-Tabuľka~\ref{tab:configurations} uvádza konfigurácie a prvok, ktorý každá pridáva. Šifrovanie medzi uzlami a mesh mTLS sú súrodenci: obe vychádzajú zo segmentácie, aby sa dali priamo porovnať šifrovanie na úrovni uzla a na úrovni workloadu. Každú konfiguráciu nastaví jeden cieľ \texttt{make}, ktorý počká, kým aplikácia odpovedá po celej ceste.
+Tabuľka~\ref{tab:configurations} uvádza konfigurácie a prvok, ktorý každá pridáva. Šifrovanie medzi uzlami a mTLS medzi službami sú súrodenci: obe vychádzajú zo segmentácie siete, aby sa dali priamo porovnať šifrovanie na úrovni uzla a na úrovni workloadu. Každú konfiguráciu nastaví jeden cieľ \texttt{make}, ktorý počká, kým aplikácia odpovedá po celej ceste.
 
 \begin{table}[ht!]
   \centering
@@ -58,17 +58,17 @@ Tabuľka~\ref{tab:configurations} uvádza konfigurácie a prvok, ktorý každá 
     \toprule
     Konfigurácia & Rodič & Pridáva \\
     \midrule
-    Základná & -- & Cilium bez politík a bez mesh \\
-    Segmentácia & základná & default-deny NetworkPolicy s povolením iba grafu volaní a DNS; tokeny ServiceAccountov sa nepripájajú \\
-    Šifrovanie medzi uzlami & segmentácia & transparentné šifrovanie Cilium WireGuard medzi uzlami \\
-    Mesh mTLS & segmentácia & sidecary Istio, PeerAuthentication \texttt{STRICT} \\
-    Autorizácia L7 & mesh mTLS & Istio AuthorizationPolicy pre \texttt{ratings} \\
-    Mesh bez mTLS & segmentácia & sidecary Istio, mTLS vypnuté (\texttt{DISABLE}); iba na meranie réžie \\
+    Bez ochrany & -- & Cilium bez politík a bez mesh \\
+    Segmentácia siete & bez ochrany & default-deny NetworkPolicy s povolením iba grafu volaní a DNS; tokeny ServiceAccountov sa nepripájajú \\
+    Šifrovanie medzi uzlami & segmentácia siete & transparentné šifrovanie Cilium WireGuard medzi uzlami \\
+    mTLS medzi službami & segmentácia siete & sidecary Istio, PeerAuthentication \texttt{STRICT} \\
+    L7 autorizácia & mTLS medzi službami & Istio AuthorizationPolicy pre \texttt{ratings} \\
+    Mesh bez mTLS & segmentácia siete & sidecary Istio, mTLS vypnuté (\texttt{DISABLE}); iba na meranie réžie \\
     \bottomrule
   \end{tabularx}
 \end{table}
 
-Mesh mTLS pridáva naraz dva prvky: proxy v každom pode a mTLS. Pre bezpečnostné výsledky to nevadí, lebo útoky zastavuje mTLS. Pre meranie réžie sa však obe zložky oddelia konfiguráciou mesh bez mTLS, ktorá ponechá sidecary a vypne iba šifrovanie. Nastavenia Cilium potrebné pre spoluprácu s Istio sú súčasťou základnej konfigurácie, takže mesh mTLS mení len samotný mesh.
+Konfigurácia mTLS medzi službami pridáva naraz dva prvky: sidecar proxy v každom pode a samotné mTLS. Pre bezpečnostné výsledky to nevadí, lebo útoky zastavuje mTLS. Pre meranie réžie sa však obe zložky oddelia konfiguráciou mesh bez mTLS, ktorá ponechá sidecary a vypne iba šifrovanie. Nastavenia Cilium potrebné pre spoluprácu s Istio sú súčasťou konfigurácie bez ochrany, takže mTLS medzi službami mení len samotný mesh.
 
 \section{Bezpečnostné testy}
 \label{sec:attack-tests}
@@ -79,7 +79,7 @@ Každý útok z tabuľky~\ref{tab:attacks} má skript, ktorý ho vykoná proti a
   \item laterálny pohyb a podvrhnutie identity: výstup spojenia z podu útočníka a záznam zahodenia z Hubble, ktorý ukáže, že spojenie zastavila politika~\cite{hubble};
   \item odpočúvanie siete: záznam \texttt{tcpdump} na sieťovom rozhraní pracovného uzla počas legitímnej prevádzky, vyhodnotený nástrojom tshark~\cite{wireshark}; sleduje sa obsah aj metadáta (vnútorné adresy a porty podov); aktívna zmena prevádzky (T v STRIDE) sa netestuje;
   \item neoprávnená operácia a kompromitovaná služba: požiadavky z ephemeral containera v pode \texttt{reviews}~\cite{k8s-ephemeral-containers};
-  \item zneužitie tokenu: štyri kontroly z tabuľky~\ref{tab:token}.
+  \item zneužitie ServiceAccount tokenu: štyri kontroly z tabuľky~\ref{tab:token}.
 \end{itemize}
 
 Most siete na hostiteľovi nevidí rámce medzi virtual machines, preto sa prevádzka zaznamenáva priamo na rozhraní uzla vo virtual machine. Pri neoprávnenej operácii \texttt{ratings-v2} odpovedá na zápis chybou 501, lebo zápis implementuje iba verzia v1. Verdikt preto nezávisí od zmeny dát, ale od toho, či požiadavka dorazí do aplikácie (akákoľvek odpoveď \texttt{ratings}), alebo ju odmietne sidecar (403).
@@ -94,7 +94,7 @@ Tabuľka~\ref{tab:expected} uvádza očakávané výsledky, teda hypotézy, ktor
   \renewcommand{\arraystretch}{1.15}
   \begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}X>{\centering\arraybackslash}p{1.65cm}>{\centering\arraybackslash}p{1.65cm}>{\centering\arraybackslash}p{1.65cm}>{\centering\arraybackslash}p{1.65cm}>{\centering\arraybackslash}p{1.65cm}@{}}
     \toprule
-    Útok & Základná & Segmen\-tácia & Šifrovanie medzi uzlami & Mesh mTLS & Autori\-zácia L7 \\
+    Útok & Bez ochrany & Segmen\-tácia siete & Šifrovanie medzi uzlami & mTLS medzi službami & L7 autori\-zácia \\
     \midrule
     Laterálny pohyb & prejde & zastavený & zastavený & zastavený & zastavený \\
     Odpočúvanie siete & prejde & prejde & zastavený & zastavený & zastavený \\
@@ -103,7 +103,7 @@ Tabuľka~\ref{tab:expected} uvádza očakávané výsledky, teda hypotézy, ktor
     Podvrhnutie, ukradnutý SA & prejde & prejde & prejde & prejde & prejde \\
     Neoprávnená operácia & prejde & prejde & prejde & prejde & zastavený \\
     Kompromitovaná služba & prejde & prejde & prejde & prejde & prejde \\
-    Zneužitie tokenu & prejde & zastavený & zastavený & zastavený & zastavený \\
+    Zneužitie ServiceAccount tokenu & prejde & zastavený & zastavený & zastavený & zastavený \\
     \bottomrule
   \end{tabularx}
 \end{table}
@@ -123,12 +123,12 @@ Réžia sa meria ako rozdiel medzi konfiguráciou a jej rodičom, takže každý
     \toprule
     Porovnanie & Meraný prvok \\
     \midrule
-    Segmentácia oproti základnej & vynucovanie NetworkPolicy v eBPF \\
-    Šifrovanie medzi uzlami oproti segmentácii & WireGuard medzi uzlami \\
-    Mesh bez mTLS oproti segmentácii & sidecar proxy bez šifrovania \\
-    Mesh mTLS oproti mesh bez mTLS & mTLS v proxy \\
-    Mesh mTLS oproti šifrovaniu medzi uzlami & šifrovanie na úrovni workloadu oproti úrovni uzla \\
-    Autorizácia L7 oproti mesh mTLS & vyhodnotenie autorizačnej politiky v proxy \\
+    Segmentácia siete oproti konfigurácii bez ochrany & vynucovanie NetworkPolicy v eBPF \\
+    Šifrovanie medzi uzlami oproti segmentácii siete & WireGuard medzi uzlami \\
+    Mesh bez mTLS oproti segmentácii siete & sidecar proxy bez šifrovania \\
+    mTLS medzi službami oproti mesh bez mTLS & mTLS v proxy \\
+    mTLS medzi službami oproti šifrovaniu medzi uzlami & šifrovanie na úrovni workloadu oproti úrovni uzla \\
+    L7 autorizácia oproti mTLS medzi službami & vyhodnotenie autorizačnej politiky v proxy \\
     \bottomrule
   \end{tabularx}
 \end{table}
@@ -146,7 +146,7 @@ Odvodenou metrikou je spotreba CPU na jednotku práce (milijadrá na 1000 požia
 Postup merania:
 
 \begin{enumerate}
-  \item Kalibrácia: zistí sa saturačná záťaž cesty cez celú aplikáciu v najnáročnejšej konfigurácii (autorizácia L7) a pre všetky konfigurácie sa použije približne jej polovica, aby sa žiadna nemerala v saturácii.
+  \item Kalibrácia: zistí sa saturačná záťaž cesty cez celú aplikáciu v najnáročnejšej konfigurácii (L7 autorizácia) a pre všetky konfigurácie sa použije približne jej polovica, aby sa žiadna nemerala v saturácii.
   \item Pre každú konfiguráciu a cestu jeden zahrievací beh, ktorý sa zahodí, a potom päť behov (fortio 60~s, iperf3 30~s bez prvých 5~s).
   \item Konfigurácie sa striedajú po kolách, aby pomalý drift prostredia nedopadol na jednu z nich.
   \item Výsledkom je medián z behov a rozsah od minima po maximum.
