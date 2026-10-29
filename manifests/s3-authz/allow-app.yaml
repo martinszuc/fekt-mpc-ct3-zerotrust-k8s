@@ -1,0 +1,88 @@
+# one policy per workload: the call graph by mTLS principal (ServiceAccount), method and path
+apiVersion: security.istio.io/v1
+kind: AuthorizationPolicy
+metadata:
+  name: productpage
+spec:
+  selector:
+    matchLabels: {app: productpage}
+  action: ALLOW
+  # public entry point (no ingress gateway): any caller, reads and the login form only
+  rules:
+    - to:
+        - operation:
+            ports: ["9080"]
+            methods: [GET, HEAD]
+        - operation:
+            ports: ["9080"]
+            methods: [POST]
+            paths: [/login, /logout]
+---
+apiVersion: security.istio.io/v1
+kind: AuthorizationPolicy
+metadata:
+  name: details
+spec:
+  selector:
+    matchLabels: {app: details}
+  action: ALLOW
+  rules:
+    - from:
+        - source:
+            principals: [cluster.local/ns/bookinfo/sa/bookinfo-productpage]
+      to:
+        - operation:
+            methods: [GET]
+            paths: [/details/*]
+---
+apiVersion: security.istio.io/v1
+kind: AuthorizationPolicy
+metadata:
+  name: reviews
+spec:
+  selector:
+    matchLabels: {app: reviews}
+  action: ALLOW
+  rules:
+    - from:
+        - source:
+            principals: [cluster.local/ns/bookinfo/sa/bookinfo-productpage]
+      to:
+        - operation:
+            methods: [GET]
+            paths: [/reviews/*]
+---
+apiVersion: security.istio.io/v1
+kind: AuthorizationPolicy
+metadata:
+  name: ratings
+spec:
+  selector:
+    matchLabels: {app: ratings}
+  action: ALLOW
+  # reviews only reads ratings; POST /ratings/{id} (write) is denied
+  rules:
+    - from:
+        - source:
+            principals: [cluster.local/ns/bookinfo/sa/bookinfo-reviews]
+      to:
+        - operation:
+            methods: [GET]
+            paths: [/ratings/*]
+---
+apiVersion: security.istio.io/v1
+kind: AuthorizationPolicy
+metadata:
+  name: mongodb
+spec:
+  selector:
+    matchLabels: {app: mongodb}
+  action: ALLOW
+  # MongoDB wire protocol is TCP to the sidecar: principal and port only, no L7 fields
+  rules:
+    - from:
+        - source:
+            principals: [cluster.local/ns/bookinfo/sa/bookinfo-ratings-v2]
+      to:
+        - operation:
+            ports: ["27017"]

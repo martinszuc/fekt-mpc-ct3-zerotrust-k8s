@@ -1,5 +1,5 @@
 # attacker tooling, runs inside the compromised pod: python - <action> [args]
-# actions: http URL | mongo HOST PORT | token | api-reach | api-whoami | api-secrets NS
+# actions: http URL | http-any METHOD URL [BODY] | mongo HOST PORT | token | api-reach | api-whoami | api-secrets NS
 # prints "OK <detail>" or "FAIL <reason>"
 import base64, json, socket, ssl, struct, sys, time, urllib.error, urllib.request
 
@@ -65,6 +65,16 @@ def http(url):
     return f"HTTP {r.status} {r.read(200).decode(errors='replace')}"
 
 
+def http_any(method, url, body=None):
+    # any HTTP status counts as an answer; only transport errors fail
+    req = urllib.request.Request(url, body.encode() if body else None, {"Content-Type": "application/json"}, method=method)
+    try:
+        r = urllib.request.urlopen(req, timeout=TIMEOUT)
+    except urllib.error.HTTPError as e:
+        r = e
+    return f"HTTP {r.getcode()} {r.read(200).decode(errors='replace')}"
+
+
 def token():
     # never print the token itself, only whose it is
     claims = base64.urlsafe_b64decode(open(SA_TOKEN).read().split(".")[1] + "==")
@@ -99,7 +109,7 @@ def api_secrets(ns):
     return f"listed {len(json.load(api(f'/api/v1/namespaces/{ns}/secrets'))['items'])} secrets in {ns}"
 
 
-ACTIONS = {"http": http, "mongo": mongo, "token": token,
+ACTIONS = {"http": http, "http-any": http_any, "mongo": mongo, "token": token,
            "api-reach": api_reach, "api-whoami": api_whoami, "api-secrets": api_secrets}
 
 try:

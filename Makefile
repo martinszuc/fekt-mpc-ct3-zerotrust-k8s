@@ -3,7 +3,7 @@ export KUBECONFIG := $(CURDIR)/.kube/config
 # MacTeX binaries are not on PATH in non-login shells
 export PATH := /Library/TeX/texbin:$(PATH)
 
-.PHONY: up down status app s0 s1 s2a s2b test bench plot figures pdf
+.PHONY: up down status app s0 s1 s2a s2b s3 test bench plot figures pdf
 
 up:
 	infra/up.sh
@@ -32,6 +32,9 @@ s2a:
 
 s2b:
 	infra/scenario.sh S2b
+
+s3:
+	infra/scenario.sh S3
 
 test:
 	tests/run.sh
