@@ -64,7 +64,6 @@ Benchmark pods run in `bookinfo` (client and same-node servers on `zt-w1`, cross
 CPU comes from cgroup `cpu.stat` and `/proc/stat` on each node (`bench/node-snapshot.sh` via `limactl shell`), read right before and after each run.
 `make plot` uses the latest run by default; `RUN_ID=a,b` selects runs (for example the main run plus `make bench-link`).
 Dry run without a cluster: `scripts/fake-bench.py && make plot BENCH_DIR=results/bench-fake` (synthetic data through the same record, aggregate and plot steps).
-`make s2b-plain` needs the `S2b-plain` case in `infra/scenario.sh`; `make bench` refuses configurations the script does not know.
 
 ## Attack tests
 
