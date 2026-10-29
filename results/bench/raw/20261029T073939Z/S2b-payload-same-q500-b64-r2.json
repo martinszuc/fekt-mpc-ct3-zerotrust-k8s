@@ -1,0 +1,201 @@
+{
+  "RunType": "HTTP",
+  "Labels": "fortio-same:8080/echo , bench-client-d7d99f94c-66455",
+  "StartTime": "2026-10-29T08:35:19.022882991Z",
+  "RequestedQPS": "500",
+  "RequestedDuration": "20s",
+  "ActualQPS": 499.9660292331828,
+  "ActualDuration": 20001358923,
+  "NumThreads": 8,
+  "Version": "1.76.0",
+  "DurationHistogram": {
+    "Count": 10000,
+    "Min": 0.000332667,
+    "Max": 0.003660548,
+    "Sum": 12.996455951999994,
+    "Avg": 0.0012996455951999994,
+    "StdDev": 0.0004724074884127143,
+    "Data": [
+      {
+        "Start": 0.000332667,
+        "End": 0.001,
+        "Percent": 24.57,
+        "Count": 2457
+      },
+      {
+        "Start": 0.001,
+        "End": 0.002,
+        "Percent": 91.22,
+        "Count": 6665
+      },
+      {
+        "Start": 0.002,
+        "End": 0.003,
+        "Percent": 99.38,
+        "Count": 816
+      },
+      {
+        "Start": 0.003,
+        "End": 0.003660548,
+        "Percent": 100,
+        "Count": 62
+      }
+    ],
+    "Percentiles": [
+      {
+        "Percentile": 50,
+        "Value": 0.0013815453863465867
+      },
+      {
+        "Percentile": 90,
+        "Value": 0.001981695423855964
+      },
+      {
+        "Percentile": 95,
+        "Value": 0.0024632352941176476
+      },
+      {
+        "Percentile": 99,
+        "Value": 0.00295343137254902
+      },
+      {
+        "Percentile": 99.9,
+        "Value": 0.003554008000000007
+      }
+    ]
+  },
+  "ErrorsDurationHistogram": {
+    "Count": 0,
+    "Min": 0,
+    "Max": 0,
+    "Sum": 0,
+    "Avg": 0,
+    "StdDev": 0,
+    "Data": null
+  },
+  "Exactly": 0,
+  "Jitter": false,
+  "Uniform": false,
+  "NoCatchUp": false,
+  "RunID": 0,
+  "AccessLoggerInfo": "",
+  "ID": "2026-10-29-083519_fortio_same_8080_echo_bench_client_d7d99f94c_66455",
+  "RetCodes": {
+    "200": 10000
+  },
+  "IPCountMap": {
+    "10.43.140.24:8080": 8
+  },
+  "Insecure": false,
+  "MTLS": false,
+  "CACert": "",
+  "Cert": "",
+  "Key": "",
+  "UnixDomainSocket": "",
+  "URL": "http://fortio-same:8080/echo",
+  "NumConnections": 1,
+  "Compression": false,
+  "DisableFastClient": false,
+  "HTTP10": false,
+  "H2": false,
+  "DisableKeepAlive": false,
+  "AllowHalfClose": false,
+  "FollowRedirects": false,
+  "Resolve": "",
+  "HTTPReqTimeOut": 3000000000,
+  "UserCredentials": "",
+  "ContentType": "",
+  "Payload": "kmD0U9GGyUdW9mY2NmRKbX3r2gXjY52zPHGfDR2Tg7T2dTLCJGDPCS0kBRRRJKalK0q3IrynTKFXwrtG1pAfqA==",
+  "MethodOverride": "",
+  "LogErrors": true,
+  "SequentialWarmup": false,
+  "ConnReuseRange": [
+    0,
+    0
+  ],
+  "NoResolveEachConn": false,
+  "Offset": 0,
+  "Resolution": 0.001,
+  "Sizes": {
+    "Count": 10000,
+    "Min": 229,
+    "Max": 229,
+    "Sum": 2290000,
+    "Avg": 229,
+    "StdDev": 0,
+    "Data": [
+      {
+        "Start": 229,
+        "End": 229,
+        "Percent": 100,
+        "Count": 10000
+      }
+    ]
+  },
+  "HeaderSizes": {
+    "Count": 10000,
+    "Min": 165,
+    "Max": 165,
+    "Sum": 1650000,
+    "Avg": 165,
+    "StdDev": 0,
+    "Data": [
+      {
+        "Start": 165,
+        "End": 165,
+        "Percent": 100,
+        "Count": 10000
+      }
+    ]
+  },
+  "Sockets": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+  ],
+  "SocketCount": 8,
+  "ConnectionStats": {
+    "Count": 8,
+    "Min": 0.000027,
+    "Max": 0.000243542,
+    "Sum": 0.0009941269999999998,
+    "Avg": 0.00012426587499999998,
+    "StdDev": 0.0000668533876019711,
+    "Data": [
+      {
+        "Start": 0.000027,
+        "End": 0.000243542,
+        "Percent": 100,
+        "Count": 8
+      }
+    ],
+    "Percentiles": [
+      {
+        "Percentile": 50,
+        "Value": 0.00011980371428571428
+      },
+      {
+        "Percentile": 90,
+        "Value": 0.00021879434285714284
+      },
+      {
+        "Percentile": 95,
+        "Value": 0.00023116817142857142
+      },
+      {
+        "Percentile": 99,
+        "Value": 0.00024106723428571426
+      },
+      {
+        "Percentile": 99.9,
+        "Value": 0.00024329452342857142
+      }
+    ]
+  },
+  "AbortOn": 0
+}

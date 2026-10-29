@@ -1,0 +1,201 @@
+{
+  "RunType": "HTTP",
+  "Labels": "fortio-cross:8080/echo , bench-client-d7d99f94c-66455",
+  "StartTime": "2026-10-29T08:44:35.934363696Z",
+  "RequestedQPS": "500",
+  "RequestedDuration": "20s",
+  "ActualQPS": 499.9375316805571,
+  "ActualDuration": 20002499045,
+  "NumThreads": 8,
+  "Version": "1.76.0",
+  "DurationHistogram": {
+    "Count": 10000,
+    "Min": 0.000813095,
+    "Max": 0.003998894,
+    "Sum": 17.031286897000008,
+    "Avg": 0.0017031286897000008,
+    "StdDev": 0.0002729098457792912,
+    "Data": [
+      {
+        "Start": 0.000813095,
+        "End": 0.001,
+        "Percent": 0.13,
+        "Count": 13
+      },
+      {
+        "Start": 0.001,
+        "End": 0.002,
+        "Percent": 87.13,
+        "Count": 8700
+      },
+      {
+        "Start": 0.002,
+        "End": 0.003,
+        "Percent": 99.98,
+        "Count": 1285
+      },
+      {
+        "Start": 0.003,
+        "End": 0.003998894,
+        "Percent": 100,
+        "Count": 2
+      }
+    ],
+    "Percentiles": [
+      {
+        "Percentile": 50,
+        "Value": 0.0015732183908045978
+      },
+      {
+        "Percentile": 90,
+        "Value": 0.002223346303501946
+      },
+      {
+        "Percentile": 95,
+        "Value": 0.002612451361867704
+      },
+      {
+        "Percentile": 99,
+        "Value": 0.0029237354085603112
+      },
+      {
+        "Percentile": 99.9,
+        "Value": 0.002993774319066148
+      }
+    ]
+  },
+  "ErrorsDurationHistogram": {
+    "Count": 0,
+    "Min": 0,
+    "Max": 0,
+    "Sum": 0,
+    "Avg": 0,
+    "StdDev": 0,
+    "Data": null
+  },
+  "Exactly": 0,
+  "Jitter": false,
+  "Uniform": false,
+  "NoCatchUp": false,
+  "RunID": 0,
+  "AccessLoggerInfo": "",
+  "ID": "2026-10-29-084435_fortio_cross_8080_echo_bench_client_d7d99f94c_66455",
+  "RetCodes": {
+    "200": 10000
+  },
+  "IPCountMap": {
+    "10.43.250.232:8080": 8
+  },
+  "Insecure": false,
+  "MTLS": false,
+  "CACert": "",
+  "Cert": "",
+  "Key": "",
+  "UnixDomainSocket": "",
+  "URL": "http://fortio-cross:8080/echo",
+  "NumConnections": 1,
+  "Compression": false,
+  "DisableFastClient": false,
+  "HTTP10": false,
+  "H2": false,
+  "DisableKeepAlive": false,
+  "AllowHalfClose": false,
+  "FollowRedirects": false,
+  "Resolve": "",
+  "HTTPReqTimeOut": 3000000000,
+  "UserCredentials": "",
+  "ContentType": "",
+  "Payload": "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",
+  "MethodOverride": "",
+  "LogErrors": true,
+  "SequentialWarmup": false,
+  "ConnReuseRange": [
+    0,
+    0
+  ],
+  "NoResolveEachConn": false,
+  "Offset": 0,
+  "Resolution": 0.001,
+  "Sizes": {
+    "Count": 10000,
+    "Min": 4263,
+    "Max": 4263,
+    "Sum": 42630000,
+    "Avg": 4263,
+    "StdDev": 0,
+    "Data": [
+      {
+        "Start": 4263,
+        "End": 4263,
+        "Percent": 100,
+        "Count": 10000
+      }
+    ]
+  },
+  "HeaderSizes": {
+    "Count": 10000,
+    "Min": 167,
+    "Max": 167,
+    "Sum": 1670000,
+    "Avg": 167,
+    "StdDev": 0,
+    "Data": [
+      {
+        "Start": 167,
+        "End": 167,
+        "Percent": 100,
+        "Count": 10000
+      }
+    ]
+  },
+  "Sockets": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+  ],
+  "SocketCount": 8,
+  "ConnectionStats": {
+    "Count": 8,
+    "Min": 0.000025291,
+    "Max": 0.000130704,
+    "Sum": 0.000484817,
+    "Avg": 0.000060602125,
+    "StdDev": 0.00003617856337818534,
+    "Data": [
+      {
+        "Start": 0.000025291,
+        "End": 0.000130704,
+        "Percent": 100,
+        "Count": 8
+      }
+    ],
+    "Percentiles": [
+      {
+        "Percentile": 50,
+        "Value": 0.00007046799999999999
+      },
+      {
+        "Percentile": 90,
+        "Value": 0.00011865679999999999
+      },
+      {
+        "Percentile": 95,
+        "Value": 0.00012468039999999998
+      },
+      {
+        "Percentile": 99,
+        "Value": 0.00012949927999999998
+      },
+      {
+        "Percentile": 99.9,
+        "Value": 0.00013058352799999998
+      }
+    ]
+  },
+  "AbortOn": 0
+}

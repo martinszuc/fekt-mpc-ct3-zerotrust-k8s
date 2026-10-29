@@ -1,0 +1,13 @@
+scenario,path,knee_qps,max_qps,recommended_qps
+S2a,same,8000,170220,9198
+S2b-plain,same,8000,21627.4,9198
+S2b,same,8000,18396,9198
+S3,same,8000,18593.2,9198
+S2a,cross,8000,20924.4,5127
+S2b-plain,cross,8000,10831.8,5127
+S2b,cross,8000,10521.4,5127
+S3,cross,8000,10253.7,5127
+S2a,app,400,437.466,183
+S2b-plain,app,200,374.754,183
+S2b,app,200,366.563,183
+S3,app,200,377.912,183

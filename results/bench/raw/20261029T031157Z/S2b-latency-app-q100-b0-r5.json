@@ -1,0 +1,213 @@
+{
+  "RunType": "HTTP",
+  "Labels": "productpage:9080/productpage , bench-client-5769bd4685-pzvcj",
+  "StartTime": "2026-10-29T07:26:34.047223987Z",
+  "RequestedQPS": "100",
+  "RequestedDuration": "1m0s",
+  "ActualQPS": 99.95808632659315,
+  "ActualDuration": 60025158749,
+  "NumThreads": 8,
+  "Version": "1.76.0",
+  "DurationHistogram": {
+    "Count": 6000,
+    "Min": 0.012950721,
+    "Max": 0.029646602,
+    "Sum": 116.89399320300001,
+    "Avg": 0.0194823322005,
+    "StdDev": 0.00316310099053428,
+    "Data": [
+      {
+        "Start": 0.012950721,
+        "End": 0.014,
+        "Percent": 0.9,
+        "Count": 54
+      },
+      {
+        "Start": 0.014,
+        "End": 0.016,
+        "Percent": 10.616666666666667,
+        "Count": 583
+      },
+      {
+        "Start": 0.016,
+        "End": 0.018000000000000002,
+        "Percent": 44.15,
+        "Count": 2012
+      },
+      {
+        "Start": 0.018000000000000002,
+        "End": 0.02,
+        "Percent": 61.21666666666667,
+        "Count": 1024
+      },
+      {
+        "Start": 0.02,
+        "End": 0.025,
+        "Percent": 96.75,
+        "Count": 2132
+      },
+      {
+        "Start": 0.025,
+        "End": 0.029646602,
+        "Percent": 100,
+        "Count": 195
+      }
+    ],
+    "Percentiles": [
+      {
+        "Percentile": 50,
+        "Value": 0.018685546875
+      },
+      {
+        "Percentile": 90,
+        "Value": 0.02405018761726079
+      },
+      {
+        "Percentile": 95,
+        "Value": 0.024753752345215763
+      },
+      {
+        "Percentile": 99,
+        "Value": 0.02821687830769231
+      },
+      {
+        "Percentile": 99.9,
+        "Value": 0.02950362963076924
+      }
+    ]
+  },
+  "ErrorsDurationHistogram": {
+    "Count": 0,
+    "Min": 0,
+    "Max": 0,
+    "Sum": 0,
+    "Avg": 0,
+    "StdDev": 0,
+    "Data": null
+  },
+  "Exactly": 0,
+  "Jitter": false,
+  "Uniform": false,
+  "NoCatchUp": false,
+  "RunID": 0,
+  "AccessLoggerInfo": "",
+  "ID": "2026-10-29-072634_productpage_9080_productpage_bench_client_5769bd4685_pzvcj",
+  "RetCodes": {
+    "200": 6000
+  },
+  "IPCountMap": {
+    "10.43.68.128:9080": 8
+  },
+  "Insecure": false,
+  "MTLS": false,
+  "CACert": "",
+  "Cert": "",
+  "Key": "",
+  "UnixDomainSocket": "",
+  "URL": "http://productpage:9080/productpage",
+  "NumConnections": 1,
+  "Compression": false,
+  "DisableFastClient": false,
+  "HTTP10": false,
+  "H2": false,
+  "DisableKeepAlive": false,
+  "AllowHalfClose": false,
+  "FollowRedirects": false,
+  "Resolve": "",
+  "HTTPReqTimeOut": 3000000000,
+  "UserCredentials": "",
+  "ContentType": "",
+  "Payload": "",
+  "MethodOverride": "",
+  "LogErrors": true,
+  "SequentialWarmup": false,
+  "ConnReuseRange": [
+    0,
+    0
+  ],
+  "NoResolveEachConn": false,
+  "Offset": 0,
+  "Resolution": 0.001,
+  "Sizes": {
+    "Count": 6000,
+    "Min": 15251,
+    "Max": 15251,
+    "Sum": 91506000,
+    "Avg": 15251,
+    "StdDev": 0,
+    "Data": [
+      {
+        "Start": 15251,
+        "End": 15251,
+        "Percent": 100,
+        "Count": 6000
+      }
+    ]
+  },
+  "HeaderSizes": {
+    "Count": 6000,
+    "Min": 183,
+    "Max": 183,
+    "Sum": 1098000,
+    "Avg": 183,
+    "StdDev": 0,
+    "Data": [
+      {
+        "Start": 183,
+        "End": 183,
+        "Percent": 100,
+        "Count": 6000
+      }
+    ]
+  },
+  "Sockets": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+  ],
+  "SocketCount": 8,
+  "ConnectionStats": {
+    "Count": 8,
+    "Min": 0.000019291,
+    "Max": 0.000094,
+    "Sum": 0.00040779200000000003,
+    "Avg": 0.000050974000000000004,
+    "StdDev": 0.000026567747707511827,
+    "Data": [
+      {
+        "Start": 0.000019291,
+        "End": 0.000094,
+        "Percent": 100,
+        "Count": 8
+      }
+    ],
+    "Percentiles": [
+      {
+        "Percentile": 50,
+        "Value": 0.00005130914285714285
+      },
+      {
+        "Percentile": 90,
+        "Value": 0.00008546182857142856
+      },
+      {
+        "Percentile": 95,
+        "Value": 0.00008973091428571427
+      },
+      {
+        "Percentile": 99,
+        "Value": 0.00009314618285714284
+      },
+      {
+        "Percentile": 99.9,
+        "Value": 0.00009391461828571428
+      }
+    ]
+  },
+  "AbortOn": 0
+}

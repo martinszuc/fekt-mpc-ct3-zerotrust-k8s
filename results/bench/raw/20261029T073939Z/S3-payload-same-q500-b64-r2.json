@@ -1,0 +1,201 @@
+{
+  "RunType": "HTTP",
+  "Labels": "fortio-same:8080/echo , bench-client-66b6497577-rzxmd",
+  "StartTime": "2026-10-29T08:01:28.856450655Z",
+  "RequestedQPS": "500",
+  "RequestedDuration": "20s",
+  "ActualQPS": 499.959785059743,
+  "ActualDuration": 20001608727,
+  "NumThreads": 8,
+  "Version": "1.76.0",
+  "DurationHistogram": {
+    "Count": 10000,
+    "Min": 0.000444293,
+    "Max": 0.003591301,
+    "Sum": 12.293026134000005,
+    "Avg": 0.0012293026134000005,
+    "StdDev": 0.0004556034696428188,
+    "Data": [
+      {
+        "Start": 0.000444293,
+        "End": 0.001,
+        "Percent": 33.49,
+        "Count": 3349
+      },
+      {
+        "Start": 0.001,
+        "End": 0.002,
+        "Percent": 91.41,
+        "Count": 5792
+      },
+      {
+        "Start": 0.002,
+        "End": 0.003,
+        "Percent": 99.6,
+        "Count": 819
+      },
+      {
+        "Start": 0.003,
+        "End": 0.003591301,
+        "Percent": 100,
+        "Count": 40
+      }
+    ],
+    "Percentiles": [
+      {
+        "Percentile": 50,
+        "Value": 0.0012850483425414364
+      },
+      {
+        "Percentile": 90,
+        "Value": 0.0019756560773480664
+      },
+      {
+        "Percentile": 95,
+        "Value": 0.002438339438339439
+      },
+      {
+        "Percentile": 99,
+        "Value": 0.0029267399267399277
+      },
+      {
+        "Percentile": 99.9,
+        "Value": 0.0034434757500000105
+      }
+    ]
+  },
+  "ErrorsDurationHistogram": {
+    "Count": 0,
+    "Min": 0,
+    "Max": 0,
+    "Sum": 0,
+    "Avg": 0,
+    "StdDev": 0,
+    "Data": null
+  },
+  "Exactly": 0,
+  "Jitter": false,
+  "Uniform": false,
+  "NoCatchUp": false,
+  "RunID": 0,
+  "AccessLoggerInfo": "",
+  "ID": "2026-10-29-080128_fortio_same_8080_echo_bench_client_66b6497577_rzxmd",
+  "RetCodes": {
+    "200": 10000
+  },
+  "IPCountMap": {
+    "10.43.140.24:8080": 8
+  },
+  "Insecure": false,
+  "MTLS": false,
+  "CACert": "",
+  "Cert": "",
+  "Key": "",
+  "UnixDomainSocket": "",
+  "URL": "http://fortio-same:8080/echo",
+  "NumConnections": 1,
+  "Compression": false,
+  "DisableFastClient": false,
+  "HTTP10": false,
+  "H2": false,
+  "DisableKeepAlive": false,
+  "AllowHalfClose": false,
+  "FollowRedirects": false,
+  "Resolve": "",
+  "HTTPReqTimeOut": 3000000000,
+  "UserCredentials": "",
+  "ContentType": "",
+  "Payload": "xFEzDoPKcAIqAjidN/2Tfp5LJoobfkF5AVSk0Bqp6EhG+woS5KUB4ze0NN2QsIv5qNL2R9FmVSus6RmrU1yuwg==",
+  "MethodOverride": "",
+  "LogErrors": true,
+  "SequentialWarmup": false,
+  "ConnReuseRange": [
+    0,
+    0
+  ],
+  "NoResolveEachConn": false,
+  "Offset": 0,
+  "Resolution": 0.001,
+  "Sizes": {
+    "Count": 10000,
+    "Min": 229,
+    "Max": 229,
+    "Sum": 2290000,
+    "Avg": 229,
+    "StdDev": 0,
+    "Data": [
+      {
+        "Start": 229,
+        "End": 229,
+        "Percent": 100,
+        "Count": 10000
+      }
+    ]
+  },
+  "HeaderSizes": {
+    "Count": 10000,
+    "Min": 165,
+    "Max": 165,
+    "Sum": 1650000,
+    "Avg": 165,
+    "StdDev": 0,
+    "Data": [
+      {
+        "Start": 165,
+        "End": 165,
+        "Percent": 100,
+        "Count": 10000
+      }
+    ]
+  },
+  "Sockets": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+  ],
+  "SocketCount": 8,
+  "ConnectionStats": {
+    "Count": 8,
+    "Min": 0.000022333,
+    "Max": 0.000573835,
+    "Sum": 0.000808168,
+    "Avg": 0.000101021,
+    "StdDev": 0.00017900051727439225,
+    "Data": [
+      {
+        "Start": 0.000022333,
+        "End": 0.000573835,
+        "Percent": 100,
+        "Count": 8
+      }
+    ],
+    "Percentiles": [
+      {
+        "Percentile": 50,
+        "Value": 0.00025869099999999997
+      },
+      {
+        "Percentile": 90,
+        "Value": 0.0005108061999999999
+      },
+      {
+        "Percentile": 95,
+        "Value": 0.0005423206
+      },
+      {
+        "Percentile": 99,
+        "Value": 0.0005675321199999999
+      },
+      {
+        "Percentile": 99.9,
+        "Value": 0.000573204712
+      }
+    ]
+  },
+  "AbortOn": 0
+}

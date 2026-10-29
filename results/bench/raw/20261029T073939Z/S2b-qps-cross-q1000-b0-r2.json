@@ -1,0 +1,201 @@
+{
+  "RunType": "HTTP",
+  "Labels": "fortio-cross:8080/echo , bench-client-d7d99f94c-66455",
+  "StartTime": "2026-10-29T08:24:27.929725937Z",
+  "RequestedQPS": "1000",
+  "RequestedDuration": "20s",
+  "ActualQPS": 999.9024767117193,
+  "ActualDuration": 20001950656,
+  "NumThreads": 8,
+  "Version": "1.76.0",
+  "DurationHistogram": {
+    "Count": 20000,
+    "Min": 0.000563626,
+    "Max": 0.003282589,
+    "Sum": 22.587765346999987,
+    "Avg": 0.0011293882673499994,
+    "StdDev": 0.00030897912414676695,
+    "Data": [
+      {
+        "Start": 0.000563626,
+        "End": 0.001,
+        "Percent": 36.545,
+        "Count": 7309
+      },
+      {
+        "Start": 0.001,
+        "End": 0.002,
+        "Percent": 97.48,
+        "Count": 12187
+      },
+      {
+        "Start": 0.002,
+        "End": 0.003,
+        "Percent": 99.89,
+        "Count": 482
+      },
+      {
+        "Start": 0.003,
+        "End": 0.003282589,
+        "Percent": 100,
+        "Count": 22
+      }
+    ],
+    "Percentiles": [
+      {
+        "Percentile": 50,
+        "Value": 0.001220809058833183
+      },
+      {
+        "Percentile": 90,
+        "Value": 0.001877246245999836
+      },
+      {
+        "Percentile": 95,
+        "Value": 0.0019593008943956675
+      },
+      {
+        "Percentile": 99,
+        "Value": 0.0026307053941908706
+      },
+      {
+        "Percentile": 99.9,
+        "Value": 0.0030256899090909226
+      }
+    ]
+  },
+  "ErrorsDurationHistogram": {
+    "Count": 0,
+    "Min": 0,
+    "Max": 0,
+    "Sum": 0,
+    "Avg": 0,
+    "StdDev": 0,
+    "Data": null
+  },
+  "Exactly": 0,
+  "Jitter": false,
+  "Uniform": false,
+  "NoCatchUp": false,
+  "RunID": 0,
+  "AccessLoggerInfo": "",
+  "ID": "2026-10-29-082427_fortio_cross_8080_echo_bench_client_d7d99f94c_66455",
+  "RetCodes": {
+    "200": 20000
+  },
+  "IPCountMap": {
+    "10.43.250.232:8080": 8
+  },
+  "Insecure": false,
+  "MTLS": false,
+  "CACert": "",
+  "Cert": "",
+  "Key": "",
+  "UnixDomainSocket": "",
+  "URL": "http://fortio-cross:8080/echo",
+  "NumConnections": 1,
+  "Compression": false,
+  "DisableFastClient": false,
+  "HTTP10": false,
+  "H2": false,
+  "DisableKeepAlive": false,
+  "AllowHalfClose": false,
+  "FollowRedirects": false,
+  "Resolve": "",
+  "HTTPReqTimeOut": 3000000000,
+  "UserCredentials": "",
+  "ContentType": "",
+  "Payload": "",
+  "MethodOverride": "",
+  "LogErrors": true,
+  "SequentialWarmup": false,
+  "ConnReuseRange": [
+    0,
+    0
+  ],
+  "NoResolveEachConn": false,
+  "Offset": 0,
+  "Resolution": 0.001,
+  "Sizes": {
+    "Count": 20000,
+    "Min": 124,
+    "Max": 124,
+    "Sum": 2480000,
+    "Avg": 124,
+    "StdDev": 0,
+    "Data": [
+      {
+        "Start": 124,
+        "End": 124,
+        "Percent": 100,
+        "Count": 20000
+      }
+    ]
+  },
+  "HeaderSizes": {
+    "Count": 20000,
+    "Min": 124,
+    "Max": 124,
+    "Sum": 2480000,
+    "Avg": 124,
+    "StdDev": 0,
+    "Data": [
+      {
+        "Start": 124,
+        "End": 124,
+        "Percent": 100,
+        "Count": 20000
+      }
+    ]
+  },
+  "Sockets": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+  ],
+  "SocketCount": 8,
+  "ConnectionStats": {
+    "Count": 8,
+    "Min": 0.000024416,
+    "Max": 0.000105209,
+    "Sum": 0.00044425000000000004,
+    "Avg": 0.000055531250000000005,
+    "StdDev": 0.0000308694674425637,
+    "Data": [
+      {
+        "Start": 0.000024416,
+        "End": 0.000105209,
+        "Percent": 100,
+        "Count": 8
+      }
+    ],
+    "Percentiles": [
+      {
+        "Percentile": 50,
+        "Value": 0.000059041571428571425
+      },
+      {
+        "Percentile": 90,
+        "Value": 0.00009597551428571428
+      },
+      {
+        "Percentile": 95,
+        "Value": 0.00010059225714285714
+      },
+      {
+        "Percentile": 99,
+        "Value": 0.00010428565142857143
+      },
+      {
+        "Percentile": 99.9,
+        "Value": 0.00010511666514285715
+      }
+    ]
+  },
+  "AbortOn": 0
+}
