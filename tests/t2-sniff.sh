@@ -17,28 +17,41 @@ limactl shell "$NODE" sudo timeout "$SECONDS_" tcpdump -i "$NODE_IFACE" -s 0 -U 
 cap=$!
 sleep 3
 # legitimate user traffic: productpage -> details/reviews -> ratings -> mongodb, all cross-node
-probe productpage-v1 http "http://localhost:9080/productpage?u=normal" >/dev/null
-for _ in 1 2 3 4; do probe productpage-v1 http "http://localhost:9080/productpage?u=normal" >/dev/null; done
+# a request counts only if the page carries all 9 rating stars (the whole call graph answered)
+REQUESTS=5
+ok=0
+for _ in $(seq "$REQUESTS"); do
+  kubectl -n "$NS" exec deploy/productpage-v1 -c productpage -- python -c \
+    "import urllib.request as u; b=u.urlopen('http://localhost:9080/productpage?u=normal',timeout=4).read().decode(); exit(b.count('glyphicon-star')!=9)" \
+    2>/dev/null && ok=$((ok + 1))
+done
 wait $cap || true
 
 hits=$(tshark -r "$pcap" -Y "frame contains \"$MARKER\"" 2>/dev/null | wc -l | tr -d ' ')
-# without any inter-node tunnel frames the capture proves nothing either way
-tunnel=$(tshark -r "$pcap" -Y 'udp.port==8472 || udp.port==51871' 2>/dev/null | wc -l | tr -d ' ')
-if [[ $hits -gt 0 ]]; then observed=succeeded; tag=plaintext
-elif [[ $tunnel -gt 0 ]]; then observed=blocked; tag=encrypted
-else observed=no-traffic; tag=no-traffic; fi
+vxlan=$(tshark -r "$pcap" -Y 'udp.port==8472' 2>/dev/null | wc -l | tr -d ' ')
+wg=$(tshark -r "$pcap" -Y 'udp.port==51871' 2>/dev/null | wc -l | tr -d ' ')
+# app ports only: kubelet and health-check TLS would otherwise count as mesh mTLS
+mtls=$(tshark -r "$pcap" -d udp.port==8472,vxlan -Y 'vxlan && tls && (tcp.port==9080 || tcp.port==27017)' 2>/dev/null | wc -l | tr -d ' ')
+plain=$(tshark -r "$pcap" -d udp.port==8472,vxlan -Y 'vxlan && (http || mongo) && (tcp.port==9080 || tcp.port==27017)' 2>/dev/null | wc -l | tr -d ' ')
+# blocked needs proof: traffic ran and the capture shows it encrypted (WireGuard only, or mTLS on the app ports)
+if [[ $ok -ne $REQUESTS ]]; then observed=error; tag=no-traffic
+elif [[ $hits -gt 0 ]]; then observed=succeeded; tag=plaintext
+elif [[ $vxlan -eq 0 && $wg -gt 0 ]]; then observed=blocked; tag=encrypted
+elif [[ $mtls -gt 0 && $plain -eq 0 ]]; then observed=blocked; tag=encrypted
+else observed=error; tag=no-traffic; fi
 final=$base-$tag.pcap
 mv "$pcap" "$final"
 txt=${final%.pcap}.txt
 {
   echo "capture: $NODE $NODE_IFACE, ${SECONDS_}s, filter udp"
-  echo "frames total: $(tshark -r "$final" 2>/dev/null | wc -l | tr -d ' '), tunnel frames (8472/51871): $tunnel, frames containing \"$MARKER\": $hits"
+  echo "requests with the full call graph: $ok/$REQUESTS"
+  echo "frames total: $(tshark -r "$final" 2>/dev/null | wc -l | tr -d ' '), VXLAN (8472): $vxlan, WireGuard (51871): $wg, frames containing \"$MARKER\": $hits"
+  echo "inner HTTP/MongoDB in plaintext: $plain, app-port TLS (9080, 27017): $mtls"
   echo
   # verdict above is about payload; this is about metadata (who talks to whom, on which port)
   echo "## metadata exposure"
   echo "VXLAN frames with readable inner pod IP/TCP headers: $(tshark -r "$final" -d udp.port==8472,vxlan -Y 'vxlan && tcp' 2>/dev/null | wc -l | tr -d ' ')"
-  # app ports only: kubelet and health-check TLS would otherwise count as mesh mTLS
-  echo "of which app traffic (9080, 27017) with TLS payload (mesh mTLS): $(tshark -r "$final" -d udp.port==8472,vxlan -Y 'vxlan && tls && (tcp.port==9080 || tcp.port==27017)' 2>/dev/null | wc -l | tr -d ' ')"
+  echo "of which app traffic (9080, 27017) with TLS payload (mesh mTLS): $mtls"
   # any segment, not only SYNs: pooled keep-alive connections predate the capture; lower port taken as the server
   echo "inner pod-to-pod conversations (client server port):"
   tshark -r "$final" -d udp.port==8472,vxlan -Y 'vxlan && tcp' -T fields -E occurrence=l \

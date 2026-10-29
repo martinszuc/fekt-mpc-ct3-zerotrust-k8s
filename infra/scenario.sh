@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# switches the cluster to exactly one scenario: infra/scenario.sh S0|S1|S2a|S2b
+# switches the cluster to exactly one scenario: infra/scenario.sh S0|S1|S2a|S2b|S3
 set -euo pipefail
 cd "$(dirname "$0")/.."
 source infra/config.env
@@ -54,6 +54,13 @@ mesh() {
   if [[ $1 == on && $with != "$total" ]] || [[ $1 == off && $with != 0 ]]; then RESTART=1; fi
 }
 
+# S3: Istio AuthorizationPolicy on top of S2b; policies take effect via xDS, no restart
+authz() {
+  if [[ $1 == on ]]; then kubectl apply -k manifests/s3-authz
+  else kubectl delete -k manifests/s3-authz --ignore-not-found 2>/dev/null || true
+  fi
+}
+
 restart_app() {
   ((RESTART)) || return 0
   kubectl -n "$NS" rollout restart deploy
@@ -79,18 +86,21 @@ case ${1:-} in
     kubectl delete -k manifests/s1-segmentation --ignore-not-found
     sa_automount ""
     wireguard off
+    authz off
     mesh off
     ;;
   S1)
     kubectl apply -k manifests/s1-segmentation
     sa_automount false
     wireguard off
+    authz off
     mesh off
     ;;
   S2a)
     kubectl apply -k manifests/s1-segmentation
     sa_automount false
     wireguard on
+    authz off
     mesh off
     ;;
   S2b)
@@ -98,13 +108,21 @@ case ${1:-} in
     sa_automount false
     wireguard off
     mesh on
+    authz off
     ;;
-  *) echo "usage: $0 S0|S1|S2a|S2b" >&2; exit 2 ;;
+  S3)
+    kubectl apply -k manifests/s1-segmentation
+    sa_automount false
+    wireguard off
+    mesh on
+    authz on
+    ;;
+  *) echo "usage: $0 S0|S1|S2a|S2b|S3" >&2; exit 2 ;;
 esac
 
 restart_app
 # control plane goes only after no pod depends on it
-[[ $1 == S2b ]] || infra/istio.sh off
+[[ $1 == S2b || $1 == S3 ]] || infra/istio.sh off
 
 # annotation, not label: namespace labels are part of Cilium identities
 kubectl annotate ns "$NS" zt-scenario="$1" --overwrite

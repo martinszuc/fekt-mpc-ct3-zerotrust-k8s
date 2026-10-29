@@ -1,0 +1,7 @@
+# no rules: every request to a bookinfo workload is denied unless an ALLOW policy below matches
+# kubelet probes are unaffected (rewritten by the injector to the sidecar agent, port 15020)
+apiVersion: security.istio.io/v1
+kind: AuthorizationPolicy
+metadata:
+  name: allow-nothing
+spec: {}

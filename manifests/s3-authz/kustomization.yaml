@@ -1,0 +1,7 @@
+# S3: S2b + Istio L7 authorization (applied on top of s1-segmentation and s2b-mtls)
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: bookinfo
+resources:
+  - allow-nothing.yaml
+  - allow-app.yaml
