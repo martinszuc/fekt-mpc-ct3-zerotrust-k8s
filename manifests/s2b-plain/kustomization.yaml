@@ -1,0 +1,13 @@
+# S2b-plain: S2b with mTLS off, sidecars stay (measurement only: splits proxy cost from mTLS cost)
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: bookinfo
+resources:
+  - ../s2b-mtls
+  - destination-rule.yaml
+patches:
+  - target: {kind: PeerAuthentication, name: default}
+    patch: |-
+      - op: replace
+        path: /spec/mtls/mode
+        value: DISABLE

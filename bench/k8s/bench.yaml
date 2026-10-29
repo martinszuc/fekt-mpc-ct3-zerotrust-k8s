@@ -1,0 +1,171 @@
+# benchmark pods in the app namespace, so every scenario control applies to them too
+# client on zt-w1; servers on zt-w1 (same-node path) and zt-w2 (cross-node path)
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: bench-client
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: bench-server
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bench-client
+  labels: {app: bench-client}
+spec:
+  replicas: 1
+  selector:
+    matchLabels: {app: bench-client}
+  template:
+    metadata:
+      labels: {app: bench-client}
+    spec:
+      serviceAccountName: bench-client
+      automountServiceAccountToken: false
+      nodeSelector: {kubernetes.io/hostname: lima-zt-w1}
+      containers:
+        # fortio and iperf3 clients run via kubectl exec
+        - name: fortio
+          image: fortio/fortio:1.76.0
+          args: [server, -http-port, "8080"]
+        - name: iperf3
+          image: nicolaka/netshoot:v0.14
+          command: [sleep, infinity]
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fortio-same
+  labels: {app: fortio-server, placement: same}
+spec:
+  replicas: 1
+  selector:
+    matchLabels: {app: fortio-server, placement: same}
+  template:
+    metadata:
+      labels: {app: fortio-server, placement: same}
+    spec:
+      serviceAccountName: bench-server
+      automountServiceAccountToken: false
+      nodeSelector: {kubernetes.io/hostname: lima-zt-w1}
+      containers:
+        - name: fortio
+          image: fortio/fortio:1.76.0
+          args: [server, -http-port, "8080"]
+          ports:
+            - containerPort: 8080
+          readinessProbe:
+            httpGet: {path: /echo, port: 8080}
+            periodSeconds: 5
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fortio-cross
+  labels: {app: fortio-server, placement: cross}
+spec:
+  replicas: 1
+  selector:
+    matchLabels: {app: fortio-server, placement: cross}
+  template:
+    metadata:
+      labels: {app: fortio-server, placement: cross}
+    spec:
+      serviceAccountName: bench-server
+      automountServiceAccountToken: false
+      nodeSelector: {kubernetes.io/hostname: lima-zt-w2}
+      containers:
+        - name: fortio
+          image: fortio/fortio:1.76.0
+          args: [server, -http-port, "8080"]
+          ports:
+            - containerPort: 8080
+          readinessProbe:
+            httpGet: {path: /echo, port: 8080}
+            periodSeconds: 5
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: iperf3-same
+  labels: {app: iperf3-server, placement: same}
+spec:
+  replicas: 1
+  selector:
+    matchLabels: {app: iperf3-server, placement: same}
+  template:
+    metadata:
+      labels: {app: iperf3-server, placement: same}
+    spec:
+      serviceAccountName: bench-server
+      automountServiceAccountToken: false
+      nodeSelector: {kubernetes.io/hostname: lima-zt-w1}
+      containers:
+        - name: iperf3
+          image: nicolaka/netshoot:v0.14
+          command: [iperf3, -s, -p, "5201"]
+          ports:
+            - containerPort: 5201
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: iperf3-cross
+  labels: {app: iperf3-server, placement: cross}
+spec:
+  replicas: 1
+  selector:
+    matchLabels: {app: iperf3-server, placement: cross}
+  template:
+    metadata:
+      labels: {app: iperf3-server, placement: cross}
+    spec:
+      serviceAccountName: bench-server
+      automountServiceAccountToken: false
+      nodeSelector: {kubernetes.io/hostname: lima-zt-w2}
+      containers:
+        - name: iperf3
+          image: nicolaka/netshoot:v0.14
+          command: [iperf3, -s, -p, "5201"]
+          ports:
+            - containerPort: 5201
+---
+# services, not pod IPs: the mesh only applies mTLS to traffic it can route
+apiVersion: v1
+kind: Service
+metadata:
+  name: fortio-same
+spec:
+  selector: {app: fortio-server, placement: same}
+  ports:
+    - {name: http, port: 8080, appProtocol: http}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: fortio-cross
+spec:
+  selector: {app: fortio-server, placement: cross}
+  ports:
+    - {name: http, port: 8080, appProtocol: http}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: iperf3-same
+spec:
+  selector: {app: iperf3-server, placement: same}
+  ports:
+    - {name: tcp-iperf3, port: 5201, appProtocol: tcp}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: iperf3-cross
+spec:
+  selector: {app: iperf3-server, placement: cross}
+  ports:
+    - {name: tcp-iperf3, port: 5201, appProtocol: tcp}

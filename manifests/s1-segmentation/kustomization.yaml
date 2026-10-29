@@ -5,3 +5,4 @@ namespace: bookinfo
 resources:
   - default-deny.yaml
   - allow-app.yaml
+  - bench-allow.yaml
