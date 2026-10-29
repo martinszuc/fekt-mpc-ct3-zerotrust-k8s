@@ -1,0 +1,207 @@
+{
+  "RunType": "HTTP",
+  "Labels": "fortio-same:8080/echo , bench-client-66b6497577-rzxmd",
+  "StartTime": "2026-10-29T07:40:31.104402091Z",
+  "RequestedQPS": "100",
+  "RequestedDuration": "20s",
+  "ActualQPS": 99.98779093079571,
+  "ActualDuration": 20002442112,
+  "NumThreads": 8,
+  "Version": "1.76.0",
+  "DurationHistogram": {
+    "Count": 2000,
+    "Min": 0.000588632,
+    "Max": 0.004502133,
+    "Sum": 4.020309143,
+    "Avg": 0.0020101545715,
+    "StdDev": 0.0008158309752196306,
+    "Data": [
+      {
+        "Start": 0.000588632,
+        "End": 0.001,
+        "Percent": 4,
+        "Count": 80
+      },
+      {
+        "Start": 0.001,
+        "End": 0.002,
+        "Percent": 62.25,
+        "Count": 1165
+      },
+      {
+        "Start": 0.002,
+        "End": 0.003,
+        "Percent": 83.4,
+        "Count": 423
+      },
+      {
+        "Start": 0.003,
+        "End": 0.004,
+        "Percent": 99.2,
+        "Count": 316
+      },
+      {
+        "Start": 0.004,
+        "End": 0.004502133,
+        "Percent": 100,
+        "Count": 16
+      }
+    ],
+    "Percentiles": [
+      {
+        "Percentile": 50,
+        "Value": 0.0017896995708154507
+      },
+      {
+        "Percentile": 90,
+        "Value": 0.0034177215189873417
+      },
+      {
+        "Percentile": 95,
+        "Value": 0.0037341772151898733
+      },
+      {
+        "Percentile": 99,
+        "Value": 0.003987341772151899
+      },
+      {
+        "Percentile": 99.9,
+        "Value": 0.004439366375000003
+      }
+    ]
+  },
+  "ErrorsDurationHistogram": {
+    "Count": 0,
+    "Min": 0,
+    "Max": 0,
+    "Sum": 0,
+    "Avg": 0,
+    "StdDev": 0,
+    "Data": null
+  },
+  "Exactly": 0,
+  "Jitter": false,
+  "Uniform": false,
+  "NoCatchUp": false,
+  "RunID": 0,
+  "AccessLoggerInfo": "",
+  "ID": "2026-10-29-074031_fortio_same_8080_echo_bench_client_66b6497577_rzxmd",
+  "RetCodes": {
+    "200": 2000
+  },
+  "IPCountMap": {
+    "10.43.140.24:8080": 8
+  },
+  "Insecure": false,
+  "MTLS": false,
+  "CACert": "",
+  "Cert": "",
+  "Key": "",
+  "UnixDomainSocket": "",
+  "URL": "http://fortio-same:8080/echo",
+  "NumConnections": 1,
+  "Compression": false,
+  "DisableFastClient": false,
+  "HTTP10": false,
+  "H2": false,
+  "DisableKeepAlive": false,
+  "AllowHalfClose": false,
+  "FollowRedirects": false,
+  "Resolve": "",
+  "HTTPReqTimeOut": 3000000000,
+  "UserCredentials": "",
+  "ContentType": "",
+  "Payload": "",
+  "MethodOverride": "",
+  "LogErrors": true,
+  "SequentialWarmup": false,
+  "ConnReuseRange": [
+    0,
+    0
+  ],
+  "NoResolveEachConn": false,
+  "Offset": 0,
+  "Resolution": 0.001,
+  "Sizes": {
+    "Count": 2000,
+    "Min": 124,
+    "Max": 124,
+    "Sum": 248000,
+    "Avg": 124,
+    "StdDev": 0,
+    "Data": [
+      {
+        "Start": 124,
+        "End": 124,
+        "Percent": 100,
+        "Count": 2000
+      }
+    ]
+  },
+  "HeaderSizes": {
+    "Count": 2000,
+    "Min": 124,
+    "Max": 124,
+    "Sum": 248000,
+    "Avg": 124,
+    "StdDev": 0,
+    "Data": [
+      {
+        "Start": 124,
+        "End": 124,
+        "Percent": 100,
+        "Count": 2000
+      }
+    ]
+  },
+  "Sockets": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+  ],
+  "SocketCount": 8,
+  "ConnectionStats": {
+    "Count": 8,
+    "Min": 0.000109543,
+    "Max": 0.000236169,
+    "Sum": 0.001378348,
+    "Avg": 0.0001722935,
+    "StdDev": 0.000040166008038514375,
+    "Data": [
+      {
+        "Start": 0.000109543,
+        "End": 0.000236169,
+        "Percent": 100,
+        "Count": 8
+      }
+    ],
+    "Percentiles": [
+      {
+        "Percentile": 50,
+        "Value": 0.0001638112857142857
+      },
+      {
+        "Percentile": 90,
+        "Value": 0.00022169745714285713
+      },
+      {
+        "Percentile": 95,
+        "Value": 0.00022893322857142856
+      },
+      {
+        "Percentile": 99,
+        "Value": 0.0002347218457142857
+      },
+      {
+        "Percentile": 99.9,
+        "Value": 0.00023602428457142856
+      }
+    ]
+  },
+  "AbortOn": 0
+}

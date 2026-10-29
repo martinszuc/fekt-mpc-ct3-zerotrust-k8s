@@ -1,0 +1,195 @@
+{
+  "RunType": "HTTP",
+  "Labels": "fortio-same:8080/echo , bench-client-d7d99f94c-66455",
+  "StartTime": "2026-10-29T08:17:45.833870375Z",
+  "RequestedQPS": "2000",
+  "RequestedDuration": "20s",
+  "ActualQPS": 1999.8372941376756,
+  "ActualDuration": 20001627191,
+  "NumThreads": 8,
+  "Version": "1.76.0",
+  "DurationHistogram": {
+    "Count": 40000,
+    "Min": 0.000262792,
+    "Max": 0.002008379,
+    "Sum": 31.56912715000002,
+    "Avg": 0.0007892281787500005,
+    "StdDev": 0.00017300963140725163,
+    "Data": [
+      {
+        "Start": 0.000262792,
+        "End": 0.001,
+        "Percent": 91.5325,
+        "Count": 36613
+      },
+      {
+        "Start": 0.001,
+        "End": 0.002,
+        "Percent": 99.9975,
+        "Count": 3386
+      },
+      {
+        "Start": 0.002,
+        "End": 0.002008379,
+        "Percent": 100,
+        "Count": 1
+      }
+    ],
+    "Percentiles": [
+      {
+        "Percentile": 50,
+        "Value": 0.0006654857286135693
+      },
+      {
+        "Percentile": 90,
+        "Value": 0.000987656820058997
+      },
+      {
+        "Percentile": 95,
+        "Value": 0.0014096278795038394
+      },
+      {
+        "Percentile": 99,
+        "Value": 0.001882161842882457
+      },
+      {
+        "Percentile": 99.9,
+        "Value": 0.0019884819846426468
+      }
+    ]
+  },
+  "ErrorsDurationHistogram": {
+    "Count": 0,
+    "Min": 0,
+    "Max": 0,
+    "Sum": 0,
+    "Avg": 0,
+    "StdDev": 0,
+    "Data": null
+  },
+  "Exactly": 0,
+  "Jitter": false,
+  "Uniform": false,
+  "NoCatchUp": false,
+  "RunID": 0,
+  "AccessLoggerInfo": "",
+  "ID": "2026-10-29-081745_fortio_same_8080_echo_bench_client_d7d99f94c_66455",
+  "RetCodes": {
+    "200": 40000
+  },
+  "IPCountMap": {
+    "10.43.140.24:8080": 8
+  },
+  "Insecure": false,
+  "MTLS": false,
+  "CACert": "",
+  "Cert": "",
+  "Key": "",
+  "UnixDomainSocket": "",
+  "URL": "http://fortio-same:8080/echo",
+  "NumConnections": 1,
+  "Compression": false,
+  "DisableFastClient": false,
+  "HTTP10": false,
+  "H2": false,
+  "DisableKeepAlive": false,
+  "AllowHalfClose": false,
+  "FollowRedirects": false,
+  "Resolve": "",
+  "HTTPReqTimeOut": 3000000000,
+  "UserCredentials": "",
+  "ContentType": "",
+  "Payload": "",
+  "MethodOverride": "",
+  "LogErrors": true,
+  "SequentialWarmup": false,
+  "ConnReuseRange": [
+    0,
+    0
+  ],
+  "NoResolveEachConn": false,
+  "Offset": 0,
+  "Resolution": 0.001,
+  "Sizes": {
+    "Count": 40000,
+    "Min": 124,
+    "Max": 124,
+    "Sum": 4960000,
+    "Avg": 124,
+    "StdDev": 0,
+    "Data": [
+      {
+        "Start": 124,
+        "End": 124,
+        "Percent": 100,
+        "Count": 40000
+      }
+    ]
+  },
+  "HeaderSizes": {
+    "Count": 40000,
+    "Min": 124,
+    "Max": 124,
+    "Sum": 4960000,
+    "Avg": 124,
+    "StdDev": 0,
+    "Data": [
+      {
+        "Start": 124,
+        "End": 124,
+        "Percent": 100,
+        "Count": 40000
+      }
+    ]
+  },
+  "Sockets": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+  ],
+  "SocketCount": 8,
+  "ConnectionStats": {
+    "Count": 8,
+    "Min": 0.000018,
+    "Max": 0.000074,
+    "Sum": 0.000282584,
+    "Avg": 0.000035323,
+    "StdDev": 0.000018169058643749272,
+    "Data": [
+      {
+        "Start": 0.000018,
+        "End": 0.000074,
+        "Percent": 100,
+        "Count": 8
+      }
+    ],
+    "Percentiles": [
+      {
+        "Percentile": 50,
+        "Value": 0.000042
+      },
+      {
+        "Percentile": 90,
+        "Value": 0.00006759999999999999
+      },
+      {
+        "Percentile": 95,
+        "Value": 0.00007079999999999999
+      },
+      {
+        "Percentile": 99,
+        "Value": 0.00007335999999999999
+      },
+      {
+        "Percentile": 99.9,
+        "Value": 0.00007393599999999999
+      }
+    ]
+  },
+  "AbortOn": 0
+}
