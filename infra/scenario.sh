@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# switches the cluster to exactly one scenario: infra/scenario.sh S0|S1|S2a|S2b|S3
+# switches the cluster to exactly one scenario: infra/scenario.sh S0|S1|S2a|S2b|S2b-plain|S3
 set -euo pipefail
 cd "$(dirname "$0")/.."
 source infra/config.env
@@ -37,16 +37,20 @@ sidecars() {
     | length'
 }
 
-# S2b: Istio sidecars with mTLS STRICT; the control plane exists only in mesh scenarios
+# S2b: Istio sidecars with mTLS STRICT; S2b-plain: same with mTLS DISABLE (measurement only)
+# the control plane exists only in mesh scenarios; mesh on <kustomize dir> | mesh off
 mesh() {
   local total with
   if [[ $1 == on ]]; then
     infra/istio.sh on
-    kubectl apply -k manifests/s2b-mtls
+    kubectl apply -k "$2"
+    # S2b-plain leaves a plaintext DestinationRule behind
+    [[ $2 == manifests/s2b-plain ]] || kubectl -n "$NS" delete destinationrule mesh-plaintext --ignore-not-found
     kubectl label ns "$NS" istio-injection=enabled --overwrite
   else
     kubectl -n "$NS" delete networkpolicy allow-istiod --ignore-not-found
     kubectl -n "$NS" delete peerauthentication default --ignore-not-found 2>/dev/null || true
+    kubectl -n "$NS" delete destinationrule mesh-plaintext --ignore-not-found 2>/dev/null || true
     kubectl label ns "$NS" istio-injection-
   fi
   total=$(kubectl -n "$NS" get pods -o json | jq '[.items[] | select(.metadata.name | startswith("rogue-") | not)] | length')
@@ -107,22 +111,29 @@ case ${1:-} in
     kubectl apply -k manifests/s1-segmentation
     sa_automount false
     wireguard off
-    mesh on
+    mesh on manifests/s2b-mtls
+    authz off
+    ;;
+  S2b-plain)
+    kubectl apply -k manifests/s1-segmentation
+    sa_automount false
+    wireguard off
+    mesh on manifests/s2b-plain
     authz off
     ;;
   S3)
     kubectl apply -k manifests/s1-segmentation
     sa_automount false
     wireguard off
-    mesh on
+    mesh on manifests/s2b-mtls
     authz on
     ;;
-  *) echo "usage: $0 S0|S1|S2a|S2b|S3" >&2; exit 2 ;;
+  *) echo "usage: $0 S0|S1|S2a|S2b|S2b-plain|S3" >&2; exit 2 ;;
 esac
 
 restart_app
 # control plane goes only after no pod depends on it
-[[ $1 == S2b || $1 == S3 ]] || infra/istio.sh off
+[[ $1 == S2b || $1 == S2b-plain || $1 == S3 ]] || infra/istio.sh off
 
 # annotation, not label: namespace labels are part of Cilium identities
 kubectl annotate ns "$NS" zt-scenario="$1" --overwrite
