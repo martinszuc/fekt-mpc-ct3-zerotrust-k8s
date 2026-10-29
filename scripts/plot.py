@@ -11,7 +11,7 @@ from collections import defaultdict
 import matplotlib.pyplot as plt
 from matplotlib.ticker import FuncFormatter, LogLocator
 
-from aggregate import cost, knee, load, run_ids_arg, scenario_key, stats
+from aggregate import cost, drop_arg, knee, load, run_ids_arg, scenario_key, stats
 from style import INK, MARKER, MUTED, color, label, panel, save
 
 PATH_LABEL = {"same": "same node", "cross": "cross node", "app": "full app", "node": "node to node"}
@@ -229,8 +229,9 @@ def main():
     ap.add_argument("--in", dest="indir", default="results/bench")
     ap.add_argument("--out", default="docs/figures/bench")
     ap.add_argument("--run-id", type=run_ids_arg, help="comma-separated run ids (default: latest)")
+    ap.add_argument("--drop", type=drop_arg, default=[], help="comma-separated run_id/scenario/suite to leave out")
     args = ap.parse_args()
-    latency, throughput, resources = load(args.indir, args.run_id)
+    latency, throughput, resources = load(args.indir, args.run_id, args.drop)
     if not latency and not throughput:
         raise SystemExit(f"no results in {args.indir}; run make bench first")
     costs = cost(latency, throughput, resources)

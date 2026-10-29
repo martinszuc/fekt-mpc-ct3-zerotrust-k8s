@@ -152,8 +152,8 @@ def select_runs(rows, run_ids=None):
     return set(run_ids)
 
 
-def load(indir, run_ids=None):
-    """latency, throughput and resource rows of the selected runs"""
+def load(indir, run_ids=None, drop=()):
+    """latency, throughput and resource rows of the selected runs, without the dropped (run, scenario, suite) parts"""
     tables = [read(os.path.join(indir, f)) for f in ("latency.csv", "throughput.csv", "resources.csv")]
     keep = select_runs([r for t in tables for r in t], run_ids)
     missing = set(run_ids or ()) - {r["run_id"] for t in tables for r in t}
@@ -161,19 +161,30 @@ def load(indir, run_ids=None):
         raise SystemExit(f"run ids not found in {indir}: {', '.join(sorted(missing))}")
     if keep:
         print(f"runs: {', '.join(sorted(keep))}")
-    return tuple([r for r in t if r["run_id"] in keep] for t in tables)
+    drop = set(drop)
+    return tuple([r for r in t if r["run_id"] in keep and (r["run_id"], r["scenario"], r["suite"]) not in drop]
+                 for t in tables)
 
 
 def run_ids_arg(v):
     return [x for x in v.split(",") if x]
 
 
+def drop_arg(v):
+    """run/scenario/suite,...: parts of a run to leave out, for example a suite cut short and rerun"""
+    parts = [tuple(x.split("/")) for x in v.split(",") if x]
+    if any(len(p) != 3 for p in parts):
+        raise argparse.ArgumentTypeError("expected run_id/scenario/suite")
+    return parts
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--in", dest="indir", default="results/bench")
     ap.add_argument("--run-id", type=run_ids_arg, help="comma-separated run ids (default: latest)")
+    ap.add_argument("--drop", type=drop_arg, default=[], help="comma-separated run_id/scenario/suite to leave out")
     args = ap.parse_args()
-    latency, throughput, resources = load(args.indir, args.run_id)
+    latency, throughput, resources = load(args.indir, args.run_id, args.drop)
     if not latency and not throughput:
         raise SystemExit(f"no results in {args.indir}; run make bench first")
 
