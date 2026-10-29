@@ -1,0 +1,19 @@
+# mesh without mTLS: check that app traffic is plaintext on the node link (measurement-only configuration, not in attacks.csv)
+capture: zt-w1 lima0, 12s, filter udp; 5/5 requests with the full call graph; sidecars present (istio-init, istio-proxy)
+frames containing "Reviewer1": 10
+inner HTTP/MongoDB in plaintext on 9080/27017: 60
+app-port TLS (9080, 27017): 0
+
+## decoded inner HTTP (src dst method uri status)
+10.42.1.188	10.42.2.211	GET	/details/0	
+10.42.2.211	10.42.1.188		/details/0	200
+10.42.1.188	10.42.2.39	GET	/reviews/0	
+10.42.2.39	10.42.1.148	GET	/ratings/0	
+10.42.1.148	10.42.2.39		/ratings/0	200
+10.42.2.39	10.42.1.188		/reviews/0	200
+10.42.1.188	10.42.2.211	GET	/details/0	
+10.42.2.211	10.42.1.188		/details/0	200
+10.42.1.188	10.42.2.39	GET	/reviews/0	
+10.42.2.39	10.42.1.148	GET	/ratings/0	
+10.42.1.148	10.42.2.39		/ratings/0	200
+10.42.2.39	10.42.1.188		/reviews/0	200

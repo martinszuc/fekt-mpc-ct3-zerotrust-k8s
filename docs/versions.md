@@ -1,6 +1,6 @@
 # Pinned versions
 
-Recorded 22.10.2026, host drift and kernels rechecked 29.10.2026. Change only between experiment runs, never within one. Each test run records the live state in `results/env-<configuration code>.txt`.
+Recorded 22.10.2026, host drift and kernels rechecked and aligned 29.10.2026. Change only between experiment runs, never within one. Each test run records the live state in `results/env-<configuration code>.txt`.
 
 ## Host
 
@@ -18,7 +18,7 @@ Recorded 22.10.2026, host drift and kernels rechecked 29.10.2026. Change only be
 | VM image | Ubuntu 24.04 arm64 (Lima `template:ubuntu-24.04`) | `infra/config.env` |
 | VM type / network | vz, socket_vmnet 1.2.2 `lima:shared` (192.168.105.0/24) | `infra/config.env` |
 | VM sizing | 3 nodes, each 4 vCPU / 8 GiB / 30 GiB | `infra/config.env` |
-| VM kernel | zt-cp, zt-w1: 6.8.0-142-generic; zt-w2: 6.8.0-147-generic since 29.10 (unattended-upgrades installed it 23.10, active after the next boot). Not pinned yet; align before benchmarks | not pinned |
+| VM kernel / packages | 6.8.0-147-generic on every node; all packages upgraded together on 29.10 (noble-updates), identical package sets; unattended-upgrades and apt timers masked, kernel metapackages held | `infra/config.env` (`KERNEL_VERSION`), `infra/vm-prep.sh` |
 | k3s | v1.36.5+k3s1 | `infra/config.env` |
 | Cilium | 1.20.3 (Helm chart); kube-proxy replacement, VXLAN, `socketLB.hostNamespaceOnly: true`, `cni.exclusive: false` (Istio compatibility, all configurations) | `infra/config.env`, `infra/cilium-values.yaml` |
 | Node encryption | Cilium WireGuard, in-kernel module (Linux 6.8.0), pod traffic only (`nodeEncryption: false`), `cilium_wg0` MTU 1405 | `manifests/s2a-wireguard/` |
