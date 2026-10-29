@@ -1,10 +1,77 @@
-\chapter{Teorie}
+\chapter{Teoretický základ}
+\label{ch:theory}
 
-Teoretický rozbor a podrobná analýza řešené problematiky.
+Kapitola zhŕňa pojmy, na ktorých stojí analýza aj experiment: architektúru zero trust, sieťový model Kubernetes, mechanizmy segmentácie a identity v clustri, šifrovanie medzi uzlami, service mesh a metódu STRIDE.
 
-\begin{figure}[ht!]
-    \centering
-    \includegraphics[width=0.5\textwidth]{obrazky/LaTeX_master_race.jpg}
-    \caption{Nezáleží na tom, v čem to budete psát, hlavně když to bude \LaTeX.}
-    \label{fig:placeholder}
-\end{figure}
+\section{Architektúra zero trust}
+\label{sec:zero-trust}
+
+NIST SP~800-207 definuje zero trust ako súbor princípov, ktoré presúvajú ochranu zo statického sieťového perimetra na používateľov, zariadenia a jednotlivé zdroje~\cite{nist-sp800-207}. Sieťová poloha sama osebe nezakladá dôveru. Z princípov normy sú pre cluster podstatné tri:
+
+\begin{itemize}
+  \item všetka komunikácia je zabezpečená bez ohľadu na to, kde v sieti prebieha, teda aj vo vnútri clustra a medzi uzlami;
+  \item prístup sa udeľuje ku každému zdroju zvlášť, takže pod, ktorý smie volať jednu službu, tým nezíska prístup k ďalším;
+  \item autentizácia a autorizácia sa vykonávajú pred každým prístupom, nie raz na okraji siete.
+\end{itemize}
+
+Norma rozlišuje bod rozhodovania o politike (\emph{policy decision point}, PDP) a bod jej vynútenia (\emph{policy enforcement point}, PEP). V Kubernetes je PDP riadiaca vrstva, ktorá politiku distribuuje (API server spolu s agentom CNI alebo riadiaca vrstva service mesh), a PEP je dátová cesta: programy eBPF v jadre uzla, WireGuard rozhranie uzla alebo proxy pri každom workloade. Ako jeden zo spôsobov nasadenia zero trust uvádza norma mikrosegmentáciu~\cite{nist-sp800-207}; NIST SP~800-204B rozpracúva service mesh ako vrstvu, ktorá medzi mikroslužbami vynucuje riadenie prístupu podľa identity~\cite{nist-sp800-204b}.
+
+\section{Sieťový model Kubernetes}
+\label{sec:k8s-networking}
+
+Kubernetes predpisuje plochý sieťový model: každý pod má vlastnú IP adresu a môže komunikovať s každým iným podom v clustri bez prekladu adries, aj keď beží na inom uzle~\cite{k8s-networking}. Samotný Kubernetes tento model neimplementuje; zabezpečuje ho sieťový plugin podľa špecifikácie Container Network Interface (CNI), ktorý pri vytvorení podu nastaví jeho sieťové rozhranie a adresu~\cite{cni-spec}.
+
+Prevádzka medzi podmi na rôznych uzloch sa často prenáša v overlay sieti. Pri VXLAN sa celý ethernetový rámec podu zabalí do UDP datagramu medzi IP adresami uzlov~\cite{rfc7348}. Zapuzdrenie nie je šifrovanie: kto zachytí prevádzku na sieti medzi uzlami, vidí vnútorné adresy podov aj obsah komunikácie. Plochá sieť bez politík navyše znamená, že žiadna segmentácia neexistuje, kým ju niekto výslovne nenastaví.
+
+\section{Cilium a eBPF}
+\label{sec:cilium}
+
+eBPF umožňuje spúšťať overené programy v jadre Linuxu na miestach, ako je príjem a odoslanie paketu, bez úpravy jadra~\cite{ebpf-what}. Cilium je CNI plugin postavený na eBPF~\cite{cilium-docs}. Okrem pripojenia podov do siete nahrádza aj kube-proxy, takže preklad adries služieb na pody prebieha v eBPF namiesto pravidiel iptables~\cite{cilium-kpr}.
+
+Pre bezpečnosť je podstatné, že Cilium oddeľuje identitu od adresy. Každej kombinácii relevantných labelov podu priradí číselnú bezpečnostnú identitu a politiku vynucuje medzi identitami, nie medzi IP adresami~\cite{cilium-identity}. Okrem štandardnej NetworkPolicy podporuje vlastné politiky vrátane pravidiel na úrovni L7~\cite{cilium-policy}. Nástroj Hubble zaznamenáva toky prevádzky a dôvody zahodenia paketov, napríklad zamietnutie politikou~\cite{hubble}; v projekte slúži ako dôkaz, že spojenie zastavila práve politika.
+
+\section{NetworkPolicy}
+\label{sec:networkpolicy}
+
+NetworkPolicy je štandardné API Kubernetes pre segmentáciu na úrovni L3/L4~\cite{k8s-networkpolicy}. Politika vyberá pody podľa labelov a pre vybrané pody povoľuje prichádzajúcu (\emph{ingress}) alebo odchádzajúcu (\emph{egress}) prevádzku z iných podov, namespaces alebo rozsahov IP adries na konkrétnych portoch. Pod, ktorý nevyberá žiadna politika, prijíma aj odosiela všetko. Akonáhle ho politika pre daný smer vyberie, všetko, čo nie je výslovne povolené, sa zamieta. Politika s prázdnym selektorom pre celý namespace preto vytvára režim \emph{default-deny}, nad ktorým sa povoľujú iba potrebné cesty.
+
+API len opisuje zámer; vynúti ho iba CNI plugin, ktorý ho implementuje. Identitou v NetworkPolicy je label podu, a ten nastavuje ten, kto pod vytvára. Politika teda nerozlíši legitímny workload od podu, ktorý si jeho labely skopíroval.
+
+\section{ServiceAccount a RBAC}
+\label{sec:sa-rbac}
+
+Každý pod beží pod nejakým ServiceAccountom, identitou workloadu voči API serveru~\cite{k8s-sa-concepts}. Kubernetes do podu predvolene pripojí token tohto ServiceAccountu ako projected volume. Token je JWT s obmedzenou platnosťou, viazaný na pod a cieľovú skupinu (\emph{audience}), a kubelet ho priebežne obnovuje~\cite{k8s-projected-volumes,k8s-authentication}. Pripojenie tokenu sa dá vypnúť nastavením \texttt{automountServiceAccountToken: false} na ServiceAccounte alebo pode~\cite{k8s-serviceaccounts}.
+
+Čo smie identita v API vykonať, určuje RBAC. Role a ClusterRole obsahujú iba povoľujúce pravidlá (zdroj, slovesá), RoleBinding a ClusterRoleBinding ich priraďujú subjektom; čo nie je povolené, je zakázané~\cite{k8s-rbac}. ServiceAccount aplikácie bez priradených rolí sa teda autentizuje, ale takmer nič nesmie. Samotný token je však použiteľný aj mimo podu, kým platí, a slúži útočníkovi aspoň na prieskum.
+
+\section{WireGuard a šifrovanie medzi uzlami}
+\label{sec:wireguard}
+
+WireGuard je VPN protokol na úrovni L3 integrovaný do jadra Linuxu~\cite{donenfeld2017wireguard}. Každý účastník má statický pár kľúčov Curve25519. Výmena kľúčov je postavená na rámci Noise (vzor IK), dáta sa šifrujú algoritmom ChaCha20-Poly1305. Protokol viaže povolené IP adresy na verejný kľúč protistrany (\emph{cryptokey routing}), takže paket z daného rozsahu adries musí prísť od účastníka s príslušným kľúčom.
+
+Cilium využíva WireGuard na transparentné šifrovanie prevádzky podov medzi uzlami~\cite{cilium-wireguard}. Každý uzol si vygeneruje pár kľúčov a verejný kľúč zverejní v objekte CiliumNode; ostatné uzly z neho zostavia tunely. Šifruje sa iba prevádzka, ktorá opúšťa uzol, komunikácia dvoch podov na tom istom uzle zostáva nešifrovaná. Autentizovaným subjektom je uzol: všetky pody na uzle zdieľajú ten istý tunel. Alternatívou je šifrovanie IPsec~\cite{rfc4301}, pri ktorom Cilium distribuuje kľúče cez Kubernetes Secret~\cite{cilium-ipsec}.
+
+\section{Service mesh, mTLS a SPIFFE}
+\label{sec:mesh}
+
+Service mesh presúva sieťové funkcie z aplikácie do infraštruktúry. V Istio v režime sidecar dostane každý pod ďalší container s proxy Envoy~\cite{envoy}, ktorý zachytí všetku jeho prichádzajúcu aj odchádzajúcu prevádzku. Riadiaca vrstva istiod konfiguruje proxy a pôsobí ako certifikačná autorita. Agent vedľa proxy vygeneruje kľúč a žiadosť o certifikát, istiod ju podpíše po overení tokenu ServiceAccountu podu a agent certifikát pred vypršaním obnoví~\cite{istio-security}. Novší režim ambient nahrádza sidecar spoločnou proxy na uzle a voliteľnou proxy pre L7~\cite{istio-ambient}; Linkerd poskytuje automatické mTLS podobným spôsobom~\cite{linkerd-mtls}.
+
+Proxy medzi sebou komunikujú cez vzájomne autentizované TLS (mTLS)~\cite{rfc8446}: obe strany predložia certifikát, takže server pozná overenú identitu klienta. Identita má tvar SPIFFE ID, \nolinkurl{spiffe://<trust-domain>/ns/<namespace>/sa/<service-account>}~\cite{spiffe-id}. SPIFFE je otvorený štandard pre formát identity workloadu a overiteľné dokumenty identity (SVID) vo forme certifikátu X.509 alebo JWT~\cite{spiffe-overview}. Jeho referenčná implementácia SPIRE vydáva SVID až po overení uzla a vlastností procesu (\emph{attestation})~\cite{spire-concepts}; Istio ju vie použiť namiesto vlastnej certifikačnej autority~\cite{istio-spire}.
+
+Správanie mesh určujú dve politiky. PeerAuthentication nastavuje režim mTLS: \texttt{PERMISSIVE} prijíma mTLS aj nešifrovanú prevádzku, \texttt{STRICT} iba mTLS a \texttt{DISABLE} mTLS vypína~\cite{istio-peerauthentication}. AuthorizationPolicy rozhoduje, kto smie volať čo. Pravidlá môžu porovnávať overenú identitu volajúceho (\emph{principal}), namespace a atribúty HTTP požiadavky, napríklad metódu a cestu. Workload bez politiky prijme všetko; ak existuje politika \texttt{ALLOW}, prejde iba to, čo povoľuje~\cite{istio-authorizationpolicy}. Autentizácia (mTLS) a autorizácia (AuthorizationPolicy) sú teda oddelené kroky.
+
+\section{Modelovanie hrozieb metódou STRIDE}
+\label{sec:stride}
+
+STRIDE je metóda systematického hľadania hrozieb, ktorá ich triedi do šiestich kategórií. Každá kategória porušuje jednu bezpečnostnú vlastnosť~\cite{shostack2014threat}:
+
+\begin{itemize}
+  \item \emph{Spoofing} (podvrhnutie identity) porušuje autentizáciu,
+  \item \emph{Tampering} (neoprávnená zmena) porušuje integritu,
+  \item \emph{Repudiation} (popretie) porušuje nepopierateľnosť,
+  \item \emph{Information disclosure} (únik informácií) porušuje dôvernosť,
+  \item \emph{Denial of service} (odopretie služby) porušuje dostupnosť,
+  \item \emph{Elevation of privilege} (zvýšenie oprávnení) porušuje autorizáciu.
+\end{itemize}
+
+Metóda sa aplikuje na model systému s aktívami a hranicami dôvery. Pre každú hranicu sa hľadá, ktoré kategórie hrozieb cez ňu prechádzajú a ktorý ochranný prvok ich má zastaviť. V tomto projekte je výsledkom tabuľka útokov v kapitole~\ref{ch:threat-model}, z ktorej sa odvodzujú testy aj očakávané výsledky.

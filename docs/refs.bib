@@ -1,62 +1,527 @@
-@misc{istio-bookinfo,
-  author       = {{Istio Authors}},
-  title        = {Bookinfo Application},
-  howpublished = {Online},
-  year         = {2026},
-  url          = {https://istio.io/latest/docs/examples/bookinfo/},
-  urldate      = {2026-10-22},
-  note         = {Manifests from samples/bookinfo, tag 1.31.3}
+% biblatex + biber, style iso-numeric (biblatex-iso690, CSN ISO 690:2022)
+% online sources: urldate = date of access
+
+% ---- zero trust and microservice security ----
+
+@report{nist-sp800-207,
+  author      = {Rose, Scott and Borchert, Oliver and Mitchell, Stu and Connelly, Sean},
+  title       = {Zero Trust Architecture},
+  type        = {NIST Special Publication},
+  number      = {800-207},
+  institution = {National Institute of Standards and Technology},
+  location    = {Gaithersburg, MD},
+  date        = {2020-08},
+  doi         = {10.6028/NIST.SP.800-207},
+  langid      = {english}
 }
 
-@misc{k8s-networkpolicy,
-  author       = {{The Kubernetes Authors}},
-  title        = {Network Policies},
-  howpublished = {Online},
-  year         = {2026},
-  url          = {https://kubernetes.io/docs/concepts/services-networking/network-policies/},
-  urldate      = {2026-10-22}
+@report{nist-sp800-204b,
+  author      = {Chandramouli, Ramaswamy and Butcher, Zack and Chetal, Aradhna},
+  title       = {Attribute-based Access Control for Microservices-based Applications using a Service Mesh},
+  type        = {NIST Special Publication},
+  number      = {800-204B},
+  institution = {National Institute of Standards and Technology},
+  location    = {Gaithersburg, MD},
+  date        = {2021-08},
+  doi         = {10.6028/NIST.SP.800-204B},
+  langid      = {english}
 }
 
-@misc{cilium-docs,
-  author       = {{Cilium Authors}},
-  title        = {Cilium Documentation, version 1.20},
-  howpublished = {Online},
-  year         = {2026},
-  url          = {https://docs.cilium.io/en/v1.20/},
-  urldate      = {2026-10-22}
+% ---- Kubernetes ----
+
+@online{k8s-networkpolicy,
+  author  = {{The Kubernetes Authors}},
+  title   = {Network Policies},
+  organization = {Kubernetes Documentation},
+  year    = {2026},
+  url     = {https://kubernetes.io/docs/concepts/services-networking/network-policies/},
+  urldate = {2026-10-22},
+  langid  = {english}
 }
 
-@misc{k8s-serviceaccounts,
-  author       = {{The Kubernetes Authors}},
-  title        = {Configure Service Accounts for Pods},
-  howpublished = {Online},
-  year         = {2026},
-  url          = {https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/},
-  urldate      = {2026-10-22}
+@online{k8s-rbac,
+  author  = {{The Kubernetes Authors}},
+  title   = {Using RBAC Authorization},
+  organization = {Kubernetes Documentation},
+  year    = {2026},
+  url     = {https://kubernetes.io/docs/reference/access-authn-authz/rbac/},
+  urldate = {2026-10-22},
+  langid  = {english}
 }
 
-@misc{k8s-rbac,
-  author       = {{The Kubernetes Authors}},
-  title        = {Using RBAC Authorization},
-  howpublished = {Online},
-  year         = {2026},
-  url          = {https://kubernetes.io/docs/reference/access-authn-authz/rbac/},
-  urldate      = {2026-10-22}
+@online{k8s-serviceaccounts,
+  author  = {{The Kubernetes Authors}},
+  title   = {Configure Service Accounts for Pods},
+  organization = {Kubernetes Documentation},
+  year    = {2026},
+  url     = {https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/},
+  urldate = {2026-10-22},
+  langid  = {english}
 }
 
-@misc{cilium-wireguard,
-  author       = {{Cilium Authors}},
-  title        = {WireGuard Transparent Encryption},
-  howpublished = {Online},
-  year         = {2026},
-  url          = {https://docs.cilium.io/en/v1.20/security/network/encryption-wireguard/},
-  urldate      = {2026-10-22}
+@online{k8s-sa-concepts,
+  author  = {{The Kubernetes Authors}},
+  title   = {Service Accounts},
+  organization = {Kubernetes Documentation},
+  year    = {2026},
+  url     = {https://kubernetes.io/docs/concepts/security/service-accounts/},
+  urldate = {2026-10-22},
+  langid  = {english}
 }
+
+@online{k8s-projected-volumes,
+  author  = {{The Kubernetes Authors}},
+  title   = {Projected Volumes},
+  organization = {Kubernetes Documentation},
+  year    = {2026},
+  url     = {https://kubernetes.io/docs/concepts/storage/projected-volumes/},
+  urldate = {2026-10-22},
+  langid  = {english}
+}
+
+@online{k8s-authentication,
+  author  = {{The Kubernetes Authors}},
+  title   = {Authenticating},
+  organization = {Kubernetes Documentation},
+  year    = {2026},
+  url     = {https://kubernetes.io/docs/reference/access-authn-authz/authentication/},
+  urldate = {2026-10-22},
+  langid  = {english}
+}
+
+% ---- Cilium ----
+
+@online{cilium-docs,
+  author  = {{Cilium Authors}},
+  title   = {Cilium Documentation},
+  version = {1.20},
+  year    = {2026},
+  url     = {https://docs.cilium.io/en/v1.20/},
+  urldate = {2026-10-22},
+  langid  = {english}
+}
+
+@online{cilium-policy,
+  author  = {{Cilium Authors}},
+  title   = {Overview of Network Policy},
+  organization = {Cilium Documentation, version 1.20},
+  year    = {2026},
+  url     = {https://docs.cilium.io/en/v1.20/security/policy/},
+  urldate = {2026-10-22},
+  langid  = {english}
+}
+
+@online{cilium-identity,
+  author  = {{Cilium Authors}},
+  title   = {Identity-Based},
+  organization = {Cilium Documentation, version 1.20},
+  year    = {2026},
+  url     = {https://docs.cilium.io/en/v1.20/security/network/identity/},
+  urldate = {2026-10-22},
+  langid  = {english}
+}
+
+@online{cilium-wireguard,
+  author  = {{Cilium Authors}},
+  title   = {WireGuard Transparent Encryption},
+  organization = {Cilium Documentation, version 1.20},
+  year    = {2026},
+  url     = {https://docs.cilium.io/en/v1.20/security/network/encryption-wireguard/},
+  urldate = {2026-10-22},
+  langid  = {english}
+}
+
+@online{cilium-ipsec,
+  author  = {{Cilium Authors}},
+  title   = {IPsec Transparent Encryption},
+  organization = {Cilium Documentation, version 1.20},
+  year    = {2026},
+  url     = {https://docs.cilium.io/en/v1.20/security/network/encryption-ipsec/},
+  urldate = {2026-10-22},
+  langid  = {english}
+}
+
+% ---- Istio ----
+
+@online{istio-security,
+  author  = {{Istio Authors}},
+  title   = {Security},
+  organization = {Istio Documentation},
+  year    = {2026},
+  url     = {https://istio.io/latest/docs/concepts/security/},
+  urldate = {2026-10-22},
+  langid  = {english}
+}
+
+@online{istio-peerauthentication,
+  author  = {{Istio Authors}},
+  title   = {PeerAuthentication},
+  organization = {Istio Documentation},
+  year    = {2026},
+  url     = {https://istio.io/latest/docs/reference/config/security/peer_authentication/},
+  urldate = {2026-10-22},
+  langid  = {english}
+}
+
+@online{istio-authorizationpolicy,
+  author  = {{Istio Authors}},
+  title   = {Authorization Policy},
+  organization = {Istio Documentation},
+  year    = {2026},
+  url     = {https://istio.io/latest/docs/reference/config/security/authorization-policy/},
+  urldate = {2026-10-22},
+  langid  = {english}
+}
+
+@online{istio-requestauthentication,
+  author  = {{Istio Authors}},
+  title   = {RequestAuthentication},
+  organization = {Istio Documentation},
+  year    = {2026},
+  url     = {https://istio.io/latest/docs/reference/config/security/request_authentication/},
+  urldate = {2026-10-22},
+  langid  = {english}
+}
+
+@online{istio-spire,
+  author  = {{Istio Authors}},
+  title   = {SPIRE},
+  organization = {Istio Documentation},
+  year    = {2026},
+  url     = {https://istio.io/latest/docs/ops/integrations/spire/},
+  urldate = {2026-10-22},
+  langid  = {english}
+}
+
+@online{istio-bookinfo,
+  author  = {{Istio Authors}},
+  title   = {Bookinfo Application},
+  organization = {Istio Documentation},
+  year    = {2026},
+  url     = {https://istio.io/latest/docs/examples/bookinfo/},
+  urldate = {2026-10-22},
+  note    = {Manifests from samples/bookinfo, tag 1.31.3},
+  langid  = {english}
+}
+
+% ---- SPIFFE / SPIRE ----
+
+@online{spiffe-overview,
+  author  = {{SPIFFE Authors}},
+  title   = {SPIFFE Overview},
+  organization = {SPIFFE},
+  year    = {2026},
+  url     = {https://spiffe.io/docs/latest/spiffe-about/overview/},
+  urldate = {2026-10-22},
+  langid  = {english}
+}
+
+@online{spiffe-id,
+  author  = {{SPIFFE Authors}},
+  title   = {The SPIFFE Identity and Verifiable Identity Document},
+  organization = {SPIFFE standards repository},
+  year    = {2026},
+  url     = {https://github.com/spiffe/spiffe/blob/main/standards/SPIFFE-ID.md},
+  urldate = {2026-10-22},
+  langid  = {english}
+}
+
+@online{spire-concepts,
+  author  = {{SPIFFE Authors}},
+  title   = {SPIRE Concepts},
+  organization = {SPIFFE},
+  year    = {2026},
+  url     = {https://spiffe.io/docs/latest/spire-about/spire-concepts/},
+  urldate = {2026-10-22},
+  langid  = {english}
+}
+
+% ---- protocols ----
 
 @inproceedings{donenfeld2017wireguard,
-  author       = {Donenfeld, Jason A.},
-  title        = {WireGuard: Next Generation Kernel Network Tunnel},
-  booktitle    = {Network and Distributed System Security Symposium (NDSS)},
-  year         = {2017},
-  doi          = {10.14722/ndss.2017.23160}
+  author    = {Donenfeld, Jason A.},
+  title     = {WireGuard: Next Generation Kernel Network Tunnel},
+  booktitle = {Network and Distributed System Security Symposium (NDSS 2017)},
+  location  = {San Diego, CA},
+  publisher = {Internet Society},
+  year      = {2017},
+  doi       = {10.14722/ndss.2017.23160},
+  langid    = {english}
+}
+
+@report{rfc4301,
+  author      = {Kent, Stephen and Seo, Karen},
+  title       = {Security Architecture for the Internet Protocol},
+  type        = {RFC},
+  number      = {4301},
+  institution = {Internet Engineering Task Force},
+  date        = {2005-12},
+  doi         = {10.17487/RFC4301},
+  langid      = {english}
+}
+
+@report{rfc8446,
+  author      = {Rescorla, Eric},
+  title       = {The Transport Layer Security (TLS) Protocol Version 1.3},
+  type        = {RFC},
+  number      = {8446},
+  institution = {Internet Engineering Task Force},
+  date        = {2018-08},
+  doi         = {10.17487/RFC8446},
+  langid      = {english}
+}
+
+@report{rfc7519,
+  author      = {Jones, Michael B. and Bradley, John and Sakimura, Nat},
+  title       = {JSON Web Token (JWT)},
+  type        = {RFC},
+  number      = {7519},
+  institution = {Internet Engineering Task Force},
+  date        = {2015-05},
+  doi         = {10.17487/RFC7519},
+  langid      = {english}
+}
+
+@online{oidc-core,
+  author  = {Sakimura, Nat and Bradley, John and Jones, Michael B. and de Medeiros, Breno and Mortimore, Chuck},
+  title   = {OpenID Connect Core 1.0 incorporating errata set 2},
+  organization = {OpenID Foundation},
+  date    = {2023-12-15},
+  url     = {https://openid.net/specs/openid-connect-core-1_0.html},
+  urldate = {2026-10-22},
+  langid  = {english}
+}
+
+% ---- OpenShift ----
+
+@online{ocp-network-security,
+  author  = {{Red Hat}},
+  title   = {Network security},
+  organization = {OpenShift Container Platform 4.20 Documentation},
+  year    = {2026},
+  url     = {https://docs.redhat.com/en/documentation/openshift_container_platform/4.20/html-single/network_security},
+  urldate = {2026-10-22},
+  langid  = {english}
+}
+
+@online{ocp-scc,
+  author  = {{Red Hat}},
+  title   = {Managing security context constraints},
+  organization = {OpenShift Container Platform 4.20 Documentation, Authentication and authorization},
+  year    = {2026},
+  url     = {https://docs.redhat.com/en/documentation/openshift_container_platform/4.20/html/authentication_and_authorization/managing-pod-security-policies},
+  urldate = {2026-10-22},
+  langid  = {english}
+}
+
+@online{ossm3-intro,
+  author  = {{Red Hat}},
+  title   = {Introducing Red Hat OpenShift Service Mesh 3.0},
+  date    = {2025-03-11},
+  url     = {https://www.redhat.com/en/introducing-red-hat-openshift-service-mesh-3},
+  urldate = {2026-10-22},
+  langid  = {english}
+}
+
+% ---- tools ----
+
+@online{fortio,
+  author  = {{Fortio Authors}},
+  title   = {Fortio: load testing library, command line tool, advanced echo server and web UI},
+  version = {1.76.0},
+  year    = {2026},
+  url     = {https://github.com/fortio/fortio},
+  urldate = {2026-10-22},
+  langid  = {english}
+}
+
+@online{iperf3,
+  author  = {{ESnet}},
+  title   = {iperf3: A TCP, UDP, and SCTP network bandwidth measurement tool},
+  version = {3.22},
+  year    = {2026},
+  url     = {https://github.com/esnet/iperf},
+  urldate = {2026-10-22},
+  langid  = {english}
+}
+
+% ---- Kubernetes networking and workloads ----
+
+@online{k8s-networking,
+  author  = {{The Kubernetes Authors}},
+  title   = {Cluster Networking},
+  organization = {Kubernetes Documentation},
+  year    = {2026},
+  url     = {https://kubernetes.io/docs/concepts/cluster-administration/networking/},
+  urldate = {2026-10-29},
+  langid  = {english}
+}
+
+@online{k8s-ephemeral-containers,
+  author  = {{The Kubernetes Authors}},
+  title   = {Ephemeral Containers},
+  organization = {Kubernetes Documentation},
+  year    = {2026},
+  url     = {https://kubernetes.io/docs/concepts/workloads/pods/ephemeral-containers/},
+  urldate = {2026-10-29},
+  langid  = {english}
+}
+
+@online{cni-spec,
+  author  = {{CNI Authors}},
+  title   = {Container Network Interface (CNI) Specification},
+  organization = {Container Network Interface},
+  year    = {2026},
+  url     = {https://www.cni.dev/docs/spec/},
+  urldate = {2026-10-29},
+  langid  = {english}
+}
+
+@online{ebpf-what,
+  author  = {{eBPF Foundation}},
+  title   = {What is eBPF?},
+  organization = {ebpf.io},
+  year    = {2026},
+  url     = {https://ebpf.io/what-is-ebpf/},
+  urldate = {2026-10-29},
+  langid  = {english}
+}
+
+@online{cilium-kpr,
+  author  = {{Cilium Authors}},
+  title   = {Kubernetes Without kube-proxy},
+  organization = {Cilium Documentation, version 1.20},
+  year    = {2026},
+  url     = {https://docs.cilium.io/en/v1.20/network/kubernetes/kubeproxy-free/},
+  urldate = {2026-10-29},
+  langid  = {english}
+}
+
+@online{hubble,
+  author  = {{Cilium Authors}},
+  title   = {Network Observability with Hubble},
+  organization = {Cilium Documentation, version 1.20},
+  year    = {2026},
+  url     = {https://docs.cilium.io/en/v1.20/observability/hubble/},
+  urldate = {2026-10-29},
+  note    = {Hubble CLI 1.20.2},
+  langid  = {english}
+}
+
+% ---- service mesh ----
+
+@online{envoy,
+  author  = {{Envoy Project Authors}},
+  title   = {Envoy Proxy Documentation},
+  organization = {Envoy Proxy},
+  year    = {2026},
+  url     = {https://www.envoyproxy.io/docs/envoy/latest/},
+  urldate = {2026-10-29},
+  langid  = {english}
+}
+
+@online{istio-ambient,
+  author  = {{Istio Authors}},
+  title   = {Ambient Mode Overview},
+  organization = {Istio Documentation},
+  year    = {2026},
+  url     = {https://istio.io/latest/docs/ambient/overview/},
+  urldate = {2026-10-29},
+  langid  = {english}
+}
+
+@online{linkerd-mtls,
+  author  = {{Linkerd Authors}},
+  title   = {Automatic mTLS},
+  organization = {Linkerd Documentation},
+  year    = {2026},
+  url     = {https://linkerd.io/2/features/automatic-mtls/},
+  urldate = {2026-10-29},
+  langid  = {english}
+}
+
+% ---- testbed ----
+
+@online{k3s,
+  author  = {{K3s Project Authors}},
+  title   = {K3s: Lightweight Kubernetes},
+  organization = {K3s Documentation},
+  version = {v1.36.5+k3s1},
+  year    = {2026},
+  url     = {https://docs.k3s.io/},
+  urldate = {2026-10-29},
+  langid  = {english}
+}
+
+@online{lima,
+  author  = {{Lima Authors}},
+  title   = {Lima: Linux Virtual Machines},
+  version = {2.2.1},
+  year    = {2026},
+  url     = {https://lima-vm.io/},
+  urldate = {2026-10-29},
+  langid  = {english}
+}
+
+@online{socket-vmnet,
+  author  = {{Lima Authors}},
+  title   = {socket\_vmnet: vmnet.framework support for QEMU and Lima},
+  version = {1.2.2},
+  year    = {2026},
+  url     = {https://github.com/lima-vm/socket_vmnet},
+  urldate = {2026-10-29},
+  langid  = {english}
+}
+
+@online{wireshark,
+  author  = {{Wireshark Foundation}},
+  title   = {Wireshark and TShark},
+  version = {4.6.9},
+  year    = {2026},
+  url     = {https://www.wireshark.org/docs/},
+  urldate = {2026-10-29},
+  langid  = {english}
+}
+
+@online{mongodb,
+  author  = {{MongoDB, Inc.}},
+  title   = {MongoDB Manual},
+  organization = {MongoDB Documentation},
+  version = {8.0},
+  year    = {2026},
+  url     = {https://www.mongodb.com/docs/manual/},
+  urldate = {2026-10-29},
+  langid  = {english}
+}
+
+@online{online-boutique,
+  author  = {{Google}},
+  title   = {Online Boutique (microservices-demo)},
+  year    = {2026},
+  url     = {https://github.com/GoogleCloudPlatform/microservices-demo},
+  urldate = {2026-10-29},
+  langid  = {english}
+}
+
+% ---- threat modeling and protocols ----
+
+@book{shostack2014threat,
+  author    = {Shostack, Adam},
+  title     = {Threat Modeling: Designing for Security},
+  publisher = {Wiley},
+  location  = {Indianapolis},
+  year      = {2014},
+  isbn      = {978-1-118-80999-0},
+  langid    = {english}
+}
+
+@report{rfc7348,
+  author      = {Mahalingam, Mallik and Dutt, Dinesh and Duda, Kenneth and Agarwal, Puneet and Kreeger, Lawrence and Sridhar, T. and Bursell, Mike and Wright, Chris},
+  title       = {Virtual eXtensible Local Area Network (VXLAN): A Framework for Overlaying Virtualized Layer 2 Networks over Layer 3 Networks},
+  type        = {RFC},
+  number      = {7348},
+  institution = {Internet Engineering Task Force},
+  date        = {2014-08},
+  doi         = {10.17487/RFC7348},
+  langid      = {english}
 }

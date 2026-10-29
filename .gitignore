@@ -12,3 +12,8 @@ docs/report/*.synctex.gz
 docs/report/*.nav
 docs/report/*.snm
 docs/report/*.pdf
+docs/report/*.bbl
+docs/report/*.bcf
+docs/report/*.blg
+docs/report/*.run.xml
+docs/report/*-SAVE-ERROR

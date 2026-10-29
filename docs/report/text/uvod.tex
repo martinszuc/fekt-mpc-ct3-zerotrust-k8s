@@ -2,4 +2,14 @@
 \phantomsection
 \addcontentsline{toc}{chapter}{Úvod}
 
-Představení řešené problematiky a klíčové body řešení.
+Aplikácie postavené na mikroslužbách bežia v Kubernetes ako množstvo podov, ktoré spolu komunikujú cez sieť clustra. Táto sieť je v predvolenom stave plochá: každý pod dosiahne každý iný pod bez prekladu adries a bez obmedzení~\cite{k8s-networking}. Kto získa spustenie kódu v jednom pode, napríklad cez zraniteľnosť vo verejnom frontende, dostane sa na sieťovej úrovni ku všetkým ostatným službám vrátane databázy. Ochrana na perimetri clustra tomu nezabráni, pretože útočník sa už nachádza vo vnútri.
+
+Architektúra zero trust podľa NIST SP~800-207 tento problém rieši tým, že nedôveruje žiadnej sieťovej polohe a každý prístup ku zdroju overuje samostatne~\cite{nist-sp800-207}. V Kubernetes sa tento princíp realizuje niekoľkými vrstvami: segmentáciou siete, šifrovaním a autentizáciou prevádzky medzi uzlami alebo medzi jednotlivými workloadmi a autorizáciou jednotlivých požiadaviek. Každá vrstva chráni pred inou hrozbou a každá niečo stojí.
+
+Zadanie projektu znie: analýza prístupov k sieťovej segmentácii a autentizácii v mikroslužbách, konfigurácia a testovanie bezpečného prepojenia izolovaných uzlov, meranie réžie a report. Práca odpovedá na otázku: \emph{pred čím chráni ktorá vrstva zero trust v Kubernetes a koľko stojí v latencii, priepustnosti a spotrebe prostriedkov?}
+
+Projekt je riešený ako kontrolovaný experiment, nie ako návod na inštaláciu. Na clustri z troch virtual machines beží demo aplikácia Bookinfo~\cite{istio-bookinfo}. Ochranné prvky sa pridávajú postupne a každá konfigurácia mení oproti svojej predchádzajúcej práve jeden prvok. Každý útok je odvodený z modelu hrozieb a každé meranie réžie je priradené práve jednému pridanému prvku. Jadrom porovnania je šifrovanie medzi uzlami (Cilium WireGuard) oproti mTLS medzi workloadmi (service mesh Istio): prvé autentizuje uzly, druhé jednotlivé služby.
+
+Kapitola~\ref{ch:theory} zhŕňa teoretický základ: princípy zero trust, sieťový model Kubernetes a použité technológie. Kapitola~\ref{ch:analysis} porovnáva prístupy k segmentácii a autentizácii vrátane tých, ktoré v projekte nasadené nie sú. Kapitola~\ref{ch:threat-model} formalizuje model hrozieb metódou STRIDE a kapitola~\ref{ch:design} opisuje návrh experimentu. Nasledujú výsledky bezpečnostných testov, meranie réžie a obmedzenia riešenia.
+
+Všetky skripty, manifesty a namerané dáta sú v repozitári \url{https://github.com/martinszuc/fekt-mpc-ct3-zerotrust-k8s}; celé prostredie sa dá zreprodukovať príkazmi \texttt{make}.
