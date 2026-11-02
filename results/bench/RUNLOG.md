@@ -48,3 +48,13 @@ Control (`results/bench-mtu-control/`, driver `run.sh`, log `run.log`): baseline
 | node encryption, 29.10 | 1303 | 106 to 107 | 1.17 (median) |
 
 Result: the same-node gain is caused by the smaller MTU that comes with node encryption, not by WireGuard (same-node traffic does not pass through it). The kernel mechanism (presumably GSO segment packing on veth) is not investigated. Cluster restored to auto MTU (verified 1450).
+
+## 02.11.2026 latency rerun, 10 us histogram buckets
+
+Driver `results/bench/logs/latency-20261102.sh` (same rates, rounds and durations as 29.10, only `RES=0.00001`), log `latency-20261102.log`. Run 20261102T184936Z, 19:49 to 23:13, exit 0, cluster restored to S3.
+
+Outcome: **disturbed, not used in figures.** The host display went on at 21:08 and the Mac was in use during rounds 3 and 4 (21:13 to 22:35, `pmset -g log`). Those rounds are slower in every configuration (baseline app mean 15.9, 15.8, 28.1, 20.7, 15.9 ms per round; worst mesh without mTLS round 4: app mean 44.7 ms, p99 237 ms). Medians agree with 29.10 within about 10 %, but min to max ranges overlap on the app path for every pair. Histogram fix confirmed: baseline same-node p50 0.119 ms, p99 0.611 ms (29.10: 0.507 ms artifact).
+
+Aggregation fix: the idle node CPU baseline was pooled per configuration over all selected runs, so adding this run shifted 29.10 CPU per Gbit/s by up to 1 %. `scripts/aggregate.py` now nets each run against the latest idle run started at or before it; the 29.10 selection reproduces the committed `summary.csv` and `cost.csv` exactly.
+
+To do: full rerun with the host untouched (display off, no use), then `make plot RUN_ID=20261029T031157Z,20261029T073604Z,20261029T073939Z,20261029T104041Z,20261029T105456Z,<new> DROP=<29.10 main>/<each scenario>/latency,20261029T073939Z/S2a/payload` and fill the latency table in `docs/report/text/rezia.tex`.
