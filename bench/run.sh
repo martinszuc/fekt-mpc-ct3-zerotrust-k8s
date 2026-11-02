@@ -9,6 +9,8 @@ ROUNDS=${ROUNDS:-1}
 PAUSE=${PAUSE:-5}                  # seconds between runs
 CONNS=${CONNS:-8}                  # fortio connections
 PCTS="50,90,95,99,99.9"
+# histogram bucket in seconds; fortio's default 1 ms puts >99 % of echo samples in one bucket
+RES=${RES:-0.00001}
 # latency at constant QPS; set after calibration (about 50 % of the S3 knee per path, see `make plot`)
 REPEATS=${REPEATS:-5}
 WARMUP_S=${WARMUP_S:-30}
@@ -136,7 +138,7 @@ measured() {
   sleep "$PAUSE"
 }
 
-fortio_load() { kubectl -n "$NS" exec "$CLIENT" -c fortio -- fortio load -json - -loglevel Warning "$@"; }
+fortio_load() { kubectl -n "$NS" exec "$CLIENT" -c fortio -- fortio load -json - -loglevel Warning -r "$RES" "$@"; }
 
 # fortio_run <suite> <path> <repeat> <qps> <payload> <seconds>; repeat 0 is a discarded warm-up
 fortio_run() {
@@ -242,7 +244,7 @@ meta() {
       kubectl get nodes -o json | jq -r '.items[] | "node.\(.metadata.name)\t\(.status.nodeInfo.osImage) kernel \(.status.nodeInfo.kernelVersion) \(.status.nodeInfo.containerRuntimeVersion) cpu \(.status.capacity.cpu) mem \(.status.capacity.memory)"'
       printf 'vm.sizing\t%s vCPU %s GiB %s GiB disk\n' "$VM_CPUS" "$VM_MEMORY_GIB" "$VM_DISK_GIB"
       for v in SUITES ROUNDS REPEATS WARMUP_S LAT_S CONNS QPS_ECHO QPS_APP SWEEP_S SWEEP_REPEATS QPS_SWEEP \
-               QPS_SWEEP_APP PAYLOADS PAYLOAD_QPS IPERF_S IPERF_OMIT IPERF_REPEATS IDLE_S PCTS; do
+               QPS_SWEEP_APP PAYLOADS PAYLOAD_QPS IPERF_S IPERF_OMIT IPERF_REPEATS IDLE_S PCTS RES; do
         printf 'param.%s\t%s\n' "$v" "${!v}"
       done
     else
