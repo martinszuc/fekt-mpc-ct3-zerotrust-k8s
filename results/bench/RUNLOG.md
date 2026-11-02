@@ -34,3 +34,17 @@ Notes:
 - After the lid was closed, zt-w1's clock lagged 36 min although timesyncd reported synchronized; istio-proxy on zt-w1 stayed unready (certificate not yet valid) until `systemctl restart systemd-timesyncd`. Main and link runs ended before that; the paused sweep had already stopped.
 - Cross-node iperf3 is bound by the VM link (pod 1.27 to 1.34 Gbit/s vs node 1.356); node encryption is the exception at 1.17.
 - Node encryption same-node iperf3 is higher than baseline (107 vs 94.5 Gbit/s, no overlap across 5 rounds); not explained yet.
+
+## 02.11.2026 node-encryption same-node anomaly: MTU control
+
+Question: why same-node iperf3 under node encryption beats the baseline (107 vs 94.5 Gbit/s, 29.10). Rendered `cilium-config` differs only in `enable-wireguard` and `wireguard-persistent-keepalive`; the raw iperf3 JSON shows MSS 1303 under node encryption vs 1398 elsewhere, because Cilium lowers the pod route MTU (1450 to 1355) for every pod route, same-node ones included.
+
+Control (`results/bench-mtu-control/`, driver `run.sh`, log `run.log`): baseline with only `MTU: 1405` (route MTU 1355, MSS 1303), 3 repeats, then the plain baseline (route MTU 1450) as same-session reference.
+
+| Configuration | MSS | same-node Gbit/s | cross-node Gbit/s |
+|---|---|---|---|
+| baseline, route MTU 1355 | 1303 | 105.6 to 106.8 | 1.2 |
+| baseline, auto MTU (reference) | 1398 | 88.7 to 93.3 | 1.1 to 1.3 |
+| node encryption, 29.10 | 1303 | 106 to 107 | 1.17 (median) |
+
+Result: the same-node gain is caused by the smaller MTU that comes with node encryption, not by WireGuard (same-node traffic does not pass through it). The kernel mechanism (presumably GSO segment packing on veth) is not investigated. Cluster restored to auto MTU (verified 1450).
