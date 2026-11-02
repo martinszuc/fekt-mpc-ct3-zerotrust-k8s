@@ -2,4 +2,12 @@
 \phantomsection
 \addcontentsline{toc}{chapter}{Záver}
 
-% TODO: po výsledkoch a meraní réžie.
+Práca odpovedala na otázku, pred čím chráni ktorá vrstva zero trust v Kubernetes a koľko stojí. Na clustri z troch virtual machines s aplikáciou Bookinfo sa postupne pridávali segmentácia siete, šifrovanie medzi uzlami, mTLS medzi službami a L7 autorizácia, pričom každá konfigurácia menila jediný prvok. Všetkých 70 kontrol útokov skončilo podľa hypotéz a každé zastavenie sa dalo podľa dôkazov priradiť práve jednému prvku.
+
+Segmentácia siete zastavila laterálny pohyb aj zneužitie ServiceAccount tokenu a v meraní nemala merateľnú réžiu. Je preto rozumným prvým krokom pre každý cluster. Dôveruje však labelom, ktoré volí ten, kto pod vytvára, takže podvrhnutý pod so skopírovaným labelom ňou prejde.
+
+Šifrovanie medzi uzlami a mTLS medzi službami zastavili odpočúvanie obsahu, no chránia inak. WireGuard skryje celý paket vrátane adries podov a pri latencii je lacnejší, ale autentizuje iba uzly a nešifruje prevádzku na jednom uzle. mTLS autentizuje jednotlivé workloady a zastaví pod mimo mesh, no adresy a porty podov nechá čitateľné a väčšinu jeho ceny tvorí samotný sidecar: latencia na skok sa zvýši približne o pol milisekundy a maximálna záťaž medzi uzlami klesne na menej než polovicu. Pre zadanie, bezpečné prepojenie izolovaných uzlov, stačí šifrovanie medzi uzlami; ak treba overovať, \emph{ktorá služba} volá, je potrebné mTLS.
+
+Experiment ukázal, že autentizácia nie je autorizáciou: pod zapojený do mesh pod cudzou identitou mTLS prejde a zastaví ho až L7 autorizácia, ktorá rozlišuje aj operáciu a pri tejto záťaži stojí takmer nič. Útočníka s platnou identitou, či už v kompromitovanej službe, alebo v pode s ukradnutým ServiceAccountom, nezastaví žiadna z vrstiev. Proti nemu treba prvky nad rámec projektu, napríklad admission control, a dôsledné zúženie oprávnení každej identity.
+
+Všetky konfigurácie, testy a merania sú reprodukovateľné jedným príkazom \texttt{make} z repozitára projektu. Ďalšie rozšírenie by mohlo porovnať režim Istio ambient bez sidecarov, ktorý sľubuje nižšiu réžiu, a kombináciu šifrovania medzi uzlami s mTLS, ktorá by skryla aj metadáta.

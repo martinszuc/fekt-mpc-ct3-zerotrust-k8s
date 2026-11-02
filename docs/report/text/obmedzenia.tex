@@ -1,4 +1,31 @@
 \chapter{Obmedzenia}
 \label{ch:limits}
 
-% TODO: kompromitovaný pod s platnou identitou, obídenie sidecaru, chýbajúca identita používateľa a zariadenia, rozrastanie politík a prevádzková náročnosť, validita merania na notebooku.
+Žiadna z konfigurácií nezastaví všetky útoky z modelu hrozieb a výsledky merania platia iba za podmienok testovacieho prostredia. Táto kapitola zhŕňa, čo riešenie nepokrýva.
+
+\section{Útočník s platnou identitou}
+
+Kompromitovaná služba a podvrhnutie s ukradnutým ServiceAccountom prešli vo všetkých konfiguráciách (tabuľka~\ref{tab:measured}). Všetky nasadené prvky rozhodujú podľa identity a operácie. Ak útočník ovláda kód, ktorý legitímne beží pod správnou identitou, alebo môže vytvoriť pod s rovnakým ServiceAccountom, je pre ne nerozlíšiteľný od skutočnej služby. Zero trust tu zmenšuje dosah útoku na operácie, ktoré daná identita smie vykonať, ale neodstraňuje ho~\cite{nist-sp800-207}.
+
+Proti podvrhnutiu s ukradnutým ServiceAccountom pomáhajú prvky mimo rozsahu projektu: RBAC, ktoré obmedzí, kto smie v namespace vytvárať pody a používať ktorý ServiceAccount, admission control, ktorý odmietne pod s nečakanou kombináciou labelov a ServiceAccountu, a oddelenie služieb do samostatných namespace~\cite{k8s-rbac}. Proti kompromitovanej službe pomáha len zúženie jej oprávnení na minimum, ktoré L7 autorizácia umožňuje, a detekcia neobvyklého správania z prístupových logov.
+
+\section{Obídenie sidecaru}
+
+Ochrana v mesh platí, iba ak prevádzka prejde cez sidecar. Presmerovanie do Envoy nastavuje init container pravidlami iptables v sieťovom namespace podu; prevádzka procesu s UID proxy a porty vylúčené z presmerovania idú mimo neho~\cite{istio-security}. Pod mimo mesh sa k službe so \texttt{STRICT} mTLS nedostane, čo potvrdil variant podvrhnutia mimo mesh. Odchádzajúca prevádzka podu, ktorý z mesh vystúpi, však mTLS nepodlieha vôbec, a preto je segmentácia siete v eBPF nezávislou vrstvou pod mesh: laterálny pohyb zastavuje aj vtedy, keď sidecar chýba. Útočník s oprávnením \texttt{NET\_ADMIN} v pode by mohol pravidlá presmerovania zmeniť; konfigurácie ho podom nepridávajú, ale samotný init container ho potrebuje, čo variant s Istio CNI odstraňuje.
+
+\section{Metadáta a prevádzka na jednom uzle}
+
+mTLS medzi službami šifruje obsah, ale nechá čitateľné adresy podov a porty, takže pozorovateľ siete zostaví graf volaní (tabuľka~\ref{tab:metadata}). Šifrovanie medzi uzlami ich skryje, no nešifruje prevádzku medzi podmi na tom istom uzle a neautentizuje workloady. Úplnú ochranu dôvernosti aj autentizáciu workloadov dá až kombinácia oboch, ktorá sa v experimente neskúmala, lebo by zmiešala dva prvky v jednej konfigurácii.
+
+\section{Identita používateľa a zariadenia}
+
+Všetky identity v experimente patria workloadom. Model NIST SP~800-207 vyžaduje rozhodovať aj podľa používateľa, zariadenia a kontextu požiadavky~\cite{nist-sp800-207}. Overenie koncového používateľa (JWT, OIDC~\cite{rfc7519,oidc-core}) a stavu zariadenia je mimo rozsahu; vstupný bod \texttt{productpage} preto prijíma požiadavky od ktoréhokoľvek volajúceho.
+
+\section{Rozrastanie politík a prevádzková náročnosť}
+
+Aplikácia s piatimi službami potrebuje 10 NetworkPolicy, 1 PeerAuthentication a 6 AuthorizationPolicy, spolu asi 300 riadkov YAML. Každá politika kopíruje časť grafu volaní, takže každá zmena aplikácie (nová služba, nové volanie, nová cesta API) vyžaduje zmenu na dvoch až troch miestach. Chyba sa prejaví ako výpadok, nie ako bezpečnostná diera, čo vedie k pokušeniu politiky uvoľňovať. Mesh navyše pridáva riadiacu rovinu, certifikačnú autoritu a sidecar v každom pode, ktorých dostupnosť a aktualizácie treba spravovať. Počas behu sa ukázala aj závislosť od hodín: po uspaní hostiteľa zaostávali hodiny jedného uzla a sidecary na ňom zostali nepripravené, lebo ich certifikát ešte nebol platný.
+
+\section{Validita merania}
+\label{sec:limits-validity}
+
+Celé prostredie beží na jednom notebooku (Apple M4 Pro, hypervízor vz) a linka medzi virtual machines je softvérový prepínač socket\_vmnet~\cite{socket-vmnet}. Absolútne hodnoty latencie a priepustnosti preto nereprezentujú fyzickú sieť a výsledky sa interpretujú iba ako relatívne rozdiely medzi konfiguráciami. Priepustnosť medzi uzlami je zhora obmedzená linkou (1,36~Gbit/s medzi uzlami bez podov), takže rozdiely v nej sa prejavia skôr ako spotreba CPU. Virtual machines nemajú pridelené konkrétne jadrá a hostiteľ ich plánuje na výkonné aj úsporné jadrá; proti tomu sa konfigurácie striedajú v kolách a uvádza sa medián a rozptyl z piatich opakovaní. Aplikácia Bookinfo má päť služieb a jednoduchý graf volaní; réžia v rozsiahlejšej aplikácii s dlhšími reťazcami volaní sa sčíta na každom skoku.
