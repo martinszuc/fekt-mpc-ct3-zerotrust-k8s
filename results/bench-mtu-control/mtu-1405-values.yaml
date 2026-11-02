@@ -1,0 +1,2 @@
+# control: baseline with only the pod route MTU of node encryption (1355 = 1405 - VXLAN 50)
+MTU: 1405
