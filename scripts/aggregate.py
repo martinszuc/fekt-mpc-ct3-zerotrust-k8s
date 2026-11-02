@@ -78,14 +78,24 @@ def per_run_cpu(resources):
 
 
 def cost(latency, throughput, resources):
-    """one row per run: CPU per unit of work; node CPU net of the scenario's idle baseline;
-    no row for a component the configuration does not run (proxy without the mesh)"""
+    """one row per run: CPU per unit of work; node CPU net of the scenario's idle baseline from the latest
+    run with idle samples started at or before it; no row for a component the configuration does not run"""
     cpu = per_run_cpu(resources)
     idle = defaultdict(list)
     for k, v in cpu.items():
         if k[2] == "idle":
-            idle[k[1]].append(v["node"])
-    idle_node = {s: statistics.median(v) for s, v in idle.items()}
+            idle[(k[1], k[0])].append(v["node"])
+    idle_runs = defaultdict(list)
+    for s, run in sorted(idle):
+        idle_runs[s].append(run)
+
+    def idle_node(scenario, run):
+        runs = idle_runs.get(scenario)
+        if not runs:
+            return None
+        # run ids are UTC timestamps, so string order is time order; runs before any idle run use the first
+        base = max((r for r in runs if r <= run), default=runs[0])
+        return statistics.median(idle[(scenario, base)])
 
     work = {}
     for r in latency:
@@ -100,7 +110,8 @@ def cost(latency, throughput, resources):
         if k not in cpu or amount <= 0:
             continue
         c = cpu[k]
-        scopes = {"node_net": c["node"] - idle_node[k[1]] if k[1] in idle_node else None,
+        base = idle_node(k[1], k[0])
+        scopes = {"node_net": c["node"] - base if base is not None else None,
                   "node": c["node"], "pods": c.get("pods"), "proxy": c.get("proxy"), "cilium": c.get("cilium")}
         for scope, mc in scopes.items():
             if mc is None:
