@@ -1,0 +1,115 @@
+\chapter{Realizácia}
+\label{ch:implementation}
+
+Každá konfigurácia z tabuľky~\ref{tab:configurations} je v repozitári súbor manifestov a nastavení Helm. Prepína ich jeden skript, ktorý cluster prevedie presne do zvolenej konfigurácie bez ohľadu na predchádzajúci stav. Zmení iba to, čo sa líši, a pody reštartuje len vtedy, keď sa mení niečo, čo Kubernetes nastavuje pri ich vytvorení (pripojenie tokenu, sidecar). Nakoniec počká, kým aplikácia odpovedá po celej ceste \texttt{productpage}~$\rightarrow$ \texttt{reviews}~$\rightarrow$ \texttt{ratings}~$\rightarrow$ MongoDB, takže test ani meranie nezačne na neustálenom clustri. Tabuľka~\ref{tab:implementation} priraďuje konfiguráciám súbory a príkazy.
+
+\begin{table}[ht!]
+  \centering
+  \caption{Realizácia konfigurácií v repozitári}
+  \label{tab:implementation}
+  \footnotesize
+  \renewcommand{\arraystretch}{1.15}
+  \begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{3.2cm}>{\raggedright\arraybackslash}X>{\raggedright\arraybackslash}p{3.6cm}@{}}
+    \toprule
+    Konfigurácia & Súbory & Zmena za behu \\
+    \midrule
+    Bez ochrany & \texttt{infra/cilium-values.yaml} & -- \\
+    Segmentácia siete & \texttt{manifests/s1-segmentation/} (10 NetworkPolicy), \texttt{automountServiceAccountToken: false} na každom ServiceAccounte & politiky okamžite; tokeny po reštarte podov \\
+    Šifrovanie medzi uzlami & \texttt{manifests/s2a-wireguard/} \texttt{cilium-values.yaml} & reštart agentov Cilium \\
+    mTLS medzi službami & \texttt{manifests/s2b-mtls/}, \texttt{infra/istio.sh} & inštalácia Istio, reštart podov so sidecarmi \\
+    Mesh bez mTLS & \texttt{manifests/s2b-plain/} (patch \texttt{DISABLE}) & ako mTLS medzi službami \\
+    L7 autorizácia & \texttt{manifests/s3-authz/} (6 AuthorizationPolicy) & okamžite cez xDS \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+\section{Cluster a sieť}
+
+Uzly vytvorí \texttt{make up}: tri virtual machines Lima, na nich k3s~\cite{k3s} bez vlastného CNI, vynucovania politík a kube-proxy (prepínače \texttt{-{}-flannel-backend=none}, \texttt{-{}-disable-network-policy}, \texttt{-{}-disable-kube-proxy}), takže sieť podov, vynucovanie politík aj preklad adries služieb zabezpečuje výlučne Cilium. Výpis~\ref{lst:cilium} ukazuje jeho základné nastavenie, spoločné pre všetky konfigurácie.
+
+\begin{lstlisting}[language={},basicstyle=\ttfamily\footnotesize,caption={Základné nastavenie Cilium (výňatok)},label={lst:cilium}]
+kubeProxyReplacement: true
+routingMode: tunnel
+tunnelProtocol: vxlan
+socketLB:
+  hostNamespaceOnly: true
+cni:
+  exclusive: false
+hubble:
+  enabled: true
+\end{lstlisting}
+
+Posledné dve nastavenia slúžia spolupráci s Istio. Cilium bez nich prekladá adresu služby na adresu podu už pri volaní \texttt{connect()} v sieťovom namespace podu; sidecar by potom videl spojenie priamo na pod a jeho pravidlá presmerovania by sa minuli účinkom~\cite{cilium-kpr}. Prekladom iba v namespace hostiteľa sa zachová adresa služby, ktorú Envoy potrebuje na smerovanie. Keďže sú tieto nastavenia aj v konfigurácii bez ochrany, konfigurácia mTLS medzi službami nemení nastavenie CNI.
+
+\section{Segmentácia siete}
+
+Segmentácia stojí na štandardných objektoch NetworkPolicy~\cite{k8s-networkpolicy}, ktoré Cilium vynucuje v eBPF podľa identity odvodenej z labelov~\cite{cilium-identity}. Politika \texttt{default-deny} vyberá všetky pody namespace a zakazuje prichádzajúcu aj odchádzajúcu prevádzku; ďalšia politika povoľuje iba DNS. Každý workload má potom vlastnú politiku, ktorá povolí presne jeho hrany v grafe volaní a port. Výpis~\ref{lst:netpol} uvádza politiku pre \texttt{ratings}: prijíma iba od \texttt{reviews} a odchádza iba do MongoDB.
+
+\begin{lstlisting}[language={},basicstyle=\ttfamily\footnotesize,caption={NetworkPolicy pre \texttt{ratings}},label={lst:netpol}]
+spec:
+  podSelector:
+    matchLabels: {app: ratings}
+  policyTypes: [Ingress, Egress]
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels: {app: reviews}
+      ports:
+        - {protocol: TCP, port: 9080}
+  egress:
+    - to:
+        - podSelector:
+            matchLabels: {app: mongodb}
+      ports:
+        - {protocol: TCP, port: 27017}
+\end{lstlisting}
+
+Okrem piatich politík aplikácie a dvoch základných sú v sade tri politiky pre pody merania, aby záťažové nástroje nepotrebovali výnimku z default-deny. V konfiguráciách s mesh pribudne politika, ktorá všetkým podom povolí spojenie na istiod (port 15012); bez nej by sidecary nedostali konfiguráciu ani certifikát. Segmentácia teda musí poznať aj riadiacu rovinu mesh.
+
+Spevnenie tokenov nastaví \texttt{automountServiceAccountToken: false} na každom ServiceAccounte namespace~\cite{k8s-serviceaccounts}. Pod tak nedostane token, ktorým by sa mohol prihlásiť k API serveru; aplikácia Bookinfo API server nepoužíva, takže jej to nevadí. Každý workload, vrátane MongoDB, má vlastný ServiceAccount, aby mal v mesh vlastnú identitu.
+
+\section{Šifrovanie medzi uzlami}
+
+Transparentné šifrovanie zapína v Cilium dvojica nastavení \texttt{encryption.enabled: true} a \texttt{encryption.type: wireguard}~\cite{cilium-wireguard}. Agent Cilium na každom uzle vygeneruje kľúčový pár, verejný kľúč zverejní v objekte CiliumNode a s ostatnými uzlami vytvorí rozhranie \texttt{cilium\_wg0}. Prevádzka podov smerujúca na iný uzol potom prechádza týmto rozhraním v jadre ako UDP na porte 51871~\cite{donenfeld2017wireguard}. Prevádzka hostiteľov (kubelet, API server) ostáva nešifrovaná, lebo útok odpočúvaním sa týka prevádzky podov. Zmena sa prejaví po reštarte agentov Cilium a aplikácia ani pody o nej nevedia. Vedľajším účinkom je menšie MTU trás podov, ktoré ovplyvní aj prevádzku na jednom uzle (kapitola~\ref{ch:overhead}).
+
+\section{mTLS medzi službami}
+
+Istio sa inštaluje cez Helm (charty \texttt{base} a \texttt{istiod}) a istiod beží na riadiacom uzle, aby nesúperil s aplikáciou o CPU pracovných uzlov. Label \texttt{istio-injection=enabled} na namespace zapne vkladanie sidecarov; presmerovanie prevádzky do Envoy nastaví init container pravidlami iptables~\cite{istio-security}. Nastavenie \texttt{holdApplicationUntilProxyStarts} spustí aplikáciu až po pripravenom sidecari, takže prvé spojenia nezlyhajú. Istio vydá každému podu certifikát s identitou v tvare SPIFFE, napríklad \url{spiffe://cluster.local/ns/bookinfo/sa/bookinfo-reviews}~\cite{spiffe-id}. Vynucovanie mTLS zapína PeerAuthentication na úrovni namespace (výpis~\ref{lst:peerauth})~\cite{istio-peerauthentication}.
+
+\begin{lstlisting}[language={},basicstyle=\ttfamily\footnotesize,caption={PeerAuthentication pre namespace \texttt{bookinfo}},label={lst:peerauth}]
+apiVersion: security.istio.io/v1
+kind: PeerAuthentication
+metadata:
+  name: default
+spec:
+  mtls:
+    mode: STRICT
+\end{lstlisting}
+
+Mesh bez mTLS používa tie isté manifesty s režimom \texttt{DISABLE}. Samotné \texttt{DISABLE} však nestačí: sidecary klientov by v režime automatického mTLS stále volili šifrované spojenie. Preto táto konfigurácia pridáva aj DestinationRule, ktorá šifrovanie vypne aj na strane klienta.
+
+\section{L7 autorizácia}
+
+Autorizácia používa vzor \enquote{allow-nothing}: AuthorizationPolicy bez pravidiel zakáže každú požiadavku na workload v namespace a pre každý workload pribudne jedna politika \texttt{ALLOW}, ktorá povolí iba jeho volajúcich podľa identity z mTLS, metódy a cesty~\cite{istio-authorizationpolicy}. Výpis~\ref{lst:authz} uvádza politiku pre \texttt{ratings}: \texttt{reviews} smie hodnotenia iba čítať.
+
+\begin{lstlisting}[language={},basicstyle=\ttfamily\footnotesize,caption={AuthorizationPolicy pre \texttt{ratings}},label={lst:authz}]
+spec:
+  selector:
+    matchLabels: {app: ratings}
+  action: ALLOW
+  rules:
+    - from:
+        - source:
+            principals:
+              - cluster.local/ns/bookinfo/sa/bookinfo-reviews
+      to:
+        - operation:
+            methods: [GET]
+            paths: [/ratings/*]
+\end{lstlisting}
+
+MongoDB komunikuje vlastným protokolom nad TCP, preto jej politika rozlišuje iba identitu \texttt{ratings} a port. Vstupný bod \texttt{productpage} prijíma požiadavky od kohokoľvek, ale iba metódy na čítanie a prihlasovací formulár. Kontroly stavu od kubeletu politiky neovplyvnia, lebo ich injektor presmeruje na agenta sidecaru. Politiky sa do sidecarov dostanú cez xDS za niekoľko sekúnd a pody sa nereštartujú.
+
+\section{Automatizácia}
+
+Všetky kroky sú ciele súboru \texttt{Makefile}: \texttt{make up} vytvorí cluster, \texttt{make app} nasadí aplikáciu, \texttt{make s0} až \texttt{make s3} a \texttt{make s2b-plain} prepnú konfiguráciu, \texttt{make test} spustí všetky útoky proti aktuálnej konfigurácii, \texttt{make bench} meranie réžie a \texttt{make plot} z nameraných dát vytvorí tabuľky a grafy. Každý test zapíše riadok do výsledkového CSV s identifikátorom behu a commitom repozitára a uloží dôkaz (výstup príkazov, záznam prevádzky) pod názvom, ktorý určuje útok aj konfiguráciu. Verzie všetkých komponentov sú pripnuté a pri každom behu sa zaznamenávajú.

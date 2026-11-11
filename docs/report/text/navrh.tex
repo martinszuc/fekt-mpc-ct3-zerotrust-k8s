@@ -148,8 +148,8 @@ Postup merania:
 \begin{enumerate}
   \item Kalibrácia: zistí sa saturačná záťaž cesty cez celú aplikáciu v najnáročnejšej konfigurácii (L7 autorizácia) a pre všetky konfigurácie sa použije približne jej polovica, aby sa žiadna nemerala v saturácii.
   \item Pre každú konfiguráciu a cestu jeden zahrievací beh, ktorý sa zahodí, a potom päť behov (fortio 60~s, iperf3 30~s bez prvých 5~s).
-  \item Konfigurácie sa striedajú po kolách, aby pomalý drift prostredia nedopadol na jednu z nich.
-  \item Výsledkom je medián z behov a rozsah od minima po maximum.
+  \item Konfigurácie sa striedajú po kolách: každé kolo zmeria všetky konfigurácie tesne po sebe, aby pomalý drift prostredia nedopadol na jednu z nich.
+  \item Výsledkom je medián z behov a rozsah od minima po maximum; konfigurácie sa porovnávajú v rámci každého kola.
 \end{enumerate}
 
 Veľkosť virtual machines, verzie a rozmiestnenie podov sú vo všetkých konfiguráciách rovnaké; počas merania nebeží na hostiteľovi iná záťaž. Všetky virtual machines bežia na jednom notebooku a prevádzka medzi uzlami ho neopúšťa, preto majú význam iba relatívne rozdiely medzi konfiguráciami, nie absolútne hodnoty.

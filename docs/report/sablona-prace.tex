@@ -141,6 +141,9 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%       Začátek dokumentu               %%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% long \texttt names (paths, flags) cannot hyphenate
+\setlength{\emergencystretch}{3em}
+
 \begin{document}
 \pagestyle{empty} %vypnutí číslování stránek
 
@@ -160,6 +163,8 @@
 \include{text/model-hrozieb}
 
 \include{text/navrh}
+
+\include{text/realizacia}
 
 \include{text/vysledky}
 

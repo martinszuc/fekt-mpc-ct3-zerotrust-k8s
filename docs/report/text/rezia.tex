@@ -1,32 +1,34 @@
 \chapter{Meranie réžie}
 \label{ch:overhead}
 
-Réžia sa meria podľa návrhu z časti~\ref{sec:measurement-design}: šesť konfigurácií sa strieda v piatich kolách, latencia sa meria pri konštantnej záťaži 2000 požiadaviek za sekundu medzi podmi fortio a 100 požiadaviek za sekundu cez aplikáciu, priepustnosť jedným tokom TCP. Tabuľky uvádzajú medián z piatich opakovaní a v zátvorke rozpätie od minima po maximum. Rozdiel sa pokladá za skutočný, iba ak sa rozpätia neprekrývajú. Všetky hodnoty pochádzajú z virtual machines na jednom notebooku, preto sú zmysluplné iba ich pomery (časť~\ref{sec:limits-validity}).
+Réžia sa meria podľa návrhu z časti~\ref{sec:measurement-design}: šesť konfigurácií sa strieda v piatich kolách, latencia sa meria pri konštantnej záťaži 2000 požiadaviek za sekundu medzi podmi fortio a 100 požiadaviek za sekundu cez aplikáciu, priepustnosť jedným tokom TCP. Tabuľky uvádzajú medián z piatich opakovaní, pri priepustnosti aj rozpätie od minima po maximum. Každé kolo meria všetky konfigurácie tesne po sebe, preto sa konfigurácie porovnávajú po kolách: rozdiel sa pokladá za skutočný, iba ak má rovnaké znamienko vo všetkých piatich kolách, a uvádza sa medián rozdielov. Pomalé zmeny stavu hostiteľa, ktoré zasiahnu celé kolo, sa tak odčítajú. Všetky hodnoty pochádzajú z virtual machines na jednom notebooku, preto sú zmysluplné iba ich pomery (časť~\ref{sec:limits-validity}).
 
 \section{Latencia}
 
-Tabuľka~\ref{tab:latency} uvádza priemernú latenciu na troch cestách a percentily cesty cez aplikáciu. Priemer je presný; percentily ciest medzi podmi fortio sa počítajú z histogramu s krokom 10~\textmu s.
+Tabuľka~\ref{tab:latency} uvádza mediány percentilov p50 a p99 na troch cestách: medzi podmi fortio na jednom uzle, medzi podmi fortio na rôznych uzloch a cez celú aplikáciu so štyrmi skokmi. Percentily sa počítajú z histogramu s krokom 10~\textmu s, rozptyl opakovaní ukazuje obrázok~\ref{fig:latency}.
 
 \begin{table}[ht!]
   \centering
-  \caption{Latencia v ms pri konštantnej záťaži, medián [min--max] z piatich opakovaní}
+  \caption{Latencia v ms pri konštantnej záťaži, medián z piatich opakovaní}
   \label{tab:latency}
   \footnotesize
   \renewcommand{\arraystretch}{1.15}
-  \begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}X>{\centering\arraybackslash}p{2.0cm}>{\centering\arraybackslash}p{2.0cm}>{\centering\arraybackslash}p{2.0cm}>{\centering\arraybackslash}p{2.0cm}@{}}
+  \begin{tabular}{@{}l*{6}{>{\centering\arraybackslash}p{1.3cm}}@{}}
     \toprule
-    Konfigurácia & Jeden uzol, priemer & Medzi uzlami, priemer & Aplikácia, p50 & Aplikácia, p99 \\
+    & \multicolumn{2}{c}{Jeden uzol} & \multicolumn{2}{c}{Medzi uzlami} & \multicolumn{2}{c}{Aplikácia} \\
+    Konfigurácia & p50 & p99 & p50 & p99 & p50 & p99 \\
     \midrule
-    Bez ochrany & 0,150 & 0,515 & 15,6 & 23,1 \\
-    Segmentácia siete & 0,156 & 0,507 & 15,9 & 23,9 \\
-    Šifrovanie medzi uzlami & 0,154 & 0,578 & 17,3 & 24,9 \\
-    Mesh bez mTLS & 0,651 & 0,912 & 16,5 & 24,3 \\
-    mTLS medzi službami & 0,683 & 0,922 & 18,7 & 26,8 \\
-    L7 autorizácia & 0,692 & 0,953 & 18,6 & 28,2 \\
+    Bez ochrany & 0,141 & 0,596 & 0,520 & 0,903 & 15,2 & 26,3 \\
+    Segmentácia siete & 0,137 & 0,596 & 0,537 & 0,956 & 15,3 & 27,0 \\
+    Šifrovanie medzi uzlami & 0,136 & 0,583 & 0,607 & 1,085 & 16,7 & 29,2 \\
+    Mesh bez mTLS & 0,674 & 1,212 & 0,913 & 1,358 & 16,8 & 26,1 \\
+    mTLS medzi službami & 0,710 & 1,174 & 0,950 & 1,383 & 18,8 & 29,6 \\
+    L7 autorizácia & 0,702 & 1,219 & 0,965 & 1,392 & 18,9 & 29,5 \\
     \bottomrule
-  \end{tabularx}
+  \end{tabular}
 \end{table}
-% TODO: po opakovanom meraní latencie (beh 02.11) doplniť rozpätia a percentily p50/p99 ciest medzi podmi fortio; priemery overiť proti novému behu.
+
+Prvé kolo bežalo niekoľko minút po štarte virtual machines a líši sa od ostatných: cesta cez aplikáciu bola v ňom pomalšia v konfiguráciách od segmentácie siete po mTLS a cesta na jednom uzle naopak rýchlejšia v prvých troch konfiguráciách. Kolá 2 až 5 sa zhodujú v rámci niekoľkých percent. Mediány tým nie sú dotknuté, porovnanie po kolách však v niektorých veličinách prvým kolom stratí zhodu znamienka.
 
 \begin{figure}[ht!]
   \centering
@@ -96,14 +98,14 @@ Tabuľka~\ref{tab:deltas-measured} priraďuje namerané rozdiely porovnávaným 
     \toprule
     Prvok & Nameraný rozdiel \\
     \midrule
-    NetworkPolicy v eBPF & v rámci rozptylu vo všetkých veličinách \\
-    WireGuard medzi uzlami & medzi uzlami +0,07~ms (+14~\%), aplikácia +1,4~ms (p50); priepustnosť $-$12~\%, CPU na Gbit/s 2,7-krát vyššie; na jednom uzle bez vplyvu \\
-    Sidecar proxy bez šifrovania & +0,5~ms na jednom uzle (4,2-krát), +0,4~ms medzi uzlami, aplikácia +0,6~ms; priepustnosť na jednom uzle $-$38~\%; maximum medzi uzlami z 26~400 na 10~800 požiadaviek/s; +200~MiB pamäte na uzol \\
-    mTLS v proxy & na ceste medzi podmi +0,01 až 0,03~ms, aplikácia +2,2~ms (+13~\%); priepustnosť na jednom uzle $-$56~\%, CPU na Gbit/s na jednom uzle 2,0-krát vyššie \\
-    mTLS oproti WireGuard & mTLS má o 0,34~ms vyššiu latenciu medzi uzlami a o 1,4~ms cez aplikáciu, ale medzi uzlami spotrebuje o 42~\% menej CPU na Gbit/s a má vyššiu priepustnosť \\
-    L7 autorizácia & medzi uzlami +0,03~ms (+3~\%), na hranici rozptylu; ostatné veličiny v rámci rozptylu \\
+    NetworkPolicy v eBPF & na cestách medzi podmi bez rozdielu; cez aplikáciu p50 +0,13~ms (+1~\%) vo všetkých kolách; priepustnosť a CPU v rámci rozptylu \\
+    WireGuard medzi uzlami & medzi uzlami p50 +0,06~ms (+11~\%), aplikácia p50 +1,3~ms (+8~\%); priepustnosť $-$12~\%, CPU na Gbit/s 2,7-krát vyššie; latencia na jednom uzle bez vplyvu \\
+    Sidecar proxy bez šifrovania & p50 +0,54~ms na jednom uzle (4,9-krát), +0,38~ms medzi uzlami (+71~\%); aplikácia p50 +1,2~ms, nie vo všetkých kolách; priepustnosť na jednom uzle $-$38~\%; maximum medzi uzlami z 26\,400 na 10\,800 požiadaviek/s; +200~MiB pamäte na uzol \\
+    mTLS v proxy & na cestách medzi podmi p50 +0,03~ms (+4~\%), aplikácia p50 +2,0~ms (+12~\%); priepustnosť na jednom uzle $-$56~\%, CPU na Gbit/s na jednom uzle 2,0-krát vyššie \\
+    mTLS oproti WireGuard & mTLS má medzi uzlami o 0,35~ms vyššiu latenciu p50 a cez aplikáciu o 2,0~ms vyššiu, ale medzi uzlami spotrebuje o 42~\% menej CPU na Gbit/s a má vyššiu priepustnosť \\
+    L7 autorizácia & žiadny rozdiel nie je rovnaký vo všetkých kolách; medzi podmi do 0,01~ms, aplikácia p50 +0,13~ms \\
     \bottomrule
   \end{tabularx}
 \end{table}
 
-Väčšinu ceny mesh tvorí samotný sidecar, nie šifrovanie: každá požiadavka prejde dvakrát cez proxy v používateľskom priestore. mTLS pridá na krátkej ceste medzi podmi málo, no cez aplikáciu so štyrmi skokmi pridá viac než samotné sidecary. WireGuard je pri latencii lacnejší, lebo šifruje v jadre bez prechodu do používateľského priestoru, ale pri objemovom prenose medzi uzlami spotrebuje na gigabit viac CPU než mTLS. Segmentácia siete a L7 autorizácia sú pri tejto záťaži prakticky zadarmo.
+Väčšinu ceny mesh tvorí samotný sidecar, nie šifrovanie: každá požiadavka prejde dvakrát cez proxy v používateľskom priestore. mTLS pridá na krátkej ceste medzi podmi málo, no cez aplikáciu so štyrmi skokmi pridá viac než samotné sidecary. WireGuard je pri latencii lacnejší, lebo šifruje v jadre bez prechodu do používateľského priestoru, ale pri objemovom prenose medzi uzlami spotrebuje na gigabit viac CPU než mTLS. Segmentácia siete a L7 autorizácia sú pri tejto záťaži prakticky zadarmo: ich réžia nepresahuje jedno percento.
