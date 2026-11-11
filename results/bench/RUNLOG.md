@@ -58,3 +58,15 @@ Outcome: **disturbed, not used in figures.** The host display went on at 21:08 a
 Aggregation fix: the idle node CPU baseline was pooled per configuration over all selected runs, so adding this run shifted 29.10 CPU per Gbit/s by up to 1 %. `scripts/aggregate.py` now nets each run against the latest idle run started at or before it; the 29.10 selection reproduces the committed `summary.csv` and `cost.csv` exactly.
 
 To do: full rerun with the host untouched (display off, no use), then `make plot RUN_ID=20261029T031157Z,20261029T073604Z,20261029T073939Z,20261029T104041Z,20261029T105456Z,<new> DROP=<29.10 main>/<each scenario>/latency,20261029T073939Z/S2a/payload` and fill the latency table in `docs/report/text/rezia.tex`.
+
+## 11.11.2026 latency rerun, host untouched
+
+Cluster restarted from stopped VMs (`make up`), clocks within 1 s, Cilium OK, `infra/scenario.sh S3`, attack checks 14/14 (run 20261111T015737Z-S3). Host macOS 26.7.3 (26.7.2 on 29.10 and 02.11); all six configurations of the latency comparison come from this run, so the update does not affect it. Podman machine stopped, AC power, `caffeinate -dis`, no display or sleep events.
+
+Driver `results/bench/logs/latency-20261102.sh` (unchanged), log `latency-20261111.log`. Run 20261111T015852Z, 02:58 to 06:22, exit 0, cluster restored to S3.
+
+Outcome: **used for figures and the report.** Rounds 2 to 5 agree within a few percent. Round 1 (started 5 min after VM boot) differs: app path slower in S1 to S2b (+4 to +5 ms), same-node path faster in S0 to S2a. Medians are unaffected.
+
+Analysis: configurations are compared per round (paired), a difference counts only when it has the same sign in all five rounds; reported value is the median of the per-round differences. The order within a round is fixed (S0, S1, S2a, S2b-plain, S2b, S3), so small consistent differences may partly come from order (noted in the limits chapter).
+
+Figures: `make plot RUN_ID=20261029T031157Z,20261029T073604Z,20261029T073939Z,20261029T104041Z,20261029T105456Z,20261111T015852Z DROP=20261029T031157Z/S0/latency,20261029T031157Z/S1/latency,20261029T031157Z/S2a/latency,20261029T031157Z/S2b-plain/latency,20261029T031157Z/S2b/latency,20261029T031157Z/S3/latency,20261029T073939Z/S2a/payload`. Non-latency rows of `summary.csv` are identical to the previous selection.
