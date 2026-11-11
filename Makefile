@@ -73,4 +73,4 @@ figures:
 	scripts/figures.sh
 
 pdf:
-	cd docs/report && latexmk -pdf -interaction=nonstopmode -halt-on-error sablona-prace.tex
+	cd docs/report && latexmk -pdf -interaction=nonstopmode -halt-on-error sablona-prace.tex sablona-obhaj.tex
