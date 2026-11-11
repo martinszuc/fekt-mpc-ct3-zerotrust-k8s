@@ -7,7 +7,7 @@ Recorded 22.10.2026, host drift and kernels rechecked and aligned 29.10.2026. Ch
 | Item | Version |
 |---|---|
 | Hardware | MacBook Pro Mac16,8, Apple M4 Pro (10P + 4E cores), 48 GB RAM |
-| macOS | 26.7.2 (25G330) since 29.10 (26.7.1 (25G313) until 23.10) |
+| macOS | 26.7.3 (25G416) since the 11.11 latency run; 26.7.2 (25G330) 29.10 to 02.11; 26.7.1 (25G313) until 23.10 |
 | Homebrew | 7.0.10 |
 
 ## Cluster
