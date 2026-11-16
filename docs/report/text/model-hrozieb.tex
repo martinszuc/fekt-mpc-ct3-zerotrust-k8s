@@ -44,14 +44,14 @@ Hranice dôvery ležia medzi podmi navzájom (v tom istom namespace), medzi uzla
     \midrule
     Kompromitovaný frontend & spustenie kódu v \texttt{productpage}, verejne dostupnom frontende & ľubovoľné nástroje so sieťovou identitou podu a pripojenými prihlasovacími údajmi \\
     Pozorovateľ siete & na sieti medzi uzlami & pasívny záznam prevádzky medzi uzlami \\
-    Tvorca podov & smie vytvárať pody v namespace aplikácie, napríklad cez uniknutý prístup CI alebo vývojára & volí labely, image, vloženie sidecaru a ľubovoľný ServiceAccount namespace \\
+    Tvorca podov & smie vytvárať pody v namespace aplikácie, napríklad cez uniknutý prístup CI alebo vývojára & volí labely, image, vloženie sidecaru a ľubovoľný ServiceAccount v namespace \\
     \bottomrule
   \end{tabularx}
 \end{table}
 
 \section{Útoky}
 
-Tabuľka~\ref{tab:attacks} uvádza útoky, ich kategórie STRIDE a prvok, ktorý ich má zastaviť. Útoky neoprávnená operácia a kompromitovaná služba predpokladajú útočníka v pode \texttt{reviews}: má platnú identitu aj povolenú sieťovú cestu k \texttt{ratings}. V teste beží ako ephemeral container~\cite{k8s-ephemeral-containers} v skutočnom pode \texttt{reviews}, takže zdieľa jeho sieťovú identitu a v mesh aj jeho sidecar.
+Tabuľka~\ref{tab:attacks} uvádza útoky, ich kategórie STRIDE a prvok, ktorý ich má zastaviť. Neoprávnená operácia a kompromitovaná služba predpokladajú útočníka v pode \texttt{reviews}, ktorý má platnú identitu aj povolenú sieťovú cestu k \texttt{ratings}. V teste útočník beží ako ephemeral container~\cite{k8s-ephemeral-containers} v skutočnom pode \texttt{reviews}, takže zdieľa jeho sieťovú identitu a v mesh aj jeho sidecar.
 
 \begin{table}[ht!]
   \centering
@@ -77,7 +77,7 @@ Popretie (\emph{repudiation}) sa netestuje; čiastočne ho pokrývajú záznamy 
 
 \subsection{Varianty podvrhnutia identity}
 
-Labely volí ten, kto pod vytvára, takže nie sú identitou, a segmentácia siete im napriek tomu dôveruje. Identitou v mesh je ServiceAccount, no tvorca podov môže zvoliť ľubovoľný ServiceAccount namespace. Samotné mTLS preto nezastaví podvrhnutý pod, ktorý sa do mesh zapojí. Tabuľka~\ref{tab:spoofing} uvádza tri varianty útoku.
+Labely volí ten, kto pod vytvára, takže nie sú identitou, a segmentácia siete im napriek tomu dôveruje. Identitou v mesh je ServiceAccount, no tvorca podov môže zvoliť ľubovoľný ServiceAccount v namespace. Samotné mTLS preto nezastaví podvrhnutý pod, ktorý sa do mesh zapojí. Tabuľka~\ref{tab:spoofing} uvádza tri varianty útoku.
 
 \begin{table}[ht!]
   \centering
@@ -90,7 +90,7 @@ Labely volí ten, kto pod vytvára, takže nie sú identitou, a segmentácia sie
     Variant & Podvrhnutý pod & Zastaví & Prečo \\
     \midrule
     Mimo mesh & bez sidecaru, SA \texttt{default} & mTLS medzi službami (\texttt{STRICT}) & nemá certifikát, nešifrovaná prevádzka je odmietnutá \\
-    S iným ServiceAccountom & v mesh, SA \texttt{default} & L7 autorizácia & má platný certifikát (je autentizovaný), ale nie povolenú identitu \\
+    S iným ServiceAccountom & v mesh, SA \texttt{default} & L7 autorizácia & má platný certifikát (je autentizovaný), ale nemá povolenú identitu \\
     S ukradnutým ServiceAccountom & v mesh, SA \texttt{bookinfo-reviews} & nič & nerozlíšiteľný od \texttt{reviews}; vyžaduje admission control alebo RBAC na vytváranie podov a použitie SA (mimo rozsahu) \\
     \bottomrule
   \end{tabularx}
@@ -98,7 +98,7 @@ Labely volí ten, kto pod vytvára, takže nie sú identitou, a segmentácia sie
 
 \subsection{Priradenie kontrol pri zneužití ServiceAccount tokenu}
 
-Segmentácia siete pridáva dva nezávislé prvky: NetworkPolicy a nepripájanie tokenu. Aby bol každý výsledok priradený práve jednému prvku, test zneužitia ServiceAccount tokenu sa skladá zo štyroch kontrol (tabuľka~\ref{tab:token}). Ani jeden z prvkov nezaťažuje dátovú cestu, takže meranie réžie segmentácie siete neovplyvňujú.
+Segmentácia siete pridáva dva nezávislé prvky: NetworkPolicy a nepripájanie tokenu. Aby bol každý výsledok priradený práve jednému prvku, test zneužitia ServiceAccount tokenu sa skladá zo štyroch kontrol (tabuľka~\ref{tab:token}). Ani jeden z prvkov nezaťažuje dátovú cestu, takže meranie réžie segmentácie siete neovplyvní.
 
 \begin{table}[ht!]
   \centering
@@ -120,7 +120,7 @@ Segmentácia siete pridáva dva nezávislé prvky: NetworkPolicy a nepripájanie
 
 \section{Vrstvy ochrany}
 
-Obrázok~\ref{fig:scenario-layers} ukazuje, ako jednotlivé vrstvy postupne zužujú množinu útočníkov, ktorí sa dostanú k hodnoteniam. Segmentácia siete prepustí každý pod s povoleným labelom, mTLS medzi službami každý pod s identitou mesh a L7 autorizácia každý workload s povoleným ServiceAccountom. Zvyšné riziko, legitímna identita v rukách útočníka, žiadna sieťová vrstva neodstráni.
+Obrázok~\ref{fig:scenario-layers} ukazuje, ako jednotlivé vrstvy postupne zužujú množinu útočníkov, ktorí sa dostanú k hodnoteniam. Segmentácia siete prepustí každý pod s povoleným labelom, mTLS medzi službami každý pod s identitou mesh a L7 autorizácia každý workload s povoleným ServiceAccountom. Zvyškové riziko, legitímnu identitu v rukách útočníka, neodstráni žiadna sieťová vrstva.
 
 \begin{figure}[ht!]
   \centering

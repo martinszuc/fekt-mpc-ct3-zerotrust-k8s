@@ -1,7 +1,7 @@
 \chapter{Analýza prístupov k segmentácii a autentizácii}
 \label{ch:analysis}
 
-Kapitola porovnáva prístupy k sieťovej segmentácii a autentizácii služieb, ktoré sú pre mikroslužby v Kubernetes k dispozícii. Ide o analýzu bez nasadenia: experiment overuje iba časť prístupov a tabuľky~\ref{tab:approaches} a~\ref{tab:coverage} uvádzajú ktoré. Útoky, na ktoré sa kapitola odvoláva, sú definované v modeli hrozieb (kapitola~\ref{ch:threat-model}).
+Kapitola porovnáva prístupy k sieťovej segmentácii a autentizácii služieb, ktoré sú pre mikroslužby v Kubernetes k dispozícii. Ide o analýzu bez nasadenia: experiment overuje iba časť prístupov a tabuľky~\ref{tab:approaches} a~\ref{tab:coverage} uvádzajú, ktoré. Útoky, na ktoré sa kapitola odvoláva, sú definované v modeli hrozieb (kapitola~\ref{ch:threat-model}).
 
 Kľúčovým kritériom porovnania je \emph{základ identity}: podľa čoho prvok rozpozná, kto komunikuje. Môže to byť IP adresa, label podu, kľúč uzla alebo kryptografická identita workloadu. Prvok zastaví iba útočníka, ktorý danú identitu nedokáže získať.
 
@@ -10,11 +10,11 @@ Kľúčovým kritériom porovnania je \emph{základ identity}: podľa čoho prvo
 
 \subsection{Kubernetes NetworkPolicy}
 
-NetworkPolicy (časť~\ref{sec:networkpolicy}) v režime default-deny zastaví laterálny pohyb k službám mimo grafu volaní aplikácie. Spolu s default-deny pre odchádzajúcu prevádzku odstráni aj cestu z podov aplikácie k API serveru, čo je časť ochrany proti zneužitiu ServiceAccount tokenu. Identitou je label, ktorý volí ten, kto pod vytvára, takže pod so skopírovaným labelom sa od legitímneho workloadu nelíši. NetworkPolicy nepozná metódy ani cesty HTTP a nezaisťuje dôvernosť prenosu.
+NetworkPolicy (časť~\ref{sec:networkpolicy}) v režime default-deny zastaví laterálny pohyb k službám mimo grafu volaní aplikácie. Spolu s default-deny pre odchádzajúcu prevádzku odstráni aj cestu z podov aplikácie k API serveru, čo je časť ochrany proti zneužitiu ServiceAccount tokenu. Identitou je label, ktorý volí ten, kto pod vytvára, takže pod so skopírovaným labelom sa od legitímneho workloadu nelíši. NetworkPolicy nepozná metódy ani cesty HTTP a nezabezpečuje dôvernosť prenosu.
 
 \subsection{Identitné a L7 politiky Cilium}
 
-Číselné identity Cilium (časť~\ref{sec:cilium}) škálujú lepšie než filtrovanie podľa IP adries a prežijú presun podu na iný uzol. Identita sa však stále odvodzuje z labelov, takže slabina voči podvrhnutému labelu zostáva. CiliumNetworkPolicy môže pridať pravidlá L7, napríklad povolenú metódu a cestu HTTP; takúto prevádzku Cilium presmeruje do proxy na uzle~\cite{cilium-policy}. Pravidlo L7 by zastavilo neoprávnenú operáciu aj bez service mesh, volajúci je však stále určený labelmi.
+Číselné identity Cilium (časť~\ref{sec:cilium}) škálujú lepšie než filtrovanie podľa IP adries a prežijú presun podu na iný uzol. Identita sa však stále odvodzuje z labelov, takže slabina voči podvrhnutému labelu zostáva. CiliumNetworkPolicy môže pridať pravidlá L7, napríklad povolenú metódu a cestu HTTP; takúto prevádzku Cilium presmeruje do proxy na uzle~\cite{cilium-policy}. Pravidlo L7 by zastavilo neoprávnenú operáciu aj bez service mesh; volajúci je však stále určený labelmi.
 
 \subsection{L7 autorizácia v service mesh}
 
@@ -29,11 +29,11 @@ Klasická segmentácia oddeľuje vrstvy aplikácie do samostatných VLAN alebo p
 
 \subsection{mTLS v service mesh s identitou SPIFFE}
 
-V režime \texttt{STRICT} (časť~\ref{sec:mesh}) je prevádzka medzi sidecarmi šifrovaná na každej ceste vrátane komunikácie na tom istom uzle a klient bez certifikátu mesh je odmietnutý. Identitou je ServiceAccount podu, zakódovaný ako SPIFFE ID~\cite{istio-spire,spiffe-id}. Samotná autentizácia neobmedzuje, ktorý overený volajúci smie volať ktorú službu. Útočník, ktorý môže spustiť pod s ServiceAccountom cieľovej služby, získa rovnakú identitu.
+V režime \texttt{STRICT} (časť~\ref{sec:mesh}) je prevádzka medzi sidecarmi šifrovaná na každej ceste vrátane komunikácie na tom istom uzle a klient bez certifikátu mesh je odmietnutý. Identitou je ServiceAccount podu, zakódovaný ako SPIFFE ID~\cite{istio-spire,spiffe-id}. Samotná autentizácia neobmedzuje, ktorý overený volajúci smie volať ktorú službu. Útočník, ktorý môže spustiť pod so ServiceAccountom cieľovej služby, získa rovnakú identitu.
 
 \subsection{SPIRE}
 
-SPIRE vydáva identity SPIFFE až po overení uzla (\emph{node attestation}) a vlastností procesu, ktoré zistí od jadra alebo kubeletu (\emph{workload attestation}). Registračné záznamy mapujú kombinácie takýchto selektorov na SPIFFE ID~\cite{spire-concepts}. Istio môže SPIRE použiť namiesto vlastnej certifikačnej autority, ak vydávané ID dodržia vzor Istio~\cite{istio-spire}. Oproti vstavanej autorite pridáva silnejšie overenie uzla a jemnejšiu registráciu, čo môže sťažiť podvrhnutie s ukradnutým ServiceAccountom, ak selektory vyžadujú viac než ServiceAccount. V projekte je SPIRE spracované iba teoreticky.
+SPIRE vydáva identity SPIFFE až po overení uzla (\emph{node attestation}) a vlastností procesu, ktoré zistí od jadra alebo kubeletu (\emph{workload attestation}). Registračné záznamy mapujú kombinácie takýchto selektorov na SPIFFE ID~\cite{spire-concepts}. Istio môže SPIRE použiť namiesto vlastnej certifikačnej autority, ak vydávané ID dodržiavajú vzor Istio~\cite{istio-spire}. Oproti vstavanej autorite pridáva silnejšie overenie uzla a jemnejšiu registráciu, čo môže sťažiť podvrhnutie s ukradnutým ServiceAccountom, ak selektory vyžadujú viac než ServiceAccount. V projekte je SPIRE spracované iba teoreticky.
 
 \subsection{JWT a OIDC}
 
@@ -50,7 +50,7 @@ Transparentné šifrovanie Cilium (časť~\ref{sec:wireguard}) chráni prevádzk
 \section{Porovnanie}
 \label{sec:comparison}
 
-Tabuľka~\ref{tab:approaches} zhŕňa vlastnosti prístupov a tabuľka~\ref{tab:coverage} ich mapuje na útoky z modelu hrozieb. Značka \enquote{+} znamená, že prvok sám zastaví útok tak, ako je definovaný, \enquote{(+)} že ho zastaví len čiastočne alebo za podmienky v poznámke; SA znamená ServiceAccount. Kompromitovanú službu, ktorá drží platnú identitu a povolenú cestu, nezastaví žiadny z prístupov, preto v tabuľke chýba.
+Tabuľka~\ref{tab:approaches} zhŕňa vlastnosti prístupov a tabuľka~\ref{tab:coverage} ich mapuje na útoky z modelu hrozieb. Značka \enquote{+} znamená, že prvok sám zastaví útok tak, ako je definovaný, a \enquote{(+)}, že ho zastaví len čiastočne alebo za podmienky v poznámke; SA znamená ServiceAccount. Kompromitovanú službu, ktorá drží platnú identitu a povolenú cestu, nezastaví žiadny z prístupov, preto v tabuľke chýba.
 
 \begin{table}[ht!]
   \centering
