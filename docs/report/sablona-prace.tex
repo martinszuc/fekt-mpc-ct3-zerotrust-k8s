@@ -116,6 +116,8 @@
 \usepackage{csquotes}
 \usepackage[backend=biber,style=iso-numeric,sorting=none]{biblatex} % CSN ISO 690
 \addbibresource{../refs.bib}
+% slovak.lbx ends urlfrom with a space, which leaves "Dostupné z :"
+\DefineBibliographyStrings{slovak}{urlfrom = {Dostupné z}}
 \usepackage{xurl}      % line breaks anywhere in URLs
 \setlength{\emergencystretch}{2em} % fewer overfull lines without \sloppy
 
