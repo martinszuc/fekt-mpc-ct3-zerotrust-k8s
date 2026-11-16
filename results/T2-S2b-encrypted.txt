@@ -1,49 +1,46 @@
 capture: zt-w1 lima0, 15s, filter udp
 requests with the full call graph: 5/5
-frames total: 429, VXLAN (8472): 429, WireGuard (51871): 0, frames containing "Reviewer1": 0
-inner HTTP/MongoDB in plaintext: 0, app-port TLS (9080, 27017): 118
+frames total: 300, VXLAN (8472): 298, WireGuard (51871): 0, frames containing "Reviewer1": 0
+inner HTTP/MongoDB in plaintext: 0, app-port TLS (9080, 27017): 100
 
 ## metadata exposure
-VXLAN frames with readable inner pod IP/TCP headers: 369
-of which app traffic (9080, 27017) with TLS payload (mesh mTLS): 118
+VXLAN frames with readable inner pod IP/TCP headers: 236
+of which app traffic (9080, 27017) with TLS payload (mesh mTLS): 100
 inner pod-to-pod conversations (client server port):
-10.42.0.32	10.42.1.253	4240
-10.42.0.32	10.42.2.112	10250
-10.42.0.32	10.42.2.156	4240
-10.42.1.165	10.42.0.157	15012
-10.42.1.176	10.42.0.157	15012
-10.42.1.19	10.42.0.157	15012
-10.42.1.19	10.42.2.145	9080
-10.42.1.19	10.42.2.159	9080
-10.42.1.228	10.42.0.114	4240
-10.42.1.245	10.42.0.157	15012
-10.42.1.26	10.42.0.157	15012
-10.42.1.26	10.42.2.117	27017
-10.42.2.117	10.42.0.157	15012
-10.42.2.145	10.42.0.157	15012
-10.42.2.145	10.42.1.26	9080
-10.42.2.159	10.42.0.157	15012
-10.42.2.252	10.42.0.114	4240
-10.42.2.252	10.42.1.253	4240
-10.42.2.75	10.42.0.157	15012
-10.42.2.77	10.42.0.157	15012
+10.42.0.119	10.42.1.26	4240
+10.42.0.119	10.42.2.54	4240
+10.42.1.20	10.42.0.125	15012
+10.42.1.20	10.42.2.127	9080
+10.42.1.20	10.42.2.3	9080
+10.42.1.63	10.42.0.125	15012
+10.42.1.63	10.42.2.223	27017
+10.42.2.127	10.42.0.125	15012
+10.42.2.127	10.42.1.63	9080
+10.42.2.223	10.42.0.125	15012
+10.42.2.3	10.42.0.125	15012
+10.42.2.7	10.42.0.194	4240
+10.42.2.7	10.42.1.26	4240
 
 ## outer protocols
-frame                                    frames:429 bytes:170104
-  eth                                    frames:429 bytes:170104
-    ip                                   frames:429 bytes:170104
-      udp                                frames:429 bytes:170104
-        vxlan                            frames:429 bytes:170104
-          eth                            frames:429 bytes:170104
-            ip                           frames:429 bytes:170104
-              tcp                        frames:369 bytes:159319
-                tls                      frames:190 bytes:137145
-                  tls                    frames:1 bytes:1514
+frame                                    frames:300 bytes:119162
+  eth                                    frames:300 bytes:119162
+    ip                                   frames:300 bytes:119162
+      udp                                frames:300 bytes:119162
+        vxlan                            frames:298 bytes:118982
+          eth                            frames:298 bytes:118982
+            ip                           frames:298 bytes:118982
+              tcp                        frames:236 bytes:107965
+                tls                      frames:130 bytes:95381
+                http                     frames:2 bytes:408
               udp                        frames:60 bytes:10785
                 dns                      frames:60 bytes:10785
+              icmp                       frames:2 bytes:232
+        ntp                              frames:2 bytes:180
 ===================================================================
 
 ## decoded inner HTTP (src dst method uri status)
+10.42.0.119	10.42.1.26	GET	/hello	
+10.42.1.26	10.42.0.119		/hello	200
 
 ## readable payload containing "Reviewer1"
 
