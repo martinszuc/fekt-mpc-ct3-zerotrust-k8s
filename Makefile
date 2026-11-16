@@ -3,7 +3,7 @@ export KUBECONFIG := $(CURDIR)/.kube/config
 # MacTeX binaries are not on PATH in non-login shells
 export PATH := /Library/TeX/texbin:$(PATH)
 
-.PHONY: up down reproduce vm-prep status app s0 s1 s2a s2b s2b-plain s3 test bench bench-link plot deltas figures pdf
+.PHONY: up down reproduce vm-prep status app s0 s1 s2a s2b s2b-plain s3 test demo bench bench-link plot deltas figures pdf
 
 up:
 	infra/up.sh
@@ -50,6 +50,10 @@ s2b-plain:
 
 test:
 	tests/run.sh
+
+# scripted terminal recording of the attacks in every configuration, results/demo/demo.mp4 (needs vhs)
+demo:
+	vhs demo/demo.tape
 
 # make bench [SCENARIO="S0 S1 ..."] [ROUNDS=n] [QUICK=1]; other knobs in bench/run.sh
 bench:

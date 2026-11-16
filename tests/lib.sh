@@ -7,7 +7,7 @@ export KUBECONFIG=$PWD/$KUBECONFIG_PATH
 [[ -f $KUBECONFIG ]] || { echo "missing $KUBECONFIG, run make up" >&2; exit 1; }
 
 NS=bookinfo
-RESULTS=results
+RESULTS=${RESULTS:-results}   # demo/demo.tape writes elsewhere
 CSV=$RESULTS/attacks.csv
 # scenario is a namespace annotation set by `make s0|s1|...`
 SCENARIO=${SCENARIO:-$(kubectl get ns "$NS" -o jsonpath='{.metadata.annotations.zt-scenario}')}

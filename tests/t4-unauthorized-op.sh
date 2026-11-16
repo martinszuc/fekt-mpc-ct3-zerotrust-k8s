@@ -26,7 +26,8 @@ else observed=error; fi
   echo "$get"
   echo
   echo "## authorization policies in $NS"
-  kubectl -n "$NS" get authorizationpolicies.security.istio.io 2>&1
+  # no Istio CRDs on a cluster that has not been in a mesh configuration yet
+  kubectl -n "$NS" get authorizationpolicies.security.istio.io 2>&1 || echo "(Istio not installed)"
 } > "$out"
 record T4 reviews-posts-ratings "$expect" "$observed" "$out"
 exit $FAILED

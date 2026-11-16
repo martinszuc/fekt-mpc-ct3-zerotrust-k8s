@@ -35,6 +35,7 @@ make s2b      # mesh mTLS: segmentation + Istio sidecars, mTLS STRICT
 make s3       # L7 authorization: mesh mTLS + Istio AuthorizationPolicy (allow-nothing + call graph)
 make s2b-plain  # mesh without mTLS: sidecars, mTLS DISABLE (measurement only)
 make test     # attack tests against the current configuration, evidence in results/
+make demo     # terminal recording of the attacks in every configuration (brew install vhs), results/demo/
 make bench    # benchmarks of the current configuration (or SCENARIO="S0 S1 ..."), results/bench/
 make plot     # summary CSVs and figures in docs/figures/bench/
 make figures  # docs/figures/*.svg to PDF (report) and PNG (slides), needs Chrome
