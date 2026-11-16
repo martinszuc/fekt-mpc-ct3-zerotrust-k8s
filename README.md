@@ -39,6 +39,7 @@ make bench    # benchmarks of the current configuration (or SCENARIO="S0 S1 ..."
 make plot     # summary CSVs and figures in docs/figures/bench/
 make figures  # docs/figures/*.svg to PDF (report) and PNG (slides), needs Chrome
 make down     # delete the VMs
+make reproduce  # from scratch: down, up, app, every configuration with make test
 ```
 
 `make up` and `make app` reapply the base config; run the configuration target (`make s1`, `make s2a`, ...) again afterwards.
