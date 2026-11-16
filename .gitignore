@@ -23,3 +23,5 @@ scripts/.venv/
 __pycache__/
 results/bench-quick/
 results/bench-fake/
+results/demo/*
+!results/demo/demo.mp4
