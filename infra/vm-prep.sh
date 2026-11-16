@@ -8,10 +8,6 @@ source infra/config.env
 
 log() { printf '\033[1m==> %s\033[0m\n' "$*"; }
 
-# metapackage version of the kernel: 6.8.0-147-generic -> 6.8.0-147.147
-v=${KERNEL_VERSION%-generic}
-meta=$v.${v##*-}
-
 prep() {
   local vm=$1
   # unattended-upgrades installed a new kernel on one node only (23.10)
@@ -25,11 +21,10 @@ prep() {
   limactl shell --workdir / "$vm" sudo sh -euc "
     export DEBIAN_FRONTEND=noninteractive
     apt-get update -qq
-    # metapackages pinned to the kernel and held: they would pull the next ABI on any manual upgrade
-    apt-get install -y -qq -o DPkg::Lock::Timeout=300 --allow-change-held-packages \
-      linux-image-$KERNEL_VERSION linux-modules-$KERNEL_VERSION \
-      linux-virtual=$meta linux-image-virtual=$meta linux-headers-virtual=$meta linux-headers-generic=$meta
+    # the pinned kernel by its versioned package name; the archive keeps only the latest metapackage
+    # version, so the metapackages are held where they are: they would pull the next ABI on any upgrade
     apt-mark hold -qq linux-virtual linux-image-virtual linux-headers-virtual linux-headers-generic
+    apt-get install -y -qq -o DPkg::Lock::Timeout=300 linux-image-$KERNEL_VERSION linux-modules-$KERNEL_VERSION
     if [ '${VM_UPGRADE:-0}' = 1 ]; then apt-get full-upgrade -y -qq -o DPkg::Lock::Timeout=300; fi
     # grub boots the newest installed kernel; anything newer than the pin must not stay
     dpkg -l 'linux-image-[0-9]*' | awk '/^ii/{print \$2}' | sed 's/^linux-image-//' | sort -V \

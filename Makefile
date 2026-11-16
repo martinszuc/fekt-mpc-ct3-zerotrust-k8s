@@ -3,7 +3,7 @@ export KUBECONFIG := $(CURDIR)/.kube/config
 # MacTeX binaries are not on PATH in non-login shells
 export PATH := /Library/TeX/texbin:$(PATH)
 
-.PHONY: up down reproduce vm-prep status app s0 s1 s2a s2b s2b-plain s3 test bench bench-link plot figures pdf
+.PHONY: up down reproduce vm-prep status app s0 s1 s2a s2b s2b-plain s3 test bench bench-link plot deltas figures pdf
 
 up:
 	infra/up.sh
@@ -72,6 +72,11 @@ PLOT_OUT ?= $(if $(filter results/bench,$(BENCH_DIR)),docs/figures/bench,$(BENCH
 plot: $(VENV)/.ok
 	$(VENV)/bin/python scripts/aggregate.py --in $(BENCH_DIR) $(if $(RUN_ID),--run-id $(RUN_ID)) $(if $(DROP),--drop $(DROP))
 	$(VENV)/bin/python scripts/plot.py --in $(BENCH_DIR) --out $(PLOT_OUT) $(if $(RUN_ID),--run-id $(RUN_ID)) $(if $(DROP),--drop $(DROP))
+
+# per-round differences for the overhead table, from the run that holds the latency suite
+LATENCY_RUN ?= 20261111T015852Z
+deltas:
+	python3 scripts/paired.py --in $(BENCH_DIR) --run-id $(LATENCY_RUN)
 
 figures:
 	scripts/figures.sh
