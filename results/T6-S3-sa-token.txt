@@ -26,8 +26,6 @@ none
 
 ## automountServiceAccountToken per SA
 SA                     AUTOMOUNT
-bench-client           false
-bench-server           false
 bookinfo-details       false
 bookinfo-mongodb       false
 bookinfo-productpage   false

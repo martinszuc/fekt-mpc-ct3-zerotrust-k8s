@@ -1,7 +1,7 @@
-scenario S1, run_id 20261029T020118Z-S1, git 38377b9, 2026-10-29T02:01:18Z
+scenario S1, run_id 20261116T122106Z-S1, git 6a698b2, 2026-11-16T12:21:06Z
 
 ## host
-macOS 26.7.2 (25G330), arm64
+macOS 26.7.3 (25G416), arm64
 limactl version 2.2.1
 Client Version: v1.37.1
 helm v4.3.1+gc0d08d0
@@ -10,31 +10,29 @@ TShark (Wireshark) 4.6.9 (Git commit 2d548b197c75).
 
 ## VMs
 NAME     STATUS     SSH                VMTYPE    ARCH       CPUS    MEMORY    DISK     DIR
-zt-cp    Running    127.0.0.1:54018    vz        aarch64    4       8GiB      30GiB    ~/.lima/zt-cp
-zt-w1    Running    127.0.0.1:54028    vz        aarch64    4       8GiB      30GiB    ~/.lima/zt-w1
-zt-w2    Running    127.0.0.1:54036    vz        aarch64    4       8GiB      30GiB    ~/.lima/zt-w2
+zt-cp    Running    127.0.0.1:61401    vz        aarch64    4       8GiB      30GiB    ~/.lima/zt-cp
+zt-w1    Running    127.0.0.1:61410    vz        aarch64    4       8GiB      30GiB    ~/.lima/zt-w1
+zt-w2    Running    127.0.0.1:61415    vz        aarch64    4       8GiB      30GiB    ~/.lima/zt-w2
 
 ## nodes
 NAME         STATUS   ROLES           AGE     VERSION        INTERNAL-IP     EXTERNAL-IP   OS-IMAGE             KERNEL-VERSION              CONTAINER-RUNTIME
-lima-zt-cp   Ready    control-plane   6d12h   v1.36.5+k3s1   192.168.105.2   <none>        Ubuntu 24.04.5 LTS   6.8.0-142-generic (arm64)   containerd://2.3.4-k3s1.36
-lima-zt-w1   Ready    <none>          6d12h   v1.36.5+k3s1   192.168.105.3   <none>        Ubuntu 24.04.5 LTS   6.8.0-142-generic (arm64)   containerd://2.3.4-k3s1.36
-lima-zt-w2   Ready    <none>          6d12h   v1.36.5+k3s1   192.168.105.4   <none>        Ubuntu 24.04.5 LTS   6.8.0-147-generic (arm64)   containerd://2.3.4-k3s1.36
+lima-zt-cp   Ready    control-plane   3m13s   v1.36.5+k3s1   192.168.105.2   <none>        Ubuntu 24.04.5 LTS   6.8.0-147-generic (arm64)   containerd://2.3.4-k3s1.36
+lima-zt-w1   Ready    <none>          2m59s   v1.36.5+k3s1   192.168.105.3   <none>        Ubuntu 24.04.5 LTS   6.8.0-147-generic (arm64)   containerd://2.3.4-k3s1.36
+lima-zt-w2   Ready    <none>          2m45s   v1.36.5+k3s1   192.168.105.4   <none>        Ubuntu 24.04.5 LTS   6.8.0-147-generic (arm64)   containerd://2.3.4-k3s1.36
 
 ## node zt-cp
-Linux lima-zt-cp 6.8.0-142-generic #142-Ubuntu SMP PREEMPT_DYNAMIC Wed Sep  2 14:30:29 UTC 2026 aarch64 aarch64 aarch64 GNU/Linux
+Linux lima-zt-cp 6.8.0-147-generic #147-Ubuntu SMP PREEMPT_DYNAMIC Thu Sep 24 11:39:52 UTC 2026 aarch64 aarch64 aarch64 GNU/Linux
 lima0: mtu 1500
 cilium_net@cilium_host: mtu 1500
 cilium_host@cilium_net: mtu 1500
 cilium_vxlan: mtu 1500
-cilium_wg0: none
 
 ## node zt-w1
-Linux lima-zt-w1 6.8.0-142-generic #142-Ubuntu SMP PREEMPT_DYNAMIC Wed Sep  2 14:30:29 UTC 2026 aarch64 aarch64 aarch64 GNU/Linux
+Linux lima-zt-w1 6.8.0-147-generic #147-Ubuntu SMP PREEMPT_DYNAMIC Thu Sep 24 11:39:52 UTC 2026 aarch64 aarch64 aarch64 GNU/Linux
 lima0: mtu 1500
 cilium_net@cilium_host: mtu 1500
 cilium_host@cilium_net: mtu 1500
 cilium_vxlan: mtu 1500
-cilium_wg0: none
 
 ## node zt-w2
 Linux lima-zt-w2 6.8.0-147-generic #147-Ubuntu SMP PREEMPT_DYNAMIC Thu Sep 24 11:39:52 UTC 2026 aarch64 aarch64 aarch64 GNU/Linux
@@ -42,10 +40,11 @@ lima0: mtu 1500
 cilium_net@cilium_host: mtu 1500
 cilium_host@cilium_net: mtu 1500
 cilium_vxlan: mtu 1500
-cilium_wg0: none
 
 ## cilium
 quay.io/cilium/cilium:v1.20.3@sha256:95cfa5c2427cc6b452c00908778d0566311f572589284af949d06a013db1a849
+Encryption: Disabled (3/3 nodes)
+
 enable-wireguard= (empty: off)
 bpf-lb-sock-hostns-only=true
 cni-exclusive=false
@@ -57,29 +56,31 @@ tunnel-protocol=vxlan
 tunnel-source-port-range=0-0
 
 ## istio
-NAME      	NAMESPACE   	REVISION	UPDATED                             	STATUS  	CHART      	APP VERSION
-istio-base	istio-system	8       	2026-10-29 02:57:21.711195 +0100 CET	deployed	base-1.30.7	1.30.7     
+NAME	NAMESPACE	REVISION	UPDATED	STATUS	CHART	APP VERSION
 
 ## policies in bookinfo
-NAME           POD-SELECTOR      AGE
-allow-dns      <none>            5d11h
-default-deny   <none>            5d11h
-details        app=details       5d11h
-mongodb        app=mongodb       5d11h
-productpage    app=productpage   5d11h
-ratings        app=ratings       5d11h
-reviews        app=reviews       5d11h
-No resources found in bookinfo namespace.
+NAME            POD-SELECTOR        AGE
+allow-dns       <none>              41s
+bench-client    app=bench-client    41s
+default-deny    <none>              41s
+details         app=details         41s
+fortio-server   app=fortio-server   41s
+iperf3-server   app=iperf3-server   41s
+mongodb         app=mongodb         41s
+productpage     app=productpage     41s
+ratings         app=ratings         41s
+reviews         app=reviews         41s
+error: the server doesn't have a resource type "peerauthentications" in group "security.istio.io"
 namespace labels: {"kubernetes.io/metadata.name":"bookinfo"}
 
 ## workloads in bookinfo
-details-v1-584d8fb778-rqd6s node=lima-zt-w2 sa=bookinfo-details
+details-v1-6d58d76fcd-wxcrq node=lima-zt-w2 sa=bookinfo-details
   details registry.istio.io/release/examples-bookinfo-details-v1@sha256:a49731e1fc05d7c24a4103709f41d64180bed989b251625f4c31ba63022e303b
-mongodb-v1-76c46c5885-9jl6z node=lima-zt-w2 sa=bookinfo-mongodb
+mongodb-v1-5c74799857-sdkgx node=lima-zt-w2 sa=bookinfo-mongodb
   mongodb registry.istio.io/release/examples-bookinfo-mongodb@sha256:7f5ef5a825048f5f777da521c9756c8d0f007c58358c87b8629456832bbf73ad
-productpage-v1-8588f55b99-rmp4p node=lima-zt-w1 sa=bookinfo-productpage
+productpage-v1-58db7b856c-qv7jm node=lima-zt-w1 sa=bookinfo-productpage
   productpage registry.istio.io/release/examples-bookinfo-productpage-v1@sha256:1e339866b782d22b063539d19c87b4682291c889e67c3d4abdea947bef917958
-ratings-v2-8cfd4db44-2cj9p node=lima-zt-w1 sa=bookinfo-ratings-v2
+ratings-v2-b56f68f76-pgm6p node=lima-zt-w1 sa=bookinfo-ratings-v2
   ratings registry.istio.io/release/examples-bookinfo-ratings-v2@sha256:cb361115b5ea27a765a5bdc7623e235cc37839289f477e1c0aefa4425b0749ff
-reviews-v3-9c5d6b9b4-r2ws8 node=lima-zt-w2 sa=bookinfo-reviews
+reviews-v3-89bd49f7b-nv9q5 node=lima-zt-w2 sa=bookinfo-reviews
   reviews registry.istio.io/release/examples-bookinfo-reviews-v3@sha256:3b3415c5e7cc7cef3ad1741fa595f2f26627bddf2117dcee1429fa2a422df1b7
