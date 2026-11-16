@@ -3,13 +3,17 @@ export KUBECONFIG := $(CURDIR)/.kube/config
 # MacTeX binaries are not on PATH in non-login shells
 export PATH := /Library/TeX/texbin:$(PATH)
 
-.PHONY: up down vm-prep status app s0 s1 s2a s2b s2b-plain s3 test bench bench-link plot figures pdf
+.PHONY: up down reproduce vm-prep status app s0 s1 s2a s2b s2b-plain s3 test bench bench-link plot figures pdf
 
 up:
 	infra/up.sh
 
 down:
 	infra/down.sh
+
+# from scratch: down, up, app, then every configuration with attack tests (KEEP=1 keeps the VMs)
+reproduce:
+	infra/reproduce.sh
 
 # also part of make up; VM_UPGRADE=1 upgrades all packages on every node
 vm-prep:
