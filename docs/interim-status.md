@@ -1,5 +1,7 @@
 # Interim status, 27.10.2026
 
+> Historical: status shown at the 27.10 interim check. Current state: `README.md` and the report in `docs/report/`.
+
 **Zero-trust access and access control in Kubernetes**, Martin Szuc (231284), MPC-CT3.
 Repository: https://github.com/martinszuc/fekt-mpc-ct3-zerotrust-k8s
 

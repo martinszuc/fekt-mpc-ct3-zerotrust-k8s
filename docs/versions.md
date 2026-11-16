@@ -1,6 +1,6 @@
 # Pinned versions
 
-Recorded 22.10.2026, host drift and kernels rechecked and aligned 29.10.2026. Change only between experiment runs, never within one. Each test run records the live state in `results/env-<configuration code>.txt`.
+Recorded 22.10.2026, host drift and kernels rechecked and aligned 29.10.2026. VMs recreated from scratch 16.11.2026 (`make reproduce`): same kernel, packages from the cloud image (release-20260926), not upgraded; attack checks only, benchmarks are from the 29.10 and 11.11 VMs. Change only between experiment runs, never within one. Each test run records the live state in `results/env-<configuration code>.txt`.
 
 ## Host
 
@@ -40,6 +40,7 @@ Recorded 22.10.2026, host drift and kernels rechecked and aligned 29.10.2026. Ch
 | fortio | 1.76.0 |
 | iperf3 | 3.22 |
 | tshark (Wireshark) | 4.6.9 |
+| vhs (demo recording only) | 0.12.1 |
 | jq / yq | Homebrew current |
 | python3 | 3.15.0 (3.14.7 until 23.10) |
 | matplotlib (venv `scripts/.venv`) | 3.11.2 |
