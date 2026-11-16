@@ -89,7 +89,7 @@ Podvrhnutý pod s labelom \texttt{app=reviews} prejde segmentáciou siete aj ši
 
 \section{Neoprávnená operácia a kompromitovaná služba}
 
-Útočník v pode \texttt{reviews} pošle na \texttt{ratings} zápis \texttt{POST /ratings/0}. Do konfigurácie mTLS medzi službami vrátane požiadavka dorazí do aplikácie, ktorá odpovie 501, lebo zápis implementuje iba verzia v1. V konfigurácii s L7 autorizáciou ju odmietne sidecar odpoveďou 403 \texttt{RBAC: access denied}~\cite{istio-authorizationpolicy}, zatiaľ čo čítanie \texttt{GET /ratings/0} z toho istého kontajnera prejde. Politika teda rozlišuje operáciu, nielen volajúceho. Samotné čítanie hodnotení kompromitovanou službou však prejde všade, lebo má platnú identitu aj povolenú operáciu.
+Útočník v pode \texttt{reviews} pošle na \texttt{ratings} zápis \texttt{POST /ratings/0}. Do konfigurácie mTLS medzi službami vrátane požiadavka dorazí do aplikácie, ktorá odpovie 501, lebo zápis implementuje iba verzia v1. V konfigurácii s L7 autorizáciou ju odmietne sidecar odpoveďou 403 \texttt{RBAC: access denied}~\cite{istio-authorizationpolicy}, zatiaľ čo čítanie \texttt{GET /ratings/0} z toho istého containera prejde. Politika teda rozlišuje operáciu, nielen volajúceho. Samotné čítanie hodnotení kompromitovanou službou však prejde všade, lebo má platnú identitu aj povolenú operáciu.
 
 \section{Zneužitie ServiceAccount tokenu}
 

@@ -23,7 +23,7 @@ Všetky identity v experimente patria workloadom. Model NIST SP~800-207 vyžaduj
 
 \section{Rozrastanie politík a prevádzková náročnosť}
 
-Aplikácia s piatimi službami potrebuje 10 NetworkPolicy, 1 PeerAuthentication a 6 AuthorizationPolicy, spolu asi 300 riadkov YAML. Každá politika kopíruje časť grafu volaní, takže každá zmena aplikácie (nová služba, nové volanie, nová cesta API) vyžaduje zmenu na dvoch až troch miestach. Chyba sa prejaví ako výpadok, nie ako bezpečnostná diera, čo vedie k pokušeniu politiky uvoľňovať. Mesh navyše pridáva riadiacu rovinu, certifikačnú autoritu a sidecar v každom pode, ktorých dostupnosť a aktualizácie treba spravovať. Počas behu sa ukázala aj závislosť od hodín: po uspaní hostiteľa zaostávali hodiny jedného uzla a sidecary na ňom zostali nepripravené, lebo ich certifikát ešte nebol platný.
+Aplikácia s piatimi službami potrebuje 8 NetworkPolicy (vrátane prístupu k istiod), 1 PeerAuthentication a 6 AuthorizationPolicy, spolu asi 240 riadkov YAML; pody merania pridávajú ďalšie politiky. Každá politika kopíruje časť grafu volaní, takže každá zmena aplikácie (nová služba, nové volanie, nová cesta API) vyžaduje zmenu na dvoch až troch miestach. Chyba sa prejaví ako výpadok, nie ako bezpečnostná diera, čo vedie k pokušeniu politiky uvoľňovať. Mesh navyše pridáva riadiacu rovinu, certifikačnú autoritu a sidecar v každom pode, ktorých dostupnosť a aktualizácie treba spravovať. Počas behu sa ukázala aj závislosť od hodín: po uspaní hostiteľa zaostávali hodiny jedného uzla a sidecary na ňom zostali nepripravené, lebo ich certifikát ešte nebol platný.
 
 \section{Validita merania}
 \label{sec:limits-validity}
