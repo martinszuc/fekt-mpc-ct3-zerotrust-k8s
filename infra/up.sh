@@ -72,6 +72,8 @@ limactl shell "$CP_NODE" cat /etc/rancher/k3s/k3s.yaml \
   | sed "s#https://127.0.0.1:6443#https://$CP_IP:6443#" > "$KUBECONFIG_PATH"
 chmod 600 "$KUBECONFIG_PATH"
 export KUBECONFIG="$PWD/$KUBECONFIG_PATH"
+# the host path to the shared network can lag behind a VM restart (no route to host)
+for _ in $(seq 60); do kubectl get --raw /readyz >/dev/null 2>&1 && break; sleep 2; done
 
 log "installing Cilium $CILIUM_VERSION"
 infra/cilium.sh
