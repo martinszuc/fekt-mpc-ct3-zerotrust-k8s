@@ -81,7 +81,7 @@ Postupné zvyšovanie záťaže ukazuje, kde cesta prestane stíhať (obrázok~\
   \label{fig:qps-sweep}
 \end{figure}
 
-Mesh zvýši pamäť každého uzla približne o 200~MiB: sidecar zaberá okolo 29~MiB na pod a riadiaca rovina istiod 46~MiB. Šifrovanie medzi uzlami a segmentácia siete pamäť merateľne nemenia.
+mTLS medzi službami zvýši pamäť uzlov v nečinnosti o 150 až 190~MiB oproti segmentácii siete, samotné sidecary bez mTLS o 120 až 150~MiB: sidecar zaberá okolo 29~MiB na pod a riadiaca rovina istiod okolo 50~MiB. Šifrovanie medzi uzlami a segmentácia siete pamäť merateľne nemenia.
 
 \section{Réžia jednotlivých prvkov}
 \label{sec:deltas}
@@ -98,9 +98,9 @@ Tabuľka~\ref{tab:deltas-measured} priraďuje namerané rozdiely porovnávaným 
     \toprule
     Prvok & Nameraný rozdiel \\
     \midrule
-    NetworkPolicy v eBPF & na cestách medzi podmi bez rozdielu; cez aplikáciu p50 +0,13~ms (+1~\%) vo všetkých kolách; priepustnosť a CPU v rámci rozptylu \\
+    NetworkPolicy v eBPF & na cestách medzi podmi bez rozdielu; cez aplikáciu p50 +0,13~ms (+1~\%) a p99 +1,9~ms (+8~\%) vo všetkých kolách; priepustnosť a CPU v rámci rozptylu \\
     WireGuard medzi uzlami & medzi uzlami p50 +0,06~ms (+11~\%), aplikácia p50 +1,3~ms (+8~\%); priepustnosť $-$12~\%, CPU na Gbit/s 2,7-krát vyššie; latencia na jednom uzle bez vplyvu \\
-    Sidecar proxy bez šifrovania & p50 +0,54~ms na jednom uzle (4,9-krát), +0,38~ms medzi uzlami (+71~\%); aplikácia p50 +1,2~ms, nie vo všetkých kolách; priepustnosť na jednom uzle $-$38~\%; maximum medzi uzlami z 26\,400 na 10\,800 požiadaviek/s; +200~MiB pamäte na uzol \\
+    Sidecar proxy bez šifrovania & p50 +0,54~ms na jednom uzle (4,9-krát), +0,38~ms medzi uzlami (+73~\%); aplikácia p50 +1,2~ms, nie vo všetkých kolách; priepustnosť na jednom uzle $-$38~\%; maximum medzi uzlami z 26\,400 na 10\,800 požiadaviek/s; +120 až 150~MiB pamäte na uzol \\
     mTLS v proxy & na cestách medzi podmi p50 +0,03~ms (+4~\%), aplikácia p50 +2,0~ms (+12~\%); priepustnosť na jednom uzle $-$56~\%, CPU na Gbit/s na jednom uzle 2,0-krát vyššie \\
     mTLS oproti WireGuard & mTLS má medzi uzlami o 0,35~ms vyššiu latenciu p50 a cez aplikáciu o 2,0~ms vyššiu, ale medzi uzlami spotrebuje o 42~\% menej CPU na Gbit/s a má vyššiu priepustnosť \\
     L7 autorizácia & žiadny rozdiel nie je rovnaký vo všetkých kolách; medzi podmi do 0,01~ms, aplikácia p50 +0,13~ms \\
@@ -108,4 +108,4 @@ Tabuľka~\ref{tab:deltas-measured} priraďuje namerané rozdiely porovnávaným 
   \end{tabularx}
 \end{table}
 
-Väčšinu ceny mesh tvorí samotný sidecar, nie šifrovanie: každá požiadavka prejde dvakrát cez proxy v používateľskom priestore. mTLS pridá na krátkej ceste medzi podmi málo, no cez aplikáciu so štyrmi skokmi pridá viac než samotné sidecary. WireGuard je pri latencii lacnejší, lebo šifruje v jadre bez prechodu do používateľského priestoru, ale pri objemovom prenose medzi uzlami spotrebuje na gigabit viac CPU než mTLS. Segmentácia siete a L7 autorizácia sú pri tejto záťaži prakticky zadarmo: ich réžia nepresahuje jedno percento.
+Väčšinu ceny mesh tvorí samotný sidecar, nie šifrovanie: každá požiadavka prejde dvakrát cez proxy v používateľskom priestore. mTLS pridá na krátkej ceste medzi podmi málo, no cez aplikáciu so štyrmi skokmi pridá viac než samotné sidecary. WireGuard je pri latencii lacnejší, lebo šifruje v jadre bez prechodu do používateľského priestoru, ale pri objemovom prenose medzi uzlami spotrebuje na gigabit viac CPU než mTLS. Segmentácia siete a L7 autorizácia sú pri tejto záťaži prakticky zadarmo: ich réžia na mediáne latencie nepresahuje jedno percento. Jedinou výnimkou je p99 cez aplikáciu pri segmentácii siete (+8~\%), ktoré môže pri pevnom poradí konfigurácií čiastočne pochádzať z poradia (časť~\ref{sec:limits-validity}).

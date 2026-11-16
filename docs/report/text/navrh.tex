@@ -77,7 +77,7 @@ Každý útok z tabuľky~\ref{tab:attacks} má skript, ktorý ho vykoná proti a
 
 \begin{itemize}
   \item laterálny pohyb a podvrhnutie identity: výstup spojenia z podu útočníka a záznam Hubble o zahodení paketu, ktorý ukazuje, že spojenie zastavila politika~\cite{hubble};
-  \item odpočúvanie siete: záznam \texttt{tcpdump} na sieťovom rozhraní pracovného uzla počas legitímnej prevádzky, vyhodnotený nástrojom tshark~\cite{wireshark}; sleduje sa obsah aj metadáta (vnútorné adresy a porty podov); aktívna zmena prevádzky (Tampering v STRIDE) sa netestuje;
+  \item odpočúvanie siete: záznam \texttt{tcpdump}~\cite{tcpdump} na sieťovom rozhraní pracovného uzla počas legitímnej prevádzky, vyhodnotený nástrojom tshark~\cite{wireshark}; sleduje sa obsah aj metadáta (vnútorné adresy a porty podov); aktívna zmena prevádzky (Tampering v STRIDE) sa netestuje;
   \item neoprávnená operácia a kompromitovaná služba: požiadavky z ephemeral containera v pode \texttt{reviews}~\cite{k8s-ephemeral-containers};
   \item zneužitie ServiceAccount tokenu: štyri kontroly z tabuľky~\ref{tab:token}.
 \end{itemize}

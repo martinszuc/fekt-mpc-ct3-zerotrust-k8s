@@ -4,7 +4,7 @@
 
 Práca odpovedala na otázku, pred čím chráni ktorá vrstva zero trust v Kubernetes a koľko stojí. Na clustri z troch virtual machines s aplikáciou Bookinfo sa postupne pridávali segmentácia siete, šifrovanie medzi uzlami, mTLS medzi službami a L7 autorizácia, pričom každá konfigurácia menila jediný prvok. Všetkých 70 kontrol útokov skončilo podľa hypotéz a každé zastavenie sa dalo podľa dôkazov priradiť práve jednému prvku.
 
-Segmentácia siete zastavila laterálny pohyb aj zneužitie ServiceAccount tokenu a jej réžia v meraní nepresiahla jedno percento. Je preto rozumným prvým krokom pre každý cluster. Dôveruje však labelom, ktoré volí ten, kto pod vytvára, takže podvrhnutý pod so skopírovaným labelom ňou prejde.
+Segmentácia siete zastavila laterálny pohyb aj zneužitie ServiceAccount tokenu a jej réžia na mediáne latencie v meraní nepresiahla jedno percento. Je preto rozumným prvým krokom pre každý cluster. Dôveruje však labelom, ktoré volí ten, kto pod vytvára, takže podvrhnutý pod so skopírovaným labelom ňou prejde.
 
 Šifrovanie medzi uzlami a mTLS medzi službami zastavili odpočúvanie obsahu, no chránia inak. WireGuard skryje celý paket vrátane adries podov a pri latencii je lacnejší, ale autentizuje iba uzly a nešifruje prevádzku na jednom uzle. mTLS autentizuje jednotlivé workloady a zastaví pod mimo mesh, no adresy a porty podov nechá čitateľné a väčšinu jeho ceny tvorí samotný sidecar: latencia na skok sa zvýši približne o pol milisekundy a maximálna záťaž medzi uzlami klesne na menej než polovicu. Pre zadanie, bezpečné prepojenie izolovaných uzlov, stačí šifrovanie medzi uzlami; ak treba overovať, \emph{ktorá služba} volá, je potrebné mTLS.
 

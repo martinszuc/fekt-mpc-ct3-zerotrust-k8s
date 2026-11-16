@@ -1,7 +1,7 @@
 \chapter{Realizácia}
 \label{ch:implementation}
 
-Každá konfigurácia z tabuľky~\ref{tab:configurations} je v repozitári súbor manifestov a nastavení Helm. Prepína ich jeden skript, ktorý cluster prevedie presne do zvolenej konfigurácie bez ohľadu na predchádzajúci stav. Zmení iba to, čo sa líši, a pody reštartuje len vtedy, keď sa mení niečo, čo Kubernetes nastavuje pri ich vytvorení (pripojenie tokenu, sidecar). Nakoniec počká, kým aplikácia odpovedá po celej ceste \texttt{productpage}~$\rightarrow$ \texttt{reviews}~$\rightarrow$ \texttt{ratings}~$\rightarrow$ MongoDB, takže test ani meranie nezačne na neustálenom clustri. Tabuľka~\ref{tab:implementation} priraďuje konfiguráciám súbory a príkazy.
+Každá konfigurácia z tabuľky~\ref{tab:configurations} je v repozitári súbor manifestov a nastavení Helm~\cite{helm}. Prepína ich jeden skript, ktorý cluster prevedie presne do zvolenej konfigurácie bez ohľadu na predchádzajúci stav. Zmení iba to, čo sa líši, a pody reštartuje len vtedy, keď sa mení niečo, čo Kubernetes nastavuje pri ich vytvorení (pripojenie tokenu, sidecar). Nakoniec počká, kým aplikácia odpovedá po celej ceste \texttt{productpage}~$\rightarrow$ \texttt{reviews}~$\rightarrow$ \texttt{ratings}~$\rightarrow$ MongoDB, takže test ani meranie nezačne na neustálenom clustri. Tabuľka~\ref{tab:implementation} priraďuje konfiguráciám súbory a príkazy.
 
 \begin{table}[ht!]
   \centering
@@ -112,4 +112,4 @@ MongoDB komunikuje vlastným protokolom nad TCP, preto jej politika rozlišuje i
 
 \section{Automatizácia}
 
-Všetky kroky sú ciele súboru \texttt{Makefile}: \texttt{make up} vytvorí cluster, \texttt{make app} nasadí aplikáciu, \texttt{make s0} až \texttt{make s3} a \texttt{make s2b-plain} prepnú konfiguráciu, \texttt{make test} spustí všetky útoky proti aktuálnej konfigurácii, \texttt{make bench} meranie réžie a \texttt{make plot} z nameraných dát vytvorí tabuľky a grafy. Každý test zapíše riadok do výsledkového CSV s identifikátorom behu a commitom repozitára a uloží dôkaz (výstup príkazov, záznam prevádzky) pod názvom, ktorý určuje útok aj konfiguráciu. Verzie všetkých komponentov sú pripnuté a pri každom behu sa zaznamenávajú.
+Všetky kroky sú ciele súboru \texttt{Makefile}: \texttt{make up} vytvorí cluster, \texttt{make app} nasadí aplikáciu, \texttt{make s0} až \texttt{make s3} a \texttt{make s2b-plain} prepnú konfiguráciu, \texttt{make test} spustí všetky útoky proti aktuálnej konfigurácii, \texttt{make bench} meranie réžie a \texttt{make plot} z nameraných dát vytvorí tabuľky a grafy (knižnica Matplotlib~\cite{matplotlib}). Každý test zapíše riadok do výsledkového CSV s identifikátorom behu a commitom repozitára a uloží dôkaz (výstup príkazov, záznam prevádzky) pod názvom, ktorý určuje útok aj konfiguráciu. Verzie všetkých komponentov sú pripnuté a pri každom behu sa zaznamenávajú.
