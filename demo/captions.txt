@@ -1,0 +1,12 @@
+Zero-trust v Kubernetes: útoky v piatich konfiguráciách (Bookinfo, 3 uzly, Cilium)
+1/5 Bez ochrany: kompromitovaný frontend číta MongoDB priamo (laterálny pohyb)
+odpočúvanie siete medzi uzlami: obsah recenzií je čitateľný
+ServiceAccount token frontendu funguje proti API serveru
+2/5 Segmentácia siete: default-deny NetworkPolicy, bez tokenov v podoch
+prevádzka je však stále nešifrovaná
+3/5 Šifrovanie medzi uzlami (Cilium WireGuard): len UDP 51871, žiadny obsah
+WireGuard autentizuje uzly, nie workloady: podvrhnutý pod so skopírovaným labelom prejde
+4/5 mTLS medzi službami (Istio STRICT): pod mimo mesh je odmietnutý, pod s iným SA prejde
+obsah je šifrovaný, adresy a porty podov ostávajú čitateľné
+5/5 L7 autorizácia (AuthorizationPolicy): zastaví iný SA aj neoprávnenú operáciu
+obmedzenie: útočník s platnou identitou a povolenou cestou prejde vždy
