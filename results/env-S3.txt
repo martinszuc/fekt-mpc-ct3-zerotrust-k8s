@@ -1,4 +1,4 @@
-scenario S3, run_id 20261116T122554Z-S3, git 6a698b2, 2026-11-16T12:25:54Z
+scenario S3, run_id 20261118T190228Z-S3, git bfd7a19, 2026-11-18T19:02:28Z
 
 ## host
 macOS 26.7.3 (25G416), arm64
@@ -10,15 +10,15 @@ TShark (Wireshark) 4.6.9 (Git commit 2d548b197c75).
 
 ## VMs
 NAME     STATUS     SSH                VMTYPE    ARCH       CPUS    MEMORY    DISK     DIR
-zt-cp    Running    127.0.0.1:61401    vz        aarch64    4       8GiB      30GiB    ~/.lima/zt-cp
-zt-w1    Running    127.0.0.1:61410    vz        aarch64    4       8GiB      30GiB    ~/.lima/zt-w1
-zt-w2    Running    127.0.0.1:61415    vz        aarch64    4       8GiB      30GiB    ~/.lima/zt-w2
+zt-cp    Running    127.0.0.1:49416    vz        aarch64    4       8GiB      30GiB    ~/.lima/zt-cp
+zt-w1    Running    127.0.0.1:49458    vz        aarch64    4       8GiB      30GiB    ~/.lima/zt-w1
+zt-w2    Running    127.0.0.1:49465    vz        aarch64    4       8GiB      30GiB    ~/.lima/zt-w2
 
 ## nodes
-NAME         STATUS   ROLES           AGE     VERSION        INTERNAL-IP     EXTERNAL-IP   OS-IMAGE             KERNEL-VERSION              CONTAINER-RUNTIME
-lima-zt-cp   Ready    control-plane   8m1s    v1.36.5+k3s1   192.168.105.2   <none>        Ubuntu 24.04.5 LTS   6.8.0-147-generic (arm64)   containerd://2.3.4-k3s1.36
-lima-zt-w1   Ready    <none>          7m47s   v1.36.5+k3s1   192.168.105.3   <none>        Ubuntu 24.04.5 LTS   6.8.0-147-generic (arm64)   containerd://2.3.4-k3s1.36
-lima-zt-w2   Ready    <none>          7m33s   v1.36.5+k3s1   192.168.105.4   <none>        Ubuntu 24.04.5 LTS   6.8.0-147-generic (arm64)   containerd://2.3.4-k3s1.36
+NAME         STATUS   ROLES           AGE    VERSION        INTERNAL-IP     EXTERNAL-IP   OS-IMAGE             KERNEL-VERSION              CONTAINER-RUNTIME
+lima-zt-cp   Ready    control-plane   2d6h   v1.36.5+k3s1   192.168.105.2   <none>        Ubuntu 24.04.5 LTS   6.8.0-147-generic (arm64)   containerd://2.3.4-k3s1.36
+lima-zt-w1   Ready    <none>          2d6h   v1.36.5+k3s1   192.168.105.3   <none>        Ubuntu 24.04.5 LTS   6.8.0-147-generic (arm64)   containerd://2.3.4-k3s1.36
+lima-zt-w2   Ready    <none>          2d6h   v1.36.5+k3s1   192.168.105.4   <none>        Ubuntu 24.04.5 LTS   6.8.0-147-generic (arm64)   containerd://2.3.4-k3s1.36
 
 ## node zt-cp
 Linux lima-zt-cp 6.8.0-147-generic #147-Ubuntu SMP PREEMPT_DYNAMIC Thu Sep 24 11:39:52 UTC 2026 aarch64 aarch64 aarch64 GNU/Linux
@@ -57,53 +57,74 @@ tunnel-source-port-range=0-0
 
 ## istio
 NAME      	NAMESPACE   	REVISION	UPDATED                             	STATUS  	CHART        	APP VERSION
-istio-base	istio-system	2       	2026-11-16 13:25:46.386493 +0100 CET	deployed	base-1.30.7  	1.30.7     
-istiod    	istio-system	2       	2026-11-16 13:25:47.880593 +0100 CET	deployed	istiod-1.30.7	1.30.7     
+istio-base	istio-system	17      	2026-11-18 20:01:42.990867 +0100 CET	deployed	base-1.30.7  	1.30.7     
+istiod    	istio-system	1       	2026-11-18 20:01:44.550526 +0100 CET	deployed	istiod-1.30.7	1.30.7     
 istiod registry.istio.io/release/pilot:1.30.7
 
 ## policies in bookinfo
 NAME            POD-SELECTOR        AGE
-allow-dns       <none>              5m29s
-allow-istiod    <none>              115s
-bench-client    app=bench-client    5m29s
-default-deny    <none>              5m29s
-details         app=details         5m29s
-fortio-server   app=fortio-server   5m29s
-iperf3-server   app=iperf3-server   5m29s
-mongodb         app=mongodb         5m29s
-productpage     app=productpage     5m29s
-ratings         app=ratings         5m29s
-reviews         app=reviews         5m29s
+allow-dns       <none>              141m
+allow-istiod    <none>              42s
+bench-client    app=bench-client    141m
+default-deny    <none>              141m
+details         app=details         141m
+fortio-server   app=fortio-server   141m
+iperf3-server   app=iperf3-server   141m
+mongodb         app=mongodb         141m
+productpage     app=productpage     141m
+ratings         app=ratings         141m
+reviews         app=reviews         141m
 NAME                                           MODE     AGE
-peerauthentication.security.istio.io/default   STRICT   115s
+peerauthentication.security.istio.io/default   STRICT   43s
 
 NAME                                                  ACTION   AGE
-authorizationpolicy.security.istio.io/allow-nothing            8s
-authorizationpolicy.security.istio.io/details         ALLOW    8s
-authorizationpolicy.security.istio.io/mongodb         ALLOW    8s
-authorizationpolicy.security.istio.io/productpage     ALLOW    8s
-authorizationpolicy.security.istio.io/ratings         ALLOW    8s
-authorizationpolicy.security.istio.io/reviews         ALLOW    7s
+authorizationpolicy.security.istio.io/allow-nothing            42s
+authorizationpolicy.security.istio.io/details         ALLOW    42s
+authorizationpolicy.security.istio.io/mongodb         ALLOW    42s
+authorizationpolicy.security.istio.io/productpage     ALLOW    42s
+authorizationpolicy.security.istio.io/ratings         ALLOW    42s
+authorizationpolicy.security.istio.io/reviews         ALLOW    42s
 namespace labels: {"istio-injection":"enabled","kubernetes.io/metadata.name":"bookinfo"}
 
 ## workloads in bookinfo
-details-v1-667c94c549-v7smh node=lima-zt-w2 sa=bookinfo-details
+bench-client-779798cc6b-nhxbs node=lima-zt-w1 sa=bench-client
+  fortio docker.io/fortio/fortio@sha256:3dd31ddeb4f962a1dae8cc2a0bce62c408ac830c8435bbea51b1e0fd4c8f7181
+  iperf3 docker.io/nicolaka/netshoot@sha256:7f08c4aff13ff61a35d30e30c5c1ea8396eac6ab4ce19fd02d5a4b3b5d0d09a2
+  istio-init registry.istio.io/release/proxyv2@sha256:f8f963340f92550b7b67228b0319fba7963a98137bdaace3f593da186427e717
+  istio-proxy registry.istio.io/release/proxyv2@sha256:f8f963340f92550b7b67228b0319fba7963a98137bdaace3f593da186427e717
+details-v1-77c5489dfb-pf4f8 node=lima-zt-w2 sa=bookinfo-details
   details registry.istio.io/release/examples-bookinfo-details-v1@sha256:a49731e1fc05d7c24a4103709f41d64180bed989b251625f4c31ba63022e303b
   istio-init registry.istio.io/release/proxyv2@sha256:f8f963340f92550b7b67228b0319fba7963a98137bdaace3f593da186427e717
   istio-proxy registry.istio.io/release/proxyv2@sha256:f8f963340f92550b7b67228b0319fba7963a98137bdaace3f593da186427e717
-mongodb-v1-7bd9c49d9b-6zjzs node=lima-zt-w2 sa=bookinfo-mongodb
+fortio-cross-5458d69d-4h76h node=lima-zt-w2 sa=bench-server
+  fortio docker.io/fortio/fortio@sha256:3dd31ddeb4f962a1dae8cc2a0bce62c408ac830c8435bbea51b1e0fd4c8f7181
+  istio-init registry.istio.io/release/proxyv2@sha256:f8f963340f92550b7b67228b0319fba7963a98137bdaace3f593da186427e717
+  istio-proxy registry.istio.io/release/proxyv2@sha256:f8f963340f92550b7b67228b0319fba7963a98137bdaace3f593da186427e717
+fortio-same-79c676b5d7-pzdzc node=lima-zt-w1 sa=bench-server
+  fortio docker.io/fortio/fortio@sha256:3dd31ddeb4f962a1dae8cc2a0bce62c408ac830c8435bbea51b1e0fd4c8f7181
+  istio-init registry.istio.io/release/proxyv2@sha256:f8f963340f92550b7b67228b0319fba7963a98137bdaace3f593da186427e717
+  istio-proxy registry.istio.io/release/proxyv2@sha256:f8f963340f92550b7b67228b0319fba7963a98137bdaace3f593da186427e717
+iperf3-cross-58fbd57864-jwdz2 node=lima-zt-w2 sa=bench-server
+  iperf3 docker.io/nicolaka/netshoot@sha256:7f08c4aff13ff61a35d30e30c5c1ea8396eac6ab4ce19fd02d5a4b3b5d0d09a2
+  istio-init registry.istio.io/release/proxyv2@sha256:f8f963340f92550b7b67228b0319fba7963a98137bdaace3f593da186427e717
+  istio-proxy registry.istio.io/release/proxyv2@sha256:f8f963340f92550b7b67228b0319fba7963a98137bdaace3f593da186427e717
+iperf3-same-6b7cc78c85-mcdzm node=lima-zt-w1 sa=bench-server
+  iperf3 docker.io/nicolaka/netshoot@sha256:7f08c4aff13ff61a35d30e30c5c1ea8396eac6ab4ce19fd02d5a4b3b5d0d09a2
+  istio-init registry.istio.io/release/proxyv2@sha256:f8f963340f92550b7b67228b0319fba7963a98137bdaace3f593da186427e717
+  istio-proxy registry.istio.io/release/proxyv2@sha256:f8f963340f92550b7b67228b0319fba7963a98137bdaace3f593da186427e717
+mongodb-v1-5dfb986c79-7skrm node=lima-zt-w2 sa=bookinfo-mongodb
   mongodb registry.istio.io/release/examples-bookinfo-mongodb@sha256:7f5ef5a825048f5f777da521c9756c8d0f007c58358c87b8629456832bbf73ad
   istio-init registry.istio.io/release/proxyv2@sha256:f8f963340f92550b7b67228b0319fba7963a98137bdaace3f593da186427e717
   istio-proxy registry.istio.io/release/proxyv2@sha256:f8f963340f92550b7b67228b0319fba7963a98137bdaace3f593da186427e717
-productpage-v1-545895b6-fphkk node=lima-zt-w1 sa=bookinfo-productpage
+productpage-v1-8df5c789c-gqgx9 node=lima-zt-w1 sa=bookinfo-productpage
   productpage registry.istio.io/release/examples-bookinfo-productpage-v1@sha256:1e339866b782d22b063539d19c87b4682291c889e67c3d4abdea947bef917958
   istio-init registry.istio.io/release/proxyv2@sha256:f8f963340f92550b7b67228b0319fba7963a98137bdaace3f593da186427e717
   istio-proxy registry.istio.io/release/proxyv2@sha256:f8f963340f92550b7b67228b0319fba7963a98137bdaace3f593da186427e717
-ratings-v2-7b7cf44df7-bpzmr node=lima-zt-w1 sa=bookinfo-ratings-v2
+ratings-v2-5bbbbf66c8-25564 node=lima-zt-w1 sa=bookinfo-ratings-v2
   ratings registry.istio.io/release/examples-bookinfo-ratings-v2@sha256:cb361115b5ea27a765a5bdc7623e235cc37839289f477e1c0aefa4425b0749ff
   istio-init registry.istio.io/release/proxyv2@sha256:f8f963340f92550b7b67228b0319fba7963a98137bdaace3f593da186427e717
   istio-proxy registry.istio.io/release/proxyv2@sha256:f8f963340f92550b7b67228b0319fba7963a98137bdaace3f593da186427e717
-reviews-v3-5d9595cf87-d725m node=lima-zt-w2 sa=bookinfo-reviews
+reviews-v3-6476f788f8-2zfnb node=lima-zt-w2 sa=bookinfo-reviews
   reviews registry.istio.io/release/examples-bookinfo-reviews-v3@sha256:3b3415c5e7cc7cef3ad1741fa595f2f26627bddf2117dcee1429fa2a422df1b7
   istio-init registry.istio.io/release/proxyv2@sha256:f8f963340f92550b7b67228b0319fba7963a98137bdaace3f593da186427e717
   istio-proxy registry.istio.io/release/proxyv2@sha256:f8f963340f92550b7b67228b0319fba7963a98137bdaace3f593da186427e717
