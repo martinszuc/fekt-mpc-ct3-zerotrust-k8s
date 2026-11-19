@@ -408,3 +408,17 @@ time,scenario,threat,check,expected,observed,verdict,evidence,run_id,git_sha
 2026-11-16T12:26:51Z,S3,T6,api-reachable,blocked,blocked,PASS,results/T6-S3-sa-token.txt,20261116T122554Z-S3,6a698b2
 2026-11-16T12:26:51Z,S3,T6,api-authenticated,blocked,blocked,PASS,results/T6-S3-sa-token.txt,20261116T122554Z-S3,6a698b2
 2026-11-16T12:26:51Z,S3,T6,api-read-secrets,blocked,blocked,PASS,results/T6-S3-sa-token.txt,20261116T122554Z-S3,6a698b2
+2026-11-18T19:02:35Z,S3,T1,frontend-to-db,blocked,blocked,PASS,results/T1-S3-lateral.txt,20261118T190228Z-S3,bfd7a19
+2026-11-18T19:02:39Z,S3,T1,frontend-to-ratings,blocked,blocked,PASS,results/T1-S3-lateral.txt,20261118T190228Z-S3,bfd7a19
+2026-11-18T19:02:39Z,S3,T1,frontend-to-details-allowed,succeeded,succeeded,PASS,results/T1-S3-lateral.txt,20261118T190228Z-S3,bfd7a19
+2026-11-18T19:02:57Z,S3,T2,cross-node-sniff,blocked,blocked,PASS,results/T2-S3-encrypted.pcap,20261118T190228Z-S3,bfd7a19
+2026-11-18T19:03:04Z,S3,T3,rogue-unlabeled-to-ratings,blocked,blocked,PASS,results/T3-S3-rogue-pod.txt,20261118T190228Z-S3,bfd7a19
+2026-11-18T19:03:08Z,S3,T3,rogue-no-identity-to-ratings,blocked,blocked,PASS,results/T3-S3-rogue-pod.txt,20261118T190228Z-S3,bfd7a19
+2026-11-18T19:03:15Z,S3,T3,rogue-default-sa-to-ratings,blocked,blocked,PASS,results/T3-S3-rogue-pod.txt,20261118T190228Z-S3,bfd7a19
+2026-11-18T19:03:21Z,S3,T3,rogue-reused-sa-to-ratings,succeeded,succeeded,PASS,results/T3-S3-rogue-pod.txt,20261118T190228Z-S3,bfd7a19
+2026-11-18T19:03:21Z,S3,T4,reviews-posts-ratings,blocked,blocked,PASS,results/T4-S3-unauthorized-op.txt,20261118T190228Z-S3,bfd7a19
+2026-11-18T19:03:22Z,S3,T5,reviews-reads-ratings,succeeded,succeeded,PASS,results/T5-S3-valid-identity.txt,20261118T190228Z-S3,bfd7a19
+2026-11-18T19:03:22Z,S3,T6,token-mounted,blocked,blocked,PASS,results/T6-S3-sa-token.txt,20261118T190228Z-S3,bfd7a19
+2026-11-18T19:03:26Z,S3,T6,api-reachable,blocked,blocked,PASS,results/T6-S3-sa-token.txt,20261118T190228Z-S3,bfd7a19
+2026-11-18T19:03:26Z,S3,T6,api-authenticated,blocked,blocked,PASS,results/T6-S3-sa-token.txt,20261118T190228Z-S3,bfd7a19
+2026-11-18T19:03:26Z,S3,T6,api-read-secrets,blocked,blocked,PASS,results/T6-S3-sa-token.txt,20261118T190228Z-S3,bfd7a19

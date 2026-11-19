@@ -70,3 +70,15 @@ Outcome: **used for figures and the report.** Rounds 2 to 5 agree within a few p
 Analysis: configurations are compared per round (paired), a difference counts only when it has the same sign in all five rounds; reported value is the median of the per-round differences. The order within a round is fixed (S0, S1, S2a, S2b-plain, S2b, S3), so small consistent differences may partly come from order (noted in the limits chapter).
 
 Figures: `make plot RUN_ID=20261029T031157Z,20261029T073604Z,20261029T073939Z,20261029T104041Z,20261029T105456Z,20261111T015852Z DROP=20261029T031157Z/S0/latency,20261029T031157Z/S1/latency,20261029T031157Z/S2a/latency,20261029T031157Z/S2b-plain/latency,20261029T031157Z/S2b/latency,20261029T031157Z/S3/latency,20261029T073939Z/S2a/payload`. Non-latency rows of `summary.csv` are identical to the previous selection.
+
+## 18.11.2026 reverse-order latency run (aborted)
+
+Order S3, S2b, S2b-plain, S2a, S1, S0; 5 rounds planned, same parameters as 11.11. Run 20261118T143844Z, started 15:38 CET, log `latency-reverse.log`. Rounds 1 to 3 complete with the host untouched; a game was started on the host at 18:06 (during round 4), run stopped 18:08, VMs stopped.
+
+Outcome: **not used.** Rounds 4 and 5 are invalid; rounds 1 to 3 are kept as raw data only. To be rerun clean with all 5 rounds.
+
+## 18.11.2026 reverse-order latency run, host untouched
+
+Cluster restarted after a host reboot (`make up`), clocks within 0.2 s, `infra/scenario.sh S3`, attack checks 14/14 (run 20261118T190228Z-S3). Order S3, S2b, S2b-plain, S2a, S1, S0; otherwise same parameters as 11.11. Run 20261118T190331Z, 20:03 to 23:26, exit 0, log `latency-reverse-clean.log`. VMs stopped after the run.
+
+Outcome: **control for order effects, not used for figures.** Paired analysis (`python3 scripts/paired.py --run-id 20261118T190331Z`): sidecar, mTLS and WireGuard differences repeat with the same sign in all rounds. S0 to S1 app p99 drops from +7.7 % (11.11) to +1.3 % without a consistent sign, so it was an order effect. S1 to S2a app p50 +2.1 ms (+1.3 ms on 11.11). Report text updated in the overhead and limits chapters.
