@@ -73,6 +73,11 @@ $(VENV)/.ok: scripts/requirements.txt
 BENCH_DIR ?= results/bench
 # report figures only from the real run; other result dirs keep their figures next to the CSVs
 PLOT_OUT ?= $(if $(filter results/bench,$(BENCH_DIR)),docs/figures/bench,$(BENCH_DIR)/figures)
+# runs behind the report figures (results/bench/RUNLOG.md); RUN_ID= DROP= selects the latest run instead
+REPORT_RUN_ID := 20261029T031157Z,20261029T073604Z,20261029T073939Z,20261029T104041Z,20261029T105456Z,20261111T015852Z
+REPORT_DROP := 20261029T031157Z/S0/latency,20261029T031157Z/S1/latency,20261029T031157Z/S2a/latency,20261029T031157Z/S2b-plain/latency,20261029T031157Z/S2b/latency,20261029T031157Z/S3/latency,20261029T073939Z/S2a/payload
+RUN_ID ?= $(if $(filter results/bench,$(BENCH_DIR)),$(REPORT_RUN_ID))
+DROP ?= $(if $(filter results/bench,$(BENCH_DIR)),$(REPORT_DROP))
 plot: $(VENV)/.ok
 	$(VENV)/bin/python scripts/aggregate.py --in $(BENCH_DIR) $(if $(RUN_ID),--run-id $(RUN_ID)) $(if $(DROP),--drop $(DROP))
 	$(VENV)/bin/python scripts/plot.py --in $(BENCH_DIR) --out $(PLOT_OUT) $(if $(RUN_ID),--run-id $(RUN_ID)) $(if $(DROP),--drop $(DROP))
