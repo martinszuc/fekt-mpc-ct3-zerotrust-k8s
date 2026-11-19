@@ -1,7 +1,7 @@
 \chapter{Realizácia}
 \label{ch:implementation}
 
-Každá konfigurácia z tabuľky~\ref{tab:configurations} je v repozitári súbor manifestov a nastavení Helm~\cite{helm}. Prepína ich jeden skript, ktorý cluster prevedie presne do zvolenej konfigurácie bez ohľadu na predchádzajúci stav. Zmení iba to, čo sa líši, a pody reštartuje len vtedy, keď sa mení niečo, čo Kubernetes nastavuje pri ich vytvorení (pripojenie tokenu, sidecar). Nakoniec počká, kým aplikácia odpovedá po celej ceste \texttt{productpage}~$\rightarrow$ \texttt{reviews}~$\rightarrow$ \texttt{ratings}~$\rightarrow$ MongoDB, takže test ani meranie nezačne na neustálenom clustri. Tabuľka~\ref{tab:implementation} priraďuje konfiguráciám súbory a príkazy.
+Každá konfigurácia z tabuľky~\ref{tab:configurations} je v repozitári súbor manifestov a nastavení Helm~\cite{helm}. Prepína ich jeden skript, ktorý cluster prevedie presne do zvolenej konfigurácie bez ohľadu na predchádzajúci stav. Zmení iba to, čo sa líši, a pody reštartuje len vtedy, keď sa mení niečo, čo Kubernetes nastavuje pri ich vytvorení (pripojenie tokenu, sidecar). Nakoniec počká, kým aplikácia nezačne odpovedať po celej ceste \texttt{productpage}~$\rightarrow$ \texttt{reviews}~$\rightarrow$ \texttt{ratings}~$\rightarrow$ MongoDB, takže test ani meranie nezačne na neustálenom clustri. Tabuľka~\ref{tab:implementation} priraďuje konfiguráciám súbory a príkazy.
 
 \begin{table}[ht!]
   \centering
@@ -39,7 +39,7 @@ hubble:
   enabled: true
 \end{lstlisting}
 
-Posledné dve nastavenia slúžia spolupráci s Istio. Cilium bez nich prekladá adresu služby na adresu podu už pri volaní \texttt{connect()} v sieťovom namespace podu; sidecar by potom videl spojenie priamo na pod a jeho pravidlá presmerovania by sa minuli účinkom~\cite{cilium-kpr}. Prekladom iba v namespace hostiteľa sa zachová adresa služby, ktorú Envoy potrebuje na smerovanie. Keďže sú tieto nastavenia aj v konfigurácii bez ochrany, konfigurácia mTLS medzi službami nemení nastavenie CNI.
+Nastavenia \texttt{socketLB.hostNamespaceOnly} a \texttt{cni.exclusive} slúžia na spoluprácu s Istio; druhé ponecháva konfiguráciu iných CNI pluginov (variant Istio CNI) a v režime s init containerom sa neuplatní. Cilium bez prvého z nich prekladá adresu služby na adresu podu už pri volaní \texttt{connect()} v sieťovom namespace podu; sidecar by potom videl spojenie priamo na pod a jeho pravidlá presmerovania by sa minuli účinkom~\cite{cilium-kpr}. Prekladom iba v namespace hostiteľa sa zachová adresa služby, ktorú Envoy potrebuje na smerovanie. Keďže sú tieto nastavenia aj v konfigurácii bez ochrany, konfigurácia mTLS medzi službami nemení nastavenie CNI.
 
 \section{Segmentácia siete}
 
@@ -64,13 +64,13 @@ spec:
         - {protocol: TCP, port: 27017}
 \end{lstlisting}
 
-Okrem piatich politík aplikácie a dvoch základných sú v sade tri politiky pre pody merania, aby záťažové nástroje nepotrebovali výnimku z default-deny. V konfiguráciách s mesh pribudne politika, ktorá všetkým podom povolí spojenie na istiod (port 15012); bez nej by sidecary nedostali konfiguráciu ani certifikát. Segmentácia teda musí poznať aj riadiacu rovinu mesh.
+Okrem piatich politík aplikácie a dvoch základných sú v sade tri politiky pre pody merania, aby záťažové nástroje nepotrebovali výnimku z politiky default-deny. V konfiguráciách s mesh pribudne politika, ktorá všetkým podom povolí spojenie na istiod (port 15012); bez nej by sidecary nedostali konfiguráciu ani certifikát. Segmentácia teda musí poznať aj riadiacu rovinu mesh.
 
-Spevnenie tokenov nastaví \texttt{automountServiceAccountToken: false} na každom ServiceAccounte namespace~\cite{k8s-serviceaccounts}. Pod tak nedostane token, ktorým by sa mohol prihlásiť k API serveru; aplikácia Bookinfo API server nepoužíva, takže jej to nevadí. Každý workload, vrátane MongoDB, má vlastný ServiceAccount, aby mal v mesh vlastnú identitu.
+Hardening tokenov nastaví \texttt{automountServiceAccountToken: false} na každom ServiceAccounte namespace~\cite{k8s-serviceaccounts}. Pod tak nedostane token, ktorým by sa mohol prihlásiť k API serveru; aplikácia Bookinfo API server nepoužíva, takže jej to nevadí. Každý workload, vrátane MongoDB, má vlastný ServiceAccount, aby mal v mesh vlastnú identitu.
 
 \section{Šifrovanie medzi uzlami}
 
-Transparentné šifrovanie zapína v Cilium dvojica nastavení \texttt{encryption.enabled: true} a \texttt{encryption.type: wireguard}~\cite{cilium-wireguard}. Agent Cilium na každom uzle vygeneruje kľúčový pár, verejný kľúč zverejní v objekte CiliumNode a s ostatnými uzlami vytvorí rozhranie \texttt{cilium\_wg0}. Prevádzka podov smerujúca na iný uzol potom prechádza týmto rozhraním v jadre ako UDP na porte 51871~\cite{donenfeld2017wireguard}. Prevádzka hostiteľov (kubelet, API server) ostáva nešifrovaná, lebo útok odpočúvaním sa týka prevádzky podov. Zmena sa prejaví po reštarte agentov Cilium a aplikácia ani pody o nej nevedia. Vedľajším účinkom je menšie MTU trás podov, ktoré ovplyvní aj prevádzku na jednom uzle (kapitola~\ref{ch:overhead}).
+Transparentné šifrovanie zapína v Cilium dvojica nastavení \texttt{encryption.enabled: true} a \texttt{encryption.type: wireguard}~\cite{cilium-wireguard}. Agent Cilium na každom uzle vygeneruje pár kľúčov, verejný kľúč zverejní v objekte CiliumNode a s ostatnými uzlami vytvorí rozhranie \texttt{cilium\_wg0}. Prevádzka podov smerujúca na iný uzol potom prechádza týmto rozhraním v jadre ako UDP na porte 51871~\cite{donenfeld2017wireguard}. Prevádzka hostiteľov (kubelet, API server) ostáva nešifrovaná, lebo útok odpočúvaním sa týka prevádzky podov. Zmena sa prejaví po reštarte agentov Cilium a aplikácia ani pody o nej nevedia. Vedľajším účinkom je menšie MTU trás podov, ktoré ovplyvní aj prevádzku na jednom uzle (kapitola~\ref{ch:overhead}).
 
 \section{mTLS medzi službami}
 
@@ -86,7 +86,7 @@ spec:
     mode: STRICT
 \end{lstlisting}
 
-Mesh bez mTLS používa tie isté manifesty s režimom \texttt{DISABLE}. Samotné \texttt{DISABLE} však nestačí: sidecary klientov by v režime automatického mTLS stále volili šifrované spojenie. Preto táto konfigurácia pridáva aj DestinationRule, ktorá šifrovanie vypne aj na strane klienta.
+Mesh bez mTLS používa tie isté manifesty s režimom \texttt{DISABLE}. Pre istotu táto konfigurácia pridáva aj DestinationRule, ktorá šifrovanie výslovne vypne aj na strane klienta, takže výsledok nezávisí od automatického mTLS.
 
 \section{L7 autorizácia}
 
@@ -108,7 +108,7 @@ spec:
             paths: [/ratings/*]
 \end{lstlisting}
 
-MongoDB komunikuje vlastným protokolom nad TCP, preto jej politika rozlišuje iba identitu \texttt{ratings} a port. Vstupný bod \texttt{productpage} prijíma požiadavky od kohokoľvek, ale iba metódy na čítanie a prihlasovací formulár. Kontroly stavu od kubeletu politiky neovplyvnia, lebo ich injektor presmeruje na agenta sidecaru. Politiky sa do sidecarov dostanú cez xDS za niekoľko sekúnd a pody sa nereštartujú.
+MongoDB komunikuje vlastným protokolom nad TCP, preto jej politika rozlišuje iba identitu \texttt{ratings} a port. Vstupný bod \texttt{productpage} prijíma požiadavky od kohokoľvek, ale iba metódy na čítanie a prihlasovací formulár. Politiky neovplyvnia kontroly stavu od kubeletu, lebo tie injektor presmeruje na agenta sidecaru. Politiky sa do sidecarov dostanú cez xDS za niekoľko sekúnd a pody sa nereštartujú.
 
 \section{Automatizácia}
 

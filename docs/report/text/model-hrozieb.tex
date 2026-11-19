@@ -44,7 +44,7 @@ Hranice dôvery ležia medzi podmi navzájom (v tom istom namespace), medzi uzla
     \midrule
     Kompromitovaný frontend & spustenie kódu v \texttt{productpage}, verejne dostupnom frontende & ľubovoľné nástroje so sieťovou identitou podu a pripojenými prihlasovacími údajmi \\
     Pozorovateľ siete & na sieti medzi uzlami & pasívny záznam prevádzky medzi uzlami \\
-    Tvorca podov & smie vytvárať pody v namespace aplikácie, napríklad cez uniknutý prístup CI alebo vývojára & volí labely, image, vloženie sidecaru a ľubovoľný ServiceAccount v namespace \\
+    Tvorca podov & smie vytvárať pody v namespace aplikácie, napríklad cez uniknutý prístup CI alebo vývojára & volí labely, image containera, vloženie sidecaru a ľubovoľný ServiceAccount v namespace \\
     \bottomrule
   \end{tabularx}
 \end{table}
@@ -73,7 +73,7 @@ Tabuľka~\ref{tab:attacks} uvádza útoky, ich kategórie STRIDE a prvok, ktorý
   \end{tabularx}
 \end{table}
 
-Popretie (\emph{repudiation}) sa netestuje; čiastočne ho pokrývajú záznamy tokov Hubble od konfigurácie so segmentáciou siete a prístupové logy Envoy v mesh. Odopretie služby je mimo rozsahu projektu.
+Popretie (\emph{repudiation}) sa netestuje; čiastočne ho pokrývajú záznamy tokov Hubble (vo všetkých konfiguráciách, rozhodnutia politík od konfigurácie so segmentáciou siete ďalej) a prístupové logy Envoy v mesh. Odopretie služby je mimo rozsahu projektu.
 
 \subsection{Varianty podvrhnutia identity}
 
@@ -108,12 +108,12 @@ Segmentácia siete pridáva dva nezávislé prvky: NetworkPolicy a nepripájanie
   \renewcommand{\arraystretch}{1.15}
   \begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}X>{\raggedright\arraybackslash}X@{}}
     \toprule
-    Kontrola & Rozhoduje (od konfigurácie so segmentáciou siete) \\
+    Kontrola & Rozhoduje (od konfigurácie so segmentáciou siete ďalej) \\
     \midrule
     Token je pripojený v pode & \texttt{automountServiceAccountToken: false} \\
-    API server je dosiahnuteľný (anonymne, bez tokenu) & default-deny pre odchádzajúcu prevádzku \\
-    Požiadavka s tokenom je autentizovaná & chýbajúci token (zastavila by ju aj default-deny) \\
-    Čítanie Secrets & RBAC (zamietnuté vo všetkých konfiguráciách vrátane konfigurácie bez ochrany) \\
+    API server je dosiahnuteľný (anonymne, bez tokenu) & politika default-deny pre odchádzajúcu prevádzku \\
+    Požiadavka s tokenom je autentizovaná & chýbajúci token (zastavila by ju aj politika default-deny) \\
+    Čítanie Secrets & chýbajúci token, RBAC sa neuplatní (RBAC rozhoduje iba v konfigurácii bez ochrany, kde čítanie zamietne) \\
     \bottomrule
   \end{tabularx}
 \end{table}

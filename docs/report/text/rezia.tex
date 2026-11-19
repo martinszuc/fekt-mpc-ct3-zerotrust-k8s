@@ -28,7 +28,7 @@ Tabuľka~\ref{tab:latency} uvádza mediány percentilov p50 a p99 na troch cest�
   \end{tabular}
 \end{table}
 
-Prvé kolo bežalo niekoľko minút po štarte virtual machines a líši sa od ostatných: cesta cez aplikáciu bola v ňom pomalšia v konfiguráciách od segmentácie siete po mTLS a cesta na jednom uzle naopak rýchlejšia v prvých troch konfiguráciách. Kolá 2 až 5 sa zhodujú v rámci niekoľkých percent. Mediány tým nie sú dotknuté, porovnanie po kolách však v niektorých veličinách prvým kolom stratí zhodu znamienka.
+Prvé kolo bežalo niekoľko minút po štarte virtual machines a líši sa od ostatných: cesta cez aplikáciu bola v ňom pomalšia v konfiguráciách od segmentácie siete po mTLS, cesta medzi uzlami v mesh približne o 0,4~ms pomalšia a cesta na jednom uzle naopak rýchlejšia v prvých troch konfiguráciách. Kolá 2 až 5 sa zhodujú v rámci niekoľkých percent. Mediány tým nie sú dotknuté, pri niektorých veličinách však prvé kolo pokazí zhodu znamienka vo všetkých kolách.
 
 \begin{figure}[ht!]
   \centering
@@ -43,7 +43,7 @@ Priepustnosť jedného toku TCP medzi uzlami je zhora obmedzená linkou medzi vi
 
 \begin{table}[ht!]
   \centering
-  \caption{Priepustnosť jedného toku TCP a spotreba CPU uzlov (milijadrá na Gbit/s bez nečinnej spotreby), medián [min--max]}
+  \caption{Priepustnosť jedného toku TCP a spotreba CPU uzlov (millicores na Gbit/s bez nečinnej spotreby), medián [min--max]}
   \label{tab:throughput}
   \footnotesize
   \renewcommand{\arraystretch}{1.15}
@@ -61,7 +61,7 @@ Priepustnosť jedného toku TCP medzi uzlami je zhora obmedzená linkou medzi vi
   \end{tabularx}
 \end{table}
 
-Šifrovanie medzi uzlami má na jednom uzle vyššiu priepustnosť než konfigurácia bez ochrany, hoci prevádzka na jednom uzle cez WireGuard vôbec neprechádza. Príčinou je menšie MTU: Cilium pri zapnutom WireGuard zníži MTU všetkých trás podov z 1450 na 1355~B, takže sa zmení aj veľkosť segmentu TCP (MSS 1303 namiesto 1398~B). Kontrolné meranie konfigurácie bez ochrany s rovnakým MTU a bez šifrovania dosiahlo 105,6 až 106,8~Gbit/s, zatiaľ čo v tom istom behu s pôvodným MTU 88,7 až 93,3~Gbit/s. Rozdiel teda spôsobuje MTU, nie šifrovanie. Rovnaké kontrolné meranie ukázalo medzi uzlami 1,2~Gbit/s, takže časť poklesu priepustnosti pri šifrovaní medzi uzlami pripadá tiež na menšie MTU.
+Šifrovanie medzi uzlami má na jednom uzle vyššiu priepustnosť než konfigurácia bez ochrany, hoci prevádzka na jednom uzle cez WireGuard vôbec neprechádza. Príčinou je menšie MTU: Cilium pri zapnutom WireGuard zníži MTU všetkých trás podov z 1450 na 1355~B, takže sa zmení aj veľkosť segmentu TCP (MSS 1303 namiesto 1398~B). Kontrolné meranie konfigurácie bez ochrany s rovnakým MTU a bez šifrovania dosiahlo 105,7 až 106,9~Gbit/s, zatiaľ čo v tom istom behu s pôvodným MTU 88,7 až 93,4~Gbit/s. Rozdiel teda spôsobuje MTU, nie šifrovanie. Medzi uzlami dosiahlo kontrolné meranie 1,20 až 1,24~Gbit/s oproti 1,18 až 1,34~Gbit/s s pôvodným MTU, takže menšie MTU môže vysvetľovať časť poklesu pri šifrovaní medzi uzlami; tri opakovania to nepreukazujú.
 
 \begin{figure}[ht!]
   \centering
@@ -72,7 +72,7 @@ Priepustnosť jedného toku TCP medzi uzlami je zhora obmedzená linkou medzi vi
 
 \section{Saturácia a pamäť}
 
-Postupné zvyšovanie záťaže ukazuje, kde cesta prestane stíhať (obrázok~\ref{fig:qps-sweep}). Medzi uzlami zvládne konfigurácia bez ochrany najviac približne 26~500 požiadaviek za sekundu, šifrovanie medzi uzlami 20~900 a všetky konfigurácie s mesh okolo 10~500. Cez aplikáciu klesne maximum z 462 na 367 až 378 požiadaviek za sekundu. Pevné záťaže z tabuľky~\ref{tab:latency} ležia pod 30~\% najnižšieho z týchto maxím, takže latencia nie je meraná pri saturácii.
+Postupné zvyšovanie záťaže ukazuje, kde cesta prestane stíhať (obrázok~\ref{fig:qps-sweep}). Medzi uzlami zvládne konfigurácia bez ochrany najviac približne 26\,500 požiadaviek za sekundu, šifrovanie medzi uzlami 20\,900 a všetky konfigurácie s mesh okolo 10\,500. Cez aplikáciu klesne maximum z 462 na 367 až 378 požiadaviek za sekundu. Pevné záťaže z tabuľky~\ref{tab:latency} ležia pod 30~\% najnižšieho z týchto maxím, takže latencia nie je meraná pri saturácii.
 
 \begin{figure}[ht!]
   \centering
@@ -81,7 +81,7 @@ Postupné zvyšovanie záťaže ukazuje, kde cesta prestane stíhať (obrázok~\
   \label{fig:qps-sweep}
 \end{figure}
 
-mTLS medzi službami zvýši pamäť uzlov v nečinnosti o 150 až 190~MiB oproti segmentácii siete, samotné sidecary bez mTLS o 120 až 150~MiB: sidecar zaberá okolo 29~MiB na pod a riadiaca rovina istiod okolo 50~MiB. Šifrovanie medzi uzlami a segmentácia siete pamäť merateľne nemenia.
+mTLS medzi službami zvýši pamäť pracovných uzlov v nečinnosti o 190 až 210~MiB oproti segmentácii siete (riadiaci uzol o 100 až 145~MiB), samotné sidecary bez mTLS o 120 až 170~MiB: sidecar zaberá okolo 29~MiB na pod a riadiaca rovina istiod okolo 50~MiB. Šifrovanie medzi uzlami zvýši pamäť pracovných uzlov o menej než 20~MiB, segmentácia siete ju merateľne nemení.
 
 \section{Réžia jednotlivých prvkov}
 \label{sec:deltas}
@@ -98,14 +98,14 @@ Tabuľka~\ref{tab:deltas-measured} priraďuje namerané rozdiely porovnávaným 
     \toprule
     Prvok & Nameraný rozdiel \\
     \midrule
-    NetworkPolicy v eBPF & na cestách medzi podmi bez rozdielu; cez aplikáciu p50 +0,13~ms (+1~\%) a p99 +1,9~ms (+8~\%) vo všetkých kolách; priepustnosť a CPU v rámci rozptylu \\
-    WireGuard medzi uzlami & medzi uzlami p50 +0,06~ms (+11~\%), aplikácia p50 +1,3~ms (+8~\%); priepustnosť $-$12~\%, CPU na Gbit/s 2,7-krát vyššie; latencia na jednom uzle bez vplyvu \\
-    Sidecar proxy bez šifrovania & p50 +0,54~ms na jednom uzle (4,9-krát), +0,38~ms medzi uzlami (+73~\%); aplikácia p50 +1,2~ms, nie vo všetkých kolách; priepustnosť na jednom uzle $-$38~\%; maximum medzi uzlami z 26\,400 na 10\,800 požiadaviek/s; +120 až 150~MiB pamäte na uzol \\
-    mTLS v proxy & na cestách medzi podmi p50 +0,03~ms (+4~\%), aplikácia p50 +2,0~ms (+12~\%); priepustnosť na jednom uzle $-$56~\%, CPU na Gbit/s na jednom uzle 2,0-krát vyššie \\
-    mTLS oproti WireGuard & mTLS má medzi uzlami o 0,35~ms vyššiu latenciu p50 a cez aplikáciu o 2,0~ms vyššiu, ale medzi uzlami spotrebuje o 42~\% menej CPU na Gbit/s a má vyššiu priepustnosť \\
-    L7 autorizácia & žiadny rozdiel nie je rovnaký vo všetkých kolách; medzi podmi do 0,01~ms, aplikácia p50 +0,13~ms \\
+    NetworkPolicy v eBPF & na cestách medzi podmi do 0,1~ms; cez aplikáciu p50 +0,13~ms (+1~\%); p99 +1,9~ms (+8~\%) vo všetkých kolách, pri opačnom poradí konfigurácií iba +0,3~ms bez rovnakého znamienka; priepustnosť a CPU v rámci rozptylu \\
+    WireGuard medzi uzlami & medzi uzlami p50 +0,06~ms (+11~\%), aplikácia p50 +1,3~ms (+8~\%), pri opačnom poradí +2,1~ms (+14~\%); priepustnosť $-$12~\%, CPU na Gbit/s 2,7-krát vyššie; latencia na jednom uzle bez vplyvu \\
+    Sidecar bez šifrovania & p50 +0,54~ms na jednom uzle (4,9-krát), +0,38~ms medzi uzlami (+73~\%); aplikácia p50 +1,2~ms, nie vo všetkých kolách; priepustnosť na jednom uzle $-$38~\%; maximum medzi uzlami z 26\,400 na 10\,800 požiadaviek/s; +120 až 170~MiB pamäte na pracovný uzol \\
+    mTLS v proxy & na cestách medzi podmi p50 +0,03 až 0,04~ms (+4~\%), aplikácia p50 +2,0~ms (+12~\%); priepustnosť na jednom uzle $-$56~\%, CPU na Gbit/s na jednom uzle 1,9-krát vyššie \\
+    mTLS oproti WireGuard & mTLS má medzi uzlami o 0,35~ms vyššiu latenciu p50 a cez aplikáciu v mediáne o 2,0~ms vyššiu (nie vo všetkých kolách), ale medzi uzlami spotrebuje o 42~\% menej CPU na Gbit/s a má vyššiu priepustnosť \\
+    L7 autorizácia & žiadny rozdiel nemá rovnaké znamienko vo všetkých kolách; medzi podmi do 0,01~ms, aplikácia p50 +0,13~ms \\
     \bottomrule
   \end{tabularx}
 \end{table}
 
-Väčšinu ceny mesh tvorí samotný sidecar, nie šifrovanie: každá požiadavka prejde dvakrát cez proxy v používateľskom priestore. mTLS pridá na krátkej ceste medzi podmi málo, no cez aplikáciu so štyrmi skokmi pridá viac než samotné sidecary. WireGuard je pri latencii lacnejší, lebo šifruje v jadre bez prechodu do používateľského priestoru, ale pri objemovom prenose medzi uzlami spotrebuje na gigabit viac CPU než mTLS. Segmentácia siete a L7 autorizácia sú pri tejto záťaži prakticky zadarmo: ich réžia na mediáne latencie nepresahuje jedno percento. Jedinou výnimkou je p99 cez aplikáciu pri segmentácii siete (+8~\%), ktoré môže pri pevnom poradí konfigurácií čiastočne pochádzať z poradia (časť~\ref{sec:limits-validity}).
+Väčšinu ceny mesh tvorí samotný sidecar, nie šifrovanie: každá požiadavka prejde dvakrát cez proxy v používateľskom priestore. mTLS pridá na krátkej ceste medzi podmi málo, no cez aplikáciu so štyrmi skokmi pridá viac než samotné sidecary. WireGuard je pri latencii lacnejší, lebo šifruje v jadre bez prechodu do používateľského priestoru, ale pri objemovom prenose medzi uzlami spotrebuje na gigabit viac CPU než mTLS. Segmentácia siete a L7 autorizácia sú pri tejto záťaži prakticky zadarmo: na ceste cez aplikáciu zvýšia medián latencie najviac o 1~\% a na cestách medzi podmi sa ich rozdiel pohybuje do približne 3~\% bez rovnakého znamienka vo všetkých kolách. Výnimkou bolo p99 cez aplikáciu pri segmentácii siete (+8~\% vo všetkých kolách). Kontrolné meranie s opačným poradím konfigurácií v kole ho nepotvrdilo (+1~\%, nie vo všetkých kolách), ide teda o vplyv poradia, nie o cenu segmentácie (časť~\ref{sec:limits-validity}). Hlavné rozdiely (cena sidecaru, mTLS cez aplikáciu, WireGuard medzi uzlami) sa v kontrolnom meraní zopakovali s rovnakým znamienkom vo všetkých kolách.

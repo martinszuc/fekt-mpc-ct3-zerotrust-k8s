@@ -13,20 +13,20 @@ Všetky útoky z tabuľky~\ref{tab:attacks} boli spustené proti piatim konfigur
     \toprule
     Útok & Bez ochrany & Segmen\-tácia siete & Šifrovanie medzi uzlami & mTLS medzi službami & L7 autori\-zácia \\
     \midrule
-    Laterálny pohyb & prejde & zastavený & zastavený & zastavený & zastavený \\
-    Odpočúvanie siete, obsah & prejde & prejde & zastavený & zastavený & zastavený \\
-    Odpočúvanie siete, metadáta & prejde & prejde & zastavený & \textbf{prejde} & \textbf{prejde} \\
-    Podvrhnutie, mimo mesh & prejde & prejde & prejde & zastavený & zastavený \\
-    Podvrhnutie, iný SA & prejde & prejde & prejde & prejde & zastavený \\
-    Podvrhnutie, ukradnutý SA & prejde & prejde & prejde & prejde & prejde \\
-    Neoprávnená operácia & prejde & prejde & prejde & prejde & zastavený \\
-    Kompromitovaná služba & prejde & prejde & prejde & prejde & prejde \\
-    Zneužitie ServiceAccount tokenu & prejde & zastavený & zastavený & zastavený & zastavený \\
+    Laterálny pohyb & prešiel & zastavený & zastavený & zastavený & zastavený \\
+    Odpočúvanie siete, obsah & prešiel & prešiel & zastavený & zastavený & zastavený \\
+    Odpočúvanie siete, metadáta & prešiel & prešiel & zastavený & \textbf{prešiel} & \textbf{prešiel} \\
+    Podvrhnutie, mimo mesh & prešiel & prešiel & prešiel & zastavený & zastavený \\
+    Podvrhnutie, iný SA & prešiel & prešiel & prešiel & prešiel & zastavený \\
+    Podvrhnutie, ukradnutý SA & prešiel & prešiel & prešiel & prešiel & prešiel \\
+    Neoprávnená operácia & prešiel & prešiel & prešiel & prešiel & zastavený \\
+    Kompromitovaná služba & prešiel & prešiel & prešiel & prešiel & prešiel \\
+    Zneužitie ServiceAccount tokenu & prešiel & zastavený & zastavený & zastavený & zastavený \\
     \bottomrule
   \end{tabularx}
 \end{table}
 
-Jediný riadok navyše oproti hypotézam sú metadáta pri odpočúvaní siete. Vznikol z dôkazov, nie z modelu hrozieb, a je opísaný v časti~\ref{sec:res-sniffing}.
+Jediným riadkom navyše oproti hypotézam sú metadáta pri odpočúvaní siete. Vznikol z dôkazov, nie z modelu hrozieb, a je opísaný v časti~\ref{sec:res-sniffing}.
 
 \section{Ktorý prvok útok zastavil}
 \label{sec:res-signatures}
@@ -53,14 +53,14 @@ Výsledok \enquote{zastavený} sám nehovorí, ktorý prvok útok zastavil. Kaž
 
 \section{Laterálny pohyb}
 
-V konfigurácii bez ochrany prečíta kompromitovaný frontend kolekciu \texttt{test.ratings} priamo z MongoDB bez akýchkoľvek prihlasovacích údajov a zavolá aj \texttt{ratings}, ktorý nikdy nepoužíva. Od segmentácie siete obe spojenia vypršia a Hubble zaznamená ich zahodenie politikou~\cite{hubble}. Legitímne volanie \texttt{details} prechádza vo všetkých konfiguráciách, takže politika zastavuje iba cesty mimo grafu volaní. MongoDB v Bookinfo nemá autentizáciu, preto je dostupnosť po sieti jedinou kontrolou prístupu k databáze.
+V konfigurácii bez ochrany prečíta kompromitovaný frontend kolekciu \texttt{test.ratings} priamo z MongoDB bez akýchkoľvek prihlasovacích údajov a zavolá aj \texttt{ratings}, ktorý nikdy nepoužíva. Od konfigurácie so segmentáciou siete ďalej obe spojenia vypršia a Hubble zaznamená ich zahodenie politikou~\cite{hubble}. Legitímne volanie \texttt{details} prechádza vo všetkých konfiguráciách, takže politika zastavuje iba cesty mimo grafu volaní. MongoDB v Bookinfo nemá autentizáciu, preto je dostupnosť po sieti jedinou kontrolou prístupu k databáze.
 
 \section{Odpočúvanie siete}
 \label{sec:res-sniffing}
 
-Záznam na rozhraní pracovného uzla počas piatich legitímnych požiadaviek obsahuje v konfigurácii bez ochrany a so segmentáciou siete celý obsah komunikácie: texty recenzií, hodnotenia aj dotazy MongoDB vo vnútri rámcov VXLAN~\cite{rfc7348}. Segmentácia siete na tom nič nemení, lebo obmedzuje, kto sa s kým spojí, ale nie to, kto prevádzku vidí. Od šifrovania medzi uzlami aj od mTLS medzi službami už záznam obsah neobsahuje. Rovnaký záznam v konfigurácii mesh bez mTLS je opäť čitateľný, takže obsah chráni šifrovanie, nie prítomnosť sidecarov.
+Záznam prevádzky na rozhraní pracovného uzla počas piatich legitímnych požiadaviek obsahuje v konfigurácii bez ochrany a so segmentáciou siete celý obsah komunikácie: texty recenzií, hodnotenia aj dotazy MongoDB vo vnútri rámcov VXLAN~\cite{rfc7348}. Segmentácia siete na tom nič nemení, lebo obmedzuje, kto sa s kým spojí, ale nie to, kto prevádzku vidí. V konfigurácii so šifrovaním medzi uzlami a od konfigurácie s mTLS medzi službami ďalej už obsah v zázname nie je čitateľný. Rovnaký záznam v konfigurácii mesh bez mTLS je opäť čitateľný, takže obsah chráni šifrovanie, nie prítomnosť sidecarov.
 
-Oba spôsoby šifrovania sa však líšia v tom, čo zostane viditeľné (tabuľka~\ref{tab:metadata}). WireGuard zašifruje celý paket podu vrátane vnútorných hlavičiek~\cite{cilium-wireguard}, takže pozorovateľ siete vidí iba šifrovaný tok UDP medzi uzlami. mTLS šifruje iba obsah spojenia TCP~\cite{rfc8446}: adresy podov a porty zostávajú v rámcoch VXLAN čitateľné a z jedného záznamu sa dá zostaviť celý graf volaní aplikácie vrátane toho, ktorý pod komunikuje s databázou na porte 27017.
+Oba spôsoby šifrovania sa však líšia v tom, čo zostane viditeľné (tabuľka~\ref{tab:metadata}). WireGuard zašifruje celý paket podu vrátane vnútorných hlavičiek~\cite{cilium-wireguard}, takže pozorovateľ siete vidí iba šifrovaný tok UDP medzi uzlami. mTLS šifruje iba obsah spojenia TCP~\cite{rfc8446}: adresy podov a porty zostávajú v rámcoch VXLAN čitateľné a z jedného záznamu prevádzky sa dá zostaviť celý graf volaní aplikácie vrátane toho, ktorý pod komunikuje s databázou na porte 27017.
 
 \begin{table}[ht!]
   \centering
@@ -81,16 +81,16 @@ Oba spôsoby šifrovania sa však líšia v tom, čo zostane viditeľné (tabuľ
   \end{tabularx}
 \end{table}
 
-Počty rámcov závisia od dĺžky záznamu a nie sú medzi konfiguráciami porovnateľné; podstatné je, či sú hlavičky podov čitateľné. Zvyšné rámce v mesh sú segmenty TCP bez obsahu (nadviazanie spojenia, potvrdenia) a kontroly stavu Cilium. Šifrovanie medzi uzlami naopak nechráni prevádzku medzi podmi na tom istom uzle, ktorú mTLS šifruje tiež.
+Počty rámcov závisia od prevádzky počas záznamu a nie sú medzi konfiguráciami porovnateľné; podstatné je, či sú hlavičky podov čitateľné. Zvyšné rámce v mesh sú segmenty TCP bez obsahu (nadviazanie spojenia, potvrdenia), spojenia sidecarov na istiod (port 15012) a kontroly stavu Cilium. Šifrovanie medzi uzlami podľa dokumentácie nechráni prevádzku medzi podmi na tom istom uzle, ktorú mTLS šifruje tiež; experiment ju nezaznamenával~\cite{cilium-wireguard,istio-security}.
 
 \section{Podvrhnutie identity}
 
-Podvrhnutý pod s labelom \texttt{app=reviews} prejde segmentáciou siete aj šifrovaním medzi uzlami, lebo NetworkPolicy dôveruje labelom a WireGuard autentizuje uzly, nie pody. Kontrolný pod bez labelu je od segmentácie siete zastavený, takže prechod spôsobuje práve skopírovaný label. mTLS medzi službami zastaví iba pod mimo mesh, ktorý nemá certifikát. Pod zapojený do mesh pod ServiceAccountom \texttt{default} je autentizovaný a dostane od \texttt{ratings} dáta; zastaví ho až L7 autorizácia odpoveďou 403, lebo jeho identita nie je povoleným volajúcim. Autentizácia teda sama o sebe nie je autorizáciou. Pod, ktorý použije ServiceAccount \texttt{bookinfo-reviews}, je od skutočnej služby \texttt{reviews} nerozlíšiteľný a prejde vo všetkých konfiguráciách (kapitola~\ref{ch:limits}).
+Podvrhnutý pod s labelom \texttt{app=reviews} prejde segmentáciou siete aj šifrovaním medzi uzlami, lebo NetworkPolicy dôveruje labelom a WireGuard autentizuje uzly, nie pody. Kontrolný pod bez labelu zastaví už segmentácia siete, takže prechod spôsobuje práve skopírovaný label. mTLS medzi službami zastaví iba pod mimo mesh, ktorý nemá certifikát. Pod zapojený do mesh so ServiceAccountom \texttt{default} je autentizovaný a dostane od \texttt{ratings} dáta; zastaví ho až L7 autorizácia odpoveďou 403, lebo jeho identita nie je povoleným volajúcim. Autentizácia teda sama o sebe nie je autorizáciou. Pod, ktorý použije ServiceAccount \texttt{bookinfo-reviews}, je od skutočnej služby \texttt{reviews} nerozlíšiteľný a prejde vo všetkých konfiguráciách (kapitola~\ref{ch:limits}).
 
 \section{Neoprávnená operácia a kompromitovaná služba}
 
-Útočník v pode \texttt{reviews} pošle na \texttt{ratings} zápis \texttt{POST /ratings/0}. Do konfigurácie mTLS medzi službami vrátane požiadavka dorazí do aplikácie, ktorá odpovie 501, lebo zápis implementuje iba verzia v1. V konfigurácii s L7 autorizáciou ju odmietne sidecar odpoveďou 403 \texttt{RBAC: access denied}~\cite{istio-authorizationpolicy}, zatiaľ čo čítanie \texttt{GET /ratings/0} z toho istého containera prejde. Politika teda rozlišuje operáciu, nielen volajúceho. Samotné čítanie hodnotení kompromitovanou službou však prejde všade, lebo má platnú identitu aj povolenú operáciu.
+Útočník v pode \texttt{reviews} pošle na \texttt{ratings} zápis \texttt{POST /ratings/0}. Vo všetkých konfiguráciách bez L7 autorizácie požiadavka dorazí do aplikácie, ktorá odpovie 501, lebo zápis do databázy neimplementuje (\texttt{Post not implemented for database backed ratings}). V konfigurácii s L7 autorizáciou ju odmietne sidecar odpoveďou 403 \texttt{RBAC: access denied}~\cite{istio-authorizationpolicy}, zatiaľ čo čítanie \texttt{GET /ratings/0} z toho istého containera prejde. Politika teda rozlišuje operáciu, nielen volajúceho. Samotné čítanie hodnotení kompromitovanou službou však prejde všade, lebo služba má platnú identitu a operácia je povolená.
 
 \section{Zneužitie ServiceAccount tokenu}
 
-V konfigurácii bez ochrany má frontend pripojený token a autentizuje sa ním voči API serveru ako \texttt{system:serviceaccount:bookinfo:bookinfo-productpage}. Čítanie Secrets odmietne RBAC už tu, lebo ServiceAccount aplikácie nemá žiadne oprávnenia okrem zisťovania API~\cite{k8s-rbac}. Hrozbou preto nie je priamy prístup k tajomstvám, ale prieskum clustra a token, ktorý funguje aj mimo podu. Od segmentácie siete sa token nepripája a API server nie je z podu dosiahnuteľný; každú z kontrol rozhoduje práve jeden prvok podľa tabuľky~\ref{tab:token}.
+V konfigurácii bez ochrany má frontend pripojený token a autentizuje sa ním voči API serveru ako \texttt{system:serviceaccount:bookinfo:bookinfo-productpage}. Čítanie Secrets odmietne RBAC už tu, lebo ServiceAccount aplikácie nemá žiadne oprávnenia okrem zisťovania API a overenia vlastnej identity a oprávnení~\cite{k8s-rbac}. Hrozbou preto nie je priamy prístup k tajomstvám, ale prieskum clustra a token, ktorý funguje aj mimo podu. Od konfigurácie so segmentáciou siete ďalej sa token nepripája a API server nie je z podu dosiahnuteľný; každú z kontrol rozhoduje práve jeden prvok podľa tabuľky~\ref{tab:token}.

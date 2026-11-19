@@ -10,7 +10,7 @@ Kľúčovým kritériom porovnania je \emph{základ identity}: podľa čoho prvo
 
 \subsection{Kubernetes NetworkPolicy}
 
-NetworkPolicy (časť~\ref{sec:networkpolicy}) v režime default-deny zastaví laterálny pohyb k službám mimo grafu volaní aplikácie. Spolu s default-deny pre odchádzajúcu prevádzku odstráni aj cestu z podov aplikácie k API serveru, čo je časť ochrany proti zneužitiu ServiceAccount tokenu. Identitou je label, ktorý volí ten, kto pod vytvára, takže pod so skopírovaným labelom sa od legitímneho workloadu nelíši. NetworkPolicy nepozná metódy ani cesty HTTP a nezabezpečuje dôvernosť prenosu.
+NetworkPolicy (časť~\ref{sec:networkpolicy}) v režime default-deny zastaví laterálny pohyb k službám mimo grafu volaní aplikácie. Spolu s politikou default-deny pre odchádzajúcu prevádzku odstráni aj cestu z podov aplikácie k API serveru, čo je časť ochrany proti zneužitiu ServiceAccount tokenu. Identitou je label, ktorý volí ten, kto pod vytvára, takže pod so skopírovaným labelom sa od legitímneho workloadu nelíši. NetworkPolicy nepozná metódy ani cesty HTTP a nezabezpečuje dôvernosť prenosu.
 
 \subsection{Identitné a L7 politiky Cilium}
 
@@ -29,7 +29,7 @@ Klasická segmentácia oddeľuje vrstvy aplikácie do samostatných VLAN alebo p
 
 \subsection{mTLS v service mesh s identitou SPIFFE}
 
-V režime \texttt{STRICT} (časť~\ref{sec:mesh}) je prevádzka medzi sidecarmi šifrovaná na každej ceste vrátane komunikácie na tom istom uzle a klient bez certifikátu mesh je odmietnutý. Identitou je ServiceAccount podu, zakódovaný ako SPIFFE ID~\cite{istio-spire,spiffe-id}. Samotná autentizácia neobmedzuje, ktorý overený volajúci smie volať ktorú službu. Útočník, ktorý môže spustiť pod so ServiceAccountom cieľovej služby, získa rovnakú identitu.
+V režime \texttt{STRICT} (časť~\ref{sec:mesh}) je prevádzka medzi sidecarmi šifrovaná na každej ceste vrátane komunikácie na tom istom uzle a klient bez certifikátu mesh je odmietnutý~\cite{istio-security}. Identitou je ServiceAccount podu, zakódovaný ako SPIFFE ID~\cite{istio-spire,spiffe-id}. Samotná autentizácia neobmedzuje, ktorý overený volajúci smie volať ktorú službu. Útočník, ktorý môže spustiť pod so ServiceAccountom cieľovej služby, získa rovnakú identitu.
 
 \subsection{SPIRE}
 
@@ -41,7 +41,7 @@ JSON Web Token nesie podpísané nároky o subjekte~\cite{rfc7519}; OpenID Conne
 
 \subsection{Projected ServiceAccount tokeny}
 
-Tokeny ServiceAccountu (časť~\ref{sec:sa-rbac}) sú krátkodobé JWT viazané na pod, cieľovú skupinu a čas platnosti; API server ich overuje a tretie strany ich vedia overiť cez discovery endpoint OIDC vydavateľa~\cite{k8s-authentication,k8s-serviceaccounts}. Autentizujú workload voči API serveru alebo inej cieľovej skupine, nie na dátovej ceste medzi službami. Proti zneužitiu ServiceAccount tokenu pomáha token vôbec nepripájať, ak workload API server nevolá, a ponechať ServiceAccountu minimálne oprávnenia RBAC~\cite{k8s-serviceaccounts,k8s-rbac}.
+Tokeny ServiceAccountu (časť~\ref{sec:sa-rbac}) sú JWT s obmedzenou platnosťou viazané na pod a cieľovú skupinu; API server ich overuje a tretie strany ich vedia overiť cez discovery endpoint OIDC vydavateľa~\cite{k8s-authentication,k8s-serviceaccounts}. V tomto clustri mal pripojený token platnosť jeden rok (API server predlžuje platnosť pripájaných tokenov kvôli spätnej kompatibilite~\cite{k8s-sa-concepts}). Autentizujú workload voči API serveru alebo inej cieľovej skupine, nie na dátovej ceste medzi službami. Proti zneužitiu ServiceAccount tokenu pomáha token vôbec nepripájať, ak workload API server nevolá, a ponechať ServiceAccountu minimálne oprávnenia RBAC~\cite{k8s-serviceaccounts,k8s-rbac}.
 
 \subsection{WireGuard a IPsec medzi uzlami}
 
@@ -67,14 +67,14 @@ Tabuľka~\ref{tab:approaches} zhŕňa vlastnosti prístupov a tabuľka~\ref{tab:
     Prístup & Vrstva & Základ identity & Prevádzková náročnosť & V projekte \\
     \midrule
     \multicolumn{5}{@{}l}{\emph{Segmentácia a autorizácia}} \\
-    NetworkPolicy & L3/L4 & labely podov a namespaces, rozsahy IP & nízka; politika pre každý workload & áno \\
+    NetworkPolicy & L3/L4 & labely podov a namespacov, rozsahy IP & nízka; politika pre každý workload & áno \\
     Cilium, identity a L7 & L3/L4, L7 & číselná identita z labelov & nízka; L7 pridáva proxy na uzle & len L3/L4 \\
     Istio AuthorizationPolicy & L7 (L4 pre TCP) & identita z mTLS (ServiceAccount), atribúty požiadavky & stredná; vyžaduje mesh & áno \\
     VLAN, firewall hostiteľa & L2--L4 & IP adresa alebo podsieť uzla & nízka, ale príliš hrubá & nie \\
     RBAC, bez tokenu v pode & API (L7) & token ServiceAccountu & nízka & áno \\
     \midrule
     \multicolumn{5}{@{}l}{\emph{Šifrovanie a autentizácia prenosu}} \\
-    Istio mTLS \texttt{STRICT} & L4--L7 (TLS) & X.509 SVID, SPIFFE ID z ServiceAccountu & vysoká; sidecar v každom pode, CA & áno \\
+    Istio mTLS \texttt{STRICT} & L4--L7 (TLS) & X.509 SVID, SPIFFE ID zo ServiceAccountu & vysoká; sidecar v každom pode, CA & áno \\
     SPIRE & L4--L7 (TLS) & overené selektory uzla a workloadu & vysoká; server, agenty, registrácia & nie \\
     JWT, OIDC & L7 & nároky podpísané vydavateľom & stredná; poskytovateľ identity & nie \\
     Projected SA tokeny & API (L7) & ServiceAccount viazaný na pod, cieľovú skupinu a čas & nízka; predvolené od v1.22 & token sa nepripája \\
@@ -101,7 +101,7 @@ Tabuľka~\ref{tab:approaches} zhŕňa vlastnosti prístupov a tabuľka~\ref{tab:
     VLAN, firewall hostiteľa & -- & -- & -- & -- & -- & -- & -- \\
     RBAC, bez tokenu v pode & -- & -- & -- & -- & -- & -- & + \\
     \midrule
-    Istio mTLS \texttt{STRICT} & -- & + & + & -- & -- & -- & -- \\
+    Istio mTLS \texttt{STRICT} & -- & (+)\textsuperscript{h} & + & -- & -- & -- & -- \\
     SPIRE & -- & + & + & -- & (+)\textsuperscript{d} & -- & -- \\
     JWT, OIDC & -- & -- & (+)\textsuperscript{e} & (+)\textsuperscript{e} & -- & -- & -- \\
     Projected SA tokeny & -- & -- & -- & -- & -- & -- & (+)\textsuperscript{f} \\
@@ -113,17 +113,18 @@ Tabuľka~\ref{tab:approaches} zhŕňa vlastnosti prístupov a tabuľka~\ref{tab:
   \smallskip
   \begin{minipage}{\textwidth}
     \scriptsize
-    \textsuperscript{a}~len cesta k API serveru (default-deny pre odchádzajúcu prevádzku).
+    \textsuperscript{a}~len cesta k API serveru (politika default-deny pre odchádzajúcu prevádzku).
     \textsuperscript{b}~s pravidlom L7; volajúci je stále určený labelmi.
     \textsuperscript{c}~len ak má politiku každý cieľ v mesh.
     \textsuperscript{d}~ak selektory vyžadujú viac než ServiceAccount.
     \textsuperscript{e}~len ak autorizačné pravidlo vyžaduje platný token; proti odpočúvaniu potrebuje TLS.
-    \textsuperscript{f}~krátka platnosť a cieľová skupina obmedzia opätovné použitie ukradnutého tokenu, nezabránia mu.
+    \textsuperscript{f}~platnosť a cieľová skupina obmedzia opätovné použitie ukradnutého tokenu, nezabránia mu; v clustri platil token jeden rok.
     \textsuperscript{g}~len medzi uzlami; prevádzka na tom istom uzle sa nešifruje.
+    \textsuperscript{h}~len obsah; adresy a porty podov zostávajú čitateľné.
   \end{minipage}
 \end{table}
 
-Z tabuliek vyplýva vrstvenie, ktoré experiment overuje. Segmentácia podľa labelov zastaví útoky založené na dosiahnuteľnosti, nie však podvrhnutie identity. Šifrovanie medzi uzlami aj mTLS medzi službami zastavia odpočúvanie medzi uzlami, ale iba mTLS autentizuje workload a odmietne pod mimo mesh. mTLS navyše šifruje aj prevádzku na tom istom uzle, kým WireGuard naopak skryje aj vnútorné adresy podov. Autentizácia neznamená autorizáciu, preto pod v mesh s iným ServiceAccountom a neoprávnenú operáciu zastaví až L7 autorizácia. Podvrhnutie s ukradnutým ServiceAccountom a kompromitovaná služba zostávajú otvorené v každej konfigurácii: vyžadujú kontrolu nad tým, kto smie vytvárať pody a používať ServiceAccounty, čo je mimo sieťovej vrstvy.
+Z tabuliek vyplýva vrstvenie, ktoré experiment overuje. Segmentácia podľa labelov zastaví útoky založené na dosiahnuteľnosti, nie však podvrhnutie identity. Šifrovanie medzi uzlami aj mTLS medzi službami zastavia odpočúvanie obsahu medzi uzlami, ale iba mTLS autentizuje workload a odmietne pod mimo mesh. mTLS podľa dokumentácie šifruje aj prevádzku na tom istom uzle~\cite{istio-security,cilium-wireguard}, kým WireGuard naopak skryje aj vnútorné adresy podov. Autentizácia neznamená autorizáciu, preto pod v mesh s iným ServiceAccountom a neoprávnenú operáciu zastaví až L7 autorizácia. Podvrhnutie s ukradnutým ServiceAccountom a kompromitovaná služba zostávajú otvorené v každej konfigurácii: vyžadujú kontrolu nad tým, kto smie vytvárať pody a používať ServiceAccounty, čo je mimo sieťovej vrstvy.
 
 \section{Ekvivalenty v OpenShift}
 \label{sec:openshift}

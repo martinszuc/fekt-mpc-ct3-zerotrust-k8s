@@ -14,7 +14,7 @@ Repozitár \url{https://github.com/martinszuc/fekt-mpc-ct3-zerotrust-k8s} obsahu
 .2 bench/\DTcomment{meranie latencie, priepustnosti a CPU}.
 .2 demo/\DTcomment{scenár videozáznamu útokov}.
 .2 scripts/\DTcomment{spracovanie meraní a grafy}.
-.2 results/\DTcomment{výsledky útokov, dôkazy (výstupy, záznamy pcap), merania}.
+.2 results/\DTcomment{výsledky útokov, dôkazy (výstupy, záznamy prevádzky pcap), merania}.
 .2 docs/\DTcomment{model hrozieb, plán merania, verzie, obrázky, text práce}.
 }
 
@@ -23,13 +23,15 @@ Repozitár \url{https://github.com/martinszuc/fekt-mpc-ct3-zerotrust-k8s} obsahu
 Prostredie vyžaduje počítač Mac s procesorom Apple Silicon, nástroje z Homebrew podľa súboru \texttt{README.md} a jednorazové nastavenie siete socket\_vmnet.
 
 \begin{lstlisting}[language={},basicstyle=\ttfamily\footnotesize]
-make reproduce   # cluster od nuly, útoky vo všetkých konfiguráciách
-make s2a         # jedna konfigurácia: s0, s1, s2a, s2b, s2b-plain, s3
+make reproduce   # cluster od nuly a všetky útoky
+make s2a         # jedna konfigurácia (s0 až s3, s2b-plain)
 make test        # útoky proti aktuálnej konfigurácii
-make bench SCENARIO="S0 S1 S2a S2b-plain S2b S3"   # meranie réžie
+# meranie réžie
+make bench SCENARIO="S0 S1 S2a S2b-plain S2b S3" \
+  ROUNDS=5 REPEATS=1 QPS_ECHO=2000 QPS_APP=100 RES=0.00001
 make plot deltas # grafy a súhrny z nameraných dát
 make demo        # videozáznam útokov
 make pdf         # text práce
 \end{lstlisting}
 
-Kódy konfigurácií a útokov v názvoch súborov a cieľov \texttt{make} priraďuje súbor \texttt{docs/threat-model.md}.
+Parametre jednotlivých behov merania uvádza \texttt{results/bench/RUNLOG.md}. Kódy konfigurácií a útokov v názvoch súborov a cieľov \texttt{make} priraďuje súbor \texttt{docs/threat-model.md}.
