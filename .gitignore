@@ -13,6 +13,7 @@ docs/report/*.fdb_latexmk
 docs/report/*.synctex.gz
 docs/report/*.nav
 docs/report/*.snm
+docs/report/*.vrb
 docs/report/*.pdf
 docs/report/*.bbl
 docs/report/*.bcf
