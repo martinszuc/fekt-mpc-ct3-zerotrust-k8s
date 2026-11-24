@@ -5,7 +5,7 @@ Writes synthetic fortio/iperf3 JSON, node snapshots (bench/node-snapshot.sh form
 and feeds them through bench/record.py with the same arguments as bench/run.sh.
 Then: make plot BENCH_DIR=results/bench-fake
 
-scripts/fake-bench.py [--out results/bench-fake] [--runs 2]
+scripts/pipeline-selftest.py [--out results/bench-fake] [--runs 2]
 """
 import argparse
 import json

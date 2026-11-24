@@ -65,7 +65,7 @@ Knobs (`SUITES`, `REPEATS`, `QPS_ECHO`, `QPS_APP`, ...) are environment variable
 Benchmark pods run in `bookinfo` (client and same-node servers on `zt-w1`, cross-node servers on `zt-w2`), so every control applies to them.
 CPU comes from cgroup `cpu.stat` and `/proc/stat` on each node (`bench/node-snapshot.sh` via `limactl shell`), read right before and after each run.
 `make plot` on `results/bench` uses the runs behind the report figures by default (`RUN_ID= DROP=` for the latest run); `RUN_ID=a,b` selects runs (for example the main run plus `make bench-link`); `DROP=run_id/scenario/suite` leaves out a part that was cut short and rerun.
-Dry run without a cluster: `scripts/fake-bench.py && make plot BENCH_DIR=results/bench-fake` (synthetic data through the same record, aggregate and plot steps).
+Dry run without a cluster: `scripts/pipeline-selftest.py && make plot BENCH_DIR=results/bench-fake` (synthetic data through the same record, aggregate and plot steps).
 
 ## Attack tests
 
