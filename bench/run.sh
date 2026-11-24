@@ -5,18 +5,20 @@
 source "$(dirname "$0")/lib.sh"
 
 SUITES=${SUITES:-"idle iperf3 latency payload qps"}   # also: link (path d, once)
-ROUNDS=${ROUNDS:-1}
+# ROUNDS, REPEATS and the fixed QPS are those of the main runs (results/bench/RUNLOG.md, drivers in
+# results/bench/logs/); the sweeps ran with ROUNDS=1 SWEEP_REPEATS=2, the link suite with IPERF_REPEATS=5
+ROUNDS=${ROUNDS:-$([[ ${QUICK:-0} == 1 ]] && echo 1 || echo 5)}
 PAUSE=${PAUSE:-5}                  # seconds between runs
 CONNS=${CONNS:-8}                  # fortio connections
 PCTS="50,90,95,99,99.9"
 # histogram bucket in seconds; fortio's default 1 ms puts >99 % of echo samples in one bucket
 RES=${RES:-0.00001}
-# latency at constant QPS; set after calibration (about 50 % of the S3 knee per path, see `make plot`)
-REPEATS=${REPEATS:-5}
+# latency at constant QPS, at most about 30 % of the calibrated saturation (RUNLOG.md)
+REPEATS=${REPEATS:-1}
 WARMUP_S=${WARMUP_S:-30}
 LAT_S=${LAT_S:-60}
-QPS_ECHO=${QPS_ECHO:-1000}
-QPS_APP=${QPS_APP:-50}
+QPS_ECHO=${QPS_ECHO:-2000}
+QPS_APP=${QPS_APP:-100}
 # QPS sweep for the saturation knee; 0 means as fast as possible
 SWEEP_S=${SWEEP_S:-20}
 SWEEP_REPEATS=${SWEEP_REPEATS:-3}
