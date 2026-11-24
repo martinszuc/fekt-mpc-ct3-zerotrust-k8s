@@ -8,7 +8,7 @@ export KUBECONFIG=$PWD/$KUBECONFIG_PATH
 
 [[ ${KEEP:-0} == 1 ]] || infra/down.sh
 infra/up.sh
-kubectl apply -k manifests/app
+infra/apply.sh manifests/app
 kubectl -n bookinfo rollout status deploy --timeout=10m
 
 rc=0

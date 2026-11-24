@@ -5,7 +5,7 @@ source "$(dirname "$0")/lib.sh"
 SCEN=${1:?usage: bench/deploy.sh <scenario>}
 
 SEL='app in (bench-client,fortio-server,iperf3-server)'
-kubectl apply -k bench/k8s
+infra/apply.sh bench/k8s
 # L7 authorization only: an ALLOW policy changes what a workload accepts, so it must not exist elsewhere
 if [[ $SCEN == S3 ]]; then
   kubectl apply -k bench/k8s-authz

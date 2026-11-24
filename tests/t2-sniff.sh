@@ -6,7 +6,7 @@ source "$(dirname "$0")/lib.sh"
 
 case $SCENARIO in S0|S1) expect=succeeded ;; *) expect=blocked ;; esac
 SECONDS_=${T2_SECONDS:-15}
-NODE=zt-w1
+NODE=$W1_NODE
 MARKER=Reviewer1   # app data that must not be readable on the wire
 base=$RESULTS/T2-$SCENARIO
 pcap=$base-capture.pcap

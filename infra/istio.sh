@@ -8,13 +8,16 @@ source infra/config.env
 export KUBECONFIG=$PWD/$KUBECONFIG_PATH
 [[ -f $KUBECONFIG ]] || { echo "missing $KUBECONFIG, run make up" >&2; exit 1; }
 REPO=https://istio-release.storage.googleapis.com/charts
+# istiod-values.yaml pins istiod to lima-zt-cp; other clusters override only that value
+cp_selector=()
+[[ $NODE_PREFIX$CP_NODE == lima-zt-cp ]] || cp_selector=(--set-string "nodeSelector.kubernetes\\.io/hostname=$NODE_PREFIX$CP_NODE")
 
 case ${1:-} in
   on)
     helm upgrade --install istio-base base --repo "$REPO" --version "$ISTIO_VERSION" \
       -n istio-system --create-namespace --wait
     helm upgrade --install istiod istiod --repo "$REPO" --version "$ISTIO_VERSION" \
-      -n istio-system -f manifests/s2b-mtls/istiod-values.yaml --wait --timeout 10m
+      -n istio-system -f manifests/s2b-mtls/istiod-values.yaml ${cp_selector[@]+"${cp_selector[@]}"} --wait --timeout 10m
     ;;
   off)
     if helm -n istio-system status istiod >/dev/null 2>&1; then

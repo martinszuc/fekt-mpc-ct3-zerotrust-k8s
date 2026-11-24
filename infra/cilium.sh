@@ -8,7 +8,7 @@ source infra/config.env
 export KUBECONFIG=$PWD/$KUBECONFIG_PATH
 [[ -f $KUBECONFIG ]] || { echo "missing $KUBECONFIG, run make up" >&2; exit 1; }
 
-CP_IP=$(kubectl get node "lima-$CP_NODE" -o jsonpath='{.status.addresses[?(@.type=="InternalIP")].address}')
+CP_IP=$(kubectl get node "$NODE_PREFIX$CP_NODE" -o jsonpath='{.status.addresses[?(@.type=="InternalIP")].address}')
 args=(-f infra/cilium-values.yaml)
 for f in "$@"; do args+=(-f "$f"); done
 

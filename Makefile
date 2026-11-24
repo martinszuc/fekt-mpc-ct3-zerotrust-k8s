@@ -22,7 +22,7 @@ status:
 	cilium status
 
 app:
-	kubectl apply -k manifests/app
+	infra/apply.sh manifests/app
 	kubectl -n bookinfo rollout status deploy --timeout=10m
 
 # each target leaves exactly one scenario applied

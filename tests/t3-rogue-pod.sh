@@ -34,7 +34,7 @@ metadata:
     sidecar.istio.io/inject: "$inject"
 spec:
   # placed on zt-w2 so the call to ratings (zt-w1) crosses nodes
-  nodeSelector: {kubernetes.io/hostname: lima-zt-w2}
+  nodeSelector: {kubernetes.io/hostname: $NODE_PREFIX$W2_NODE}
   serviceAccountName: $sa
   automountServiceAccountToken: false
   containers:

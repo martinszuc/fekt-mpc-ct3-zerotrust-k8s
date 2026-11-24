@@ -10,8 +10,8 @@ export KUBECONFIG=$PWD/$KUBECONFIG_PATH
 NS=bookinfo
 OUT=${BENCH_OUT:-results/bench}
 CLIENT=deploy/bench-client
-W1=lima-zt-w1
-W2=lima-zt-w2
+W1=$NODE_PREFIX$W1_NODE
+W2=$NODE_PREFIX$W2_NODE
 
 log() { printf '\033[1m==> %s\033[0m\n' "$*" >&2; }
 die() { echo "error: $*" >&2; exit 1; }

@@ -80,7 +80,7 @@ snapshot() {
   if ((!ok)); then cat "$f".*.err >&2; return 1; fi
   for vm in $NODES; do
     [[ -s $f.$vm ]] || return 1
-    echo "# zt-node lima-$vm"
+    echo "# zt-node $NODE_PREFIX$vm"
     cat "$f.$vm"
   done > "$f"
   kubectl get pods -A -o json > "$f.pods"
@@ -220,7 +220,7 @@ suite_qps() {
 # path (d): host network node to node, independent of the scenario
 suite_link() {
   local ip r
-  kubectl apply -k bench/k8s-link
+  infra/apply.sh bench/k8s-link
   kubectl -n "$NS" rollout status deploy/link-server deploy/link-client --timeout=5m
   ip=$(kubectl get node "$W2" -o jsonpath='{.status.addresses[?(@.type=="InternalIP")].address}')
   retry iperf_client link -c "$ip" -p 5202 -t 10 > /dev/null
