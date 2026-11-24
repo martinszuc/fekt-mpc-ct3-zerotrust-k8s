@@ -20,7 +20,7 @@ ensure_vm() {
     *)
       log "creating $name"
       limactl create --tty=false --name "$name" \
-        --vm-type vz --arch aarch64 --plain \
+        --vm-type "$VM_TYPE" --arch "$VM_ARCH" --plain \
         --cpus "$VM_CPUS" --memory "$VM_MEMORY_GIB" --disk "$VM_DISK_GIB" \
         --network "$VM_NETWORK" \
         "$LIMA_TEMPLATE"
