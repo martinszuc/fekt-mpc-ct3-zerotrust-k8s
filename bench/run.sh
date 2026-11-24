@@ -73,7 +73,7 @@ retry() {
 snapshot() {
   local f=$1 vm pid ok=1 pids=()
   for vm in $NODES; do
-    limactl shell --workdir / "$vm" sh -s < bench/node-snapshot.sh > "$f.$vm" 2> "$f.$vm.err" &
+    node_exec "$vm" sh -s < bench/node-snapshot.sh > "$f.$vm" 2> "$f.$vm.err" &
     pids+=($!)
   done
   for pid in "${pids[@]}"; do wait "$pid" || ok=0; done

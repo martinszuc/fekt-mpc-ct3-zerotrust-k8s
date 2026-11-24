@@ -7,21 +7,21 @@ section() { printf '\n## %s\n' "$1"; }
 {
   echo "scenario $SCENARIO, run_id $RUN_ID, git $GIT_SHA, $(date -u +%FT%TZ)"
   section "host"
-  echo "macOS $(sw_vers -productVersion) ($(sw_vers -buildVersion)), $(uname -m)"
-  limactl --version
+  if command -v sw_vers >/dev/null; then os="macOS $(sw_vers -productVersion) ($(sw_vers -buildVersion))"; else os=$(uname -sr); fi
+  echo "$os, $(uname -m)"
+  if command -v limactl >/dev/null; then limactl --version; fi
   kubectl version --client 2>/dev/null | sed -n 1p
   echo "helm $(helm version --short)"
   cilium version --client 2>/dev/null | sed -n 1p
   tshark --version | sed -n 1p
-  section "VMs"
-  limactl list
+  if command -v limactl >/dev/null; then section "VMs"; limactl list; fi
   section "nodes"
   kubectl get nodes -o wide
   for n in $NODES; do
     section "node $n"
-    limactl shell "$n" uname -a
+    node_exec "$n" uname -a
     # MTUs decide the encapsulation overhead; cilium_wg0 exists only with WireGuard
-    limactl shell "$n" sh -c "ip -o link show | awk '/$NODE_IFACE|cilium_|lxc/ {print \$2, \$4, \$5}' | grep -v '^lxc' || true"
+    node_exec "$n" sh -c "ip -o link show | awk '/$NODE_IFACE|cilium_|lxc/ {print \$2, \$4, \$5}' | grep -v '^lxc' || true"
   done
   section "cilium"
   kubectl -n kube-system get ds cilium -o jsonpath='{.spec.template.spec.containers[0].image}{"\n"}'

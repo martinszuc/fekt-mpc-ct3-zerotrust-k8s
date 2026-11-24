@@ -17,7 +17,7 @@ vm-prep:
 	infra/vm-prep.sh
 
 status:
-	limactl list
+	if command -v limactl >/dev/null; then limactl list; fi
 	kubectl get nodes -o wide
 	cilium status
 

@@ -13,7 +13,7 @@ pcap=$base-capture.pcap
 rm -f "$base"-{capture,plaintext,encrypted,no-traffic}.{pcap,txt}
 
 # udp covers VXLAN (8472) and WireGuard (51871) between nodes
-limactl shell "$NODE" sudo timeout "$SECONDS_" tcpdump -i "$NODE_IFACE" -s 0 -U -w - udp 2>/dev/null > "$pcap" &
+node_exec "$NODE" sudo timeout "$SECONDS_" tcpdump -i "$NODE_IFACE" -s 0 -U -w - udp 2>/dev/null > "$pcap" &
 cap=$!
 sleep 3
 # legitimate user traffic: productpage -> details/reviews -> ratings -> mongodb, all cross-node

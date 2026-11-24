@@ -1,5 +1,5 @@
 #!/bin/sh
-# runs on a node: limactl shell <vm> sh -s < bench/node-snapshot.sh
+# runs on a node: node_exec <node> sh -s < bench/node-snapshot.sh
 # CPU and memory counters of the node and of every container cgroup under kubepods, read directly
 # (the kubelet resource endpoint caches cgroup stats for ~10 s, too coarse for short runs)
 set -eu
