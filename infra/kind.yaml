@@ -1,0 +1,17 @@
+# attack tests only (infra/up-kind.sh): node containers share one Docker bridge, so there is no real
+# cross-node link to measure; benchmarks need the VMs. Node names zt-control-plane, zt-worker, zt-worker2
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+name: zt
+networking:
+  # Cilium replaces both, as with k3s in infra/up.sh
+  disableDefaultCNI: true
+  kubeProxyMode: none
+nodes:
+  # closest kind image to k3s v1.36.5 for kind v0.33.0
+  - role: control-plane
+    image: kindest/node:v1.36.4@sha256:099e049362a1526b2db71494e1947aae99bd16290d7c895f2b7ea312e3cbfaed
+  - role: worker
+    image: kindest/node:v1.36.4@sha256:099e049362a1526b2db71494e1947aae99bd16290d7c895f2b7ea312e3cbfaed
+  - role: worker
+    image: kindest/node:v1.36.4@sha256:099e049362a1526b2db71494e1947aae99bd16290d7c895f2b7ea312e3cbfaed

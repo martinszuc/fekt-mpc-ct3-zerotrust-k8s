@@ -41,6 +41,7 @@ Recorded 22.10.2026, host drift and kernels rechecked and aligned 29.10.2026. VM
 | iperf3 | 3.22 |
 | tshark (Wireshark) | 4.6.9 |
 | vhs (demo recording only) | 0.12.1 |
+| kind (attack tests in CI only, `infra/kind.yaml`) | v0.33.0, node image `kindest/node:v1.36.4` |
 | jq / yq | Homebrew current |
 | python3 | 3.15.0 (3.14.7 until 23.10) |
 | matplotlib (venv `scripts/.venv`) | 3.11.2 |
