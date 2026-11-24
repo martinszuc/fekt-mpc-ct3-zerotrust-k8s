@@ -4,7 +4,7 @@ Controlled experiment: what each zero-trust layer in Kubernetes (segmentation, t
 
 ## Requirements
 
-macOS on Apple Silicon (arm64), Homebrew, ~12 vCPU and 24 GB RAM free for the VMs.
+macOS on Apple Silicon (arm64), Homebrew, ~12 vCPU and 24 GB RAM free for the VMs. This is the tested setup behind all results; for Linux, Windows and other clusters see [Other platforms](#other-platforms).
 
 ```bash
 brew install lima socket_vmnet kubectl helm cilium-cli hubble fortio iperf3 wireshark jq yq
@@ -55,15 +55,15 @@ export KUBECONFIG=$PWD/.kube/config
 ```bash
 podman machine stop                                        # bench refuses to run otherwise
 make bench QUICK=1                                         # smoke run, ~10 min, results/bench-quick/
-make bench SCENARIO="S0 S1 S2a S2b-plain S2b S3" ROUNDS=1  # full run, ~80 min per configuration
+make bench SCENARIO="S0 S1 S2a S2b-plain S2b S3"           # defaults of the main run: 5 interleaved rounds
 make bench-link                                            # path (d): node to node on the host network, once
 make plot                                                  # BENCH_DIR=results/bench-quick for the smoke run
 ```
 
 Suites: `idle` (CPU baseline), `iperf3`, `latency` (fixed QPS), `payload` (64 B to 64 KiB), `qps` (sweep to saturation).
-Knobs (`SUITES`, `REPEATS`, `QPS_ECHO`, `QPS_APP`, ...) are environment variables, defaults at the top of `bench/run.sh`.
+Knobs (`SUITES`, `REPEATS`, `QPS_ECHO`, `QPS_APP`, ...) are environment variables, defaults at the top of `bench/run.sh`; the exact commands of the report runs are in `results/bench/logs/*.sh`.
 Benchmark pods run in `bookinfo` (client and same-node servers on `zt-w1`, cross-node servers on `zt-w2`), so every control applies to them.
-CPU comes from cgroup `cpu.stat` and `/proc/stat` on each node (`bench/node-snapshot.sh` via `limactl shell`), read right before and after each run.
+CPU comes from cgroup `cpu.stat` and `/proc/stat` on each node (`bench/node-snapshot.sh` via `node_exec`, `infra/node.sh`), read right before and after each run.
 `make plot` on `results/bench` uses the runs behind the report figures by default (`RUN_ID= DROP=` for the latest run); `RUN_ID=a,b` selects runs (for example the main run plus `make bench-link`); `DROP=run_id/scenario/suite` leaves out a part that was cut short and rerun.
 Dry run without a cluster: `scripts/pipeline-selftest.py && make plot BENCH_DIR=results/bench-fake` (synthetic data through the same record, aggregate and plot steps).
 
@@ -84,14 +84,39 @@ Network sniffing captures on the node NIC inside VM `zt-w1`. The host bridge `br
 
 The app is pinned to fixed nodes so every call crosses nodes: productpage and ratings on `zt-w1`, details, reviews and mongodb on `zt-w2`.
 
+## Other platforms
+
+Only the macOS setup above is tested. Everything else here is untested unless marked; the defaults in `infra/config.env` are the Mac values and every setting below is an environment override, so the Mac path does not change.
+
+| Setup | How | Status |
+|---|---|---|
+| Linux host, Lima with QEMU | `VM_TYPE=qemu VM_ARCH=x86_64 VM_NETWORK=lima:user-v2 make up` (socket_vmnet is macOS only; the network must let VMs reach each other) | untested |
+| Own 3-node cluster | below | untested |
+| kind, attack tests only | `infra/up-kind.sh`, then `source infra/kind.env` and `make app`, `make s0` ... `make test` | CI job `attack-tests`, not yet run |
+| Figures from the committed data | `make plot` and `make deltas` on any OS with Python 3 and make; without make, the commands of the CI job `plot` | Mac tested; CI on Linux and Windows not yet run |
+| Windows | WSL2 (Ubuntu) as the host for the scripts, plus an own cluster or kind in WSL2 | untested |
+
+Own cluster: Cilium must be the only CNI, without kube-proxy, as with the k3s flags in `infra/up.sh` (`--flannel-backend=none --disable-network-policy --disable-kube-proxy --disable=traefik,servicelb`). Put its kubeconfig at `.kube/config`, then `infra/cilium.sh` installs Cilium and the rest works as above with:
+
+```bash
+export NODE_EXEC=ssh NODE_SSH_USER=ubuntu       # ssh <user>@<node>; extra flags in NODE_SSH_OPTS
+export CP_NODE=cp W1_NODE=w1 W2_NODE=w2         # Kubernetes node names, also the ssh hosts
+export NODE_IFACE=eth0                          # node NIC that carries node-to-node traffic
+```
+
+The manifests pin pods to `lima-zt-cp`, `lima-zt-w1` and `lima-zt-w2`; `infra/apply.sh` and `infra/istio.sh` put the configured names in their place at apply time. App and benchmark placement is part of the design: W1 and W2 must be different nodes, and the control plane must accept pods (istiod runs there).
+
+kind is not for benchmarks: the node containers share the host kernel and one Docker bridge, so there is no real node-to-node link and no separate CPU per node.
+
 ## Layout
 
 | Path | Content |
 |---|---|
-| `infra/` | VM sizing, pinned versions, cluster bootstrap |
+| `infra/` | VM sizing, pinned versions, cluster bootstrap (Lima, kind) |
 | `manifests/` | demo app and per-configuration defenses |
 | `tests/` | attack scripts, one per attack |
 | `bench/` | fortio and iperf3 runners |
 | `results/` | raw CSV, packet captures, logs |
 | `scripts/` | aggregation and plotting |
 | `docs/` | threat model, measurement plan, versions |
+| `.github/workflows/` | CI: attack tests on kind, figures on Linux and Windows |
