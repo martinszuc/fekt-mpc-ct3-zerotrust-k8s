@@ -81,7 +81,7 @@ Not tested: Repudiation (only partly covered by Hubble flow logs from segmentati
 
 ## Expected and observed outcomes
 
-Cells: expected outcome of the attack; `ok` = matched in `results/attacks.csv` (full rerun 29.10 at commit 38377b9, all 70 checks pass; rows carry `run_id` and `git_sha`).
+Cells: expected outcome of the attack; `ok` = matched in `results/attacks.csv` (full rerun 29.10 at commit 154c95d, all 70 checks pass; rows carry `run_id` and `git_sha`).
 
 | Attack | Baseline | Segmentation | Node encryption | Mesh mTLS | L7 authorization |
 |---|---|---|---|---|---|

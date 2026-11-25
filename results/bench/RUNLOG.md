@@ -2,7 +2,7 @@
 
 ## 29.10.2026 overnight run
 
-Started 2026-10-29 04:11:56 CET at commit 6de91d7, driver `results/bench/logs/overnight-20261029.sh`, output `results/bench/logs/overnight-20261029.log`.
+Started 2026-10-29 04:11:56 CET at commit b5970bd, driver `results/bench/logs/overnight-20261029.sh`, output `results/bench/logs/overnight-20261029.log`.
 
 | Part | Configurations | Rounds x repeats | Suites | Parameters |
 |---|---|---|---|---|
@@ -13,7 +13,7 @@ Started 2026-10-29 04:11:56 CET at commit 6de91d7, driver `results/bench/logs/ov
 Fixed QPS: 2000 req/s (same-node and cross-node echo), 100 req/s (app). Calibration from the QUICK=1 sweep of the same night (S1, S2b-plain, S2b, S3; 1 x 5 s per step, run 20261029T022631Z): lowest saturation cross-node 7939 req/s and app 344 req/s, both in mesh without mTLS; the fixed rates are at most about 30 % of those, below the planned 50 % because the baseline and node encryption were not in the calibration sweep.
 Sweep repeats 2 instead of 3 (time); sweeps run last so they can be cut.
 
-Conditions: kernel 6.8.0-147 on all nodes, identical packages, no automatic updates; no Podman machine; laptop on power, lid open, `caffeinate -is`; attack checks 14/14 in S2b and S3 at commit 6de91d7 right before.
+Conditions: kernel 6.8.0-147 on all nodes, identical packages, no automatic updates; no Podman machine; laptop on power, lid open, `caffeinate -is`; attack checks 14/14 in S2b and S3 at commit b5970bd right before.
 
 ### Outcome
 
@@ -84,3 +84,5 @@ Cluster restarted after a host reboot (`make up`), clocks within 0.2 s, `infra/s
 Outcome: **control for order effects, not used for figures.** Paired analysis (`python3 scripts/paired.py --run-id 20261118T190331Z`): sidecar, mTLS and WireGuard differences repeat with the same sign in all rounds. S0 to S1 app p99 drops from +7.7 % (11.11) to +1.3 % without a consistent sign, so it was an order effect. S1 to S2a app p50 +2.1 ms (+1.3 ms on 11.11). Report text updated in the overhead and limits chapters.
 
 Host power log check (24.11, `pmset -g log`): 18.11 run 20:03 to 23:26 on AC with no sleep, wake or power events, `caffeinate` held for the whole run, no game or audio, only short iCloud and maintenance wakes; display on until 23:02 (macOS user-active hold after the 19:59 reboot, timed out 22:59). The log does not go back before 17.11, so the 29.10 and 11.11 runs cannot be checked this way.
+
+History rewrite (25.11): the report sources were moved to a private repo and purged from this history, so every commit hash changed. Hashes in `results/` and `docs/` were updated to the rewritten commits; the two commits that changed only report files (old 6a698b2, bfd7a19) map to their parent, which has identical code.
