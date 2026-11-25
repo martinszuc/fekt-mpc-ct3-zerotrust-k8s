@@ -86,3 +86,5 @@ Outcome: **control for order effects, not used for figures.** Paired analysis (`
 Host power log check (24.11, `pmset -g log`): 18.11 run 20:03 to 23:26 on AC with no sleep, wake or power events, `caffeinate` held for the whole run, no game or audio, only short iCloud and maintenance wakes; display on until 23:02 (macOS user-active hold after the 19:59 reboot, timed out 22:59). The log does not go back before 17.11, so the 29.10 and 11.11 runs cannot be checked this way.
 
 History rewrite (25.11): the report sources were moved to a private repo and purged from this history, so every commit hash changed. Hashes in `results/` and `docs/` were updated to the rewritten commits; the two commits that changed only report files (old 6a698b2, bfd7a19) map to their parent, which has identical code.
+
+Portability branch check (25.11): `KEEP=1 infra/reproduce.sh` at 004a459 (env overrides, node_exec, node names via infra/apply.sh), runs 20261125T003038Z-S0 to 20261125T003637Z-S3: 70/70 pass. Evidence and attacks.csv rows of this check were discarded so the report figures keep matching the committed evidence; Lima 2.3.0 (sudoers regenerated, same grants).
