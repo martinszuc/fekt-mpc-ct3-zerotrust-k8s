@@ -14,7 +14,7 @@ Recorded 22.10.2026, host drift and kernels rechecked and aligned 29.10.2026. VM
 
 | Component | Version | Pinned in |
 |---|---|---|
-| Lima | 2.2.1 | host tool |
+| Lima | 2.2.1 (2.3.0 for the 25.11 portability check) | host tool |
 | VM image | Ubuntu 24.04 arm64 (Lima `template:ubuntu-24.04`) | `infra/config.env` |
 | VM type / network | vz, socket_vmnet 1.2.2 `lima:shared` (192.168.105.0/24) | `infra/config.env` |
 | VM sizing | 3 nodes, each 4 vCPU / 8 GiB / 30 GiB | `infra/config.env` |
@@ -41,7 +41,7 @@ Recorded 22.10.2026, host drift and kernels rechecked and aligned 29.10.2026. VM
 | iperf3 | 3.22 |
 | tshark (Wireshark) | 4.6.9 |
 | vhs (demo recording only) | 0.12.1 |
-| kind (attack tests in CI only, `infra/kind.yaml`) | v0.33.0, node image `kindest/node:v1.36.4` |
+| kind (attack tests only, CI and `infra/up-kind.sh`) | v0.33.0, node image `kindest/node:v1.36.4` |
 | jq / yq | Homebrew current |
 | python3 | 3.15.0 (3.14.7 until 23.10) |
 | matplotlib (venv `scripts/.venv`) | 3.11.2 |

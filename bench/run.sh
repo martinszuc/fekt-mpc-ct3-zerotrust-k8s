@@ -239,8 +239,12 @@ meta() {
   local s=$1
   {
     if [[ $s == global ]]; then
-      printf 'git.commit\t%s%s\n' "$(git rev-parse HEAD)" "$(git diff --quiet HEAD || echo -dirty)"
-      printf 'host.macos\t%s\n' "$(sw_vers -productVersion 2>/dev/null || uname -r)"
+      if git rev-parse -q HEAD >/dev/null 2>&1; then
+        printf 'git.commit\t%s%s\n' "$(git rev-parse HEAD)" "$(git diff --quiet HEAD || echo -dirty)"
+      else printf 'git.commit\tnone\n'; fi
+      # key kept for macOS (earlier runs); other hosts record the kernel
+      if command -v sw_vers >/dev/null; then printf 'host.macos\t%s\n' "$(sw_vers -productVersion)"
+      else printf 'host.os\t%s\n' "$(uname -sr)"; fi
       printf 'host.kubectl\t%s\n' "$(kubectl version --client -o json | jq -r .clientVersion.gitVersion)"
       printf 'cluster.server\t%s\n' "$(kubectl version -o json | jq -r .serverVersion.gitVersion)"
       kubectl get nodes -o json | jq -r '.items[] | "node.\(.metadata.name)\t\(.status.nodeInfo.osImage) kernel \(.status.nodeInfo.kernelVersion) \(.status.nodeInfo.containerRuntimeVersion) cpu \(.status.capacity.cpu) mem \(.status.capacity.memory)"'

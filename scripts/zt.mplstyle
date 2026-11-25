@@ -2,7 +2,9 @@
 figure.facecolor: white
 axes.facecolor: white
 savefig.facecolor: white
-savefig.bbox: tight
+# constrained layout keeps everything inside figsize, so the PDF is exactly FIGW wide
+figure.constrained_layout.use: True
+savefig.bbox: standard
 savefig.dpi: 200
 pdf.fonttype: 42
 font.size: 8
@@ -26,3 +28,5 @@ axes.spines.top: False
 axes.spines.right: False
 lines.linewidth: 1.5
 lines.markersize: 4
+hatch.color: white
+hatch.linewidth: 0.8

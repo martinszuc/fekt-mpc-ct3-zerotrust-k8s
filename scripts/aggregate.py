@@ -199,6 +199,11 @@ def main():
     if not latency and not throughput:
         raise SystemExit(f"no results in {args.indir}; run make bench first")
 
+    # percentiles include failed requests; flag them instead of mixing them in silently
+    for r in latency:
+        if r["metric"] == "error_pct" and r["value"] > 0:
+            print(f"warning: {r['value']:g} % errors in {r['run_id']} {r['scenario']} {r['suite']} {r['path']} "
+                  f"q{r['qps_target']} b{r['payload_bytes']} r{r['repeat']}")
     summary = summarize(latency + throughput)
     costs = cost(latency, throughput, resources)
     summary += summarize(costs)

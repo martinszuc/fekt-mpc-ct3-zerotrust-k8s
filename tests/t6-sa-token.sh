@@ -10,7 +10,8 @@ case $SCENARIO in S0) s0=succeeded ;; *) s0=blocked ;; esac
 check() {
   local name=$1 want=$2; shift 2
   local res observed
-  res=$(probe productpage-v1 "$@" 2>&1) && observed=succeeded || observed=blocked
+  res=$(probe productpage-v1 "$@" 2>&1) || true
+  observed=$(outcome "$res")
   printf '## %s: productpage %s\n%s\n\n' "$name" "$*" "$res" >> "$out"
   record T6 "$name" "$want" "$observed" "$out"
 }

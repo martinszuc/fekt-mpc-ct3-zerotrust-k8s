@@ -55,8 +55,8 @@ YAML
     sleep 2
   done
   sleep 3   # Cilium identity for the new pod
-  res=$(kubectl -n "$NS" exec -i "$pod" -c attacker -- python - http http://ratings:9080/ratings/0 < tests/probe.py 2>&1) \
-    && observed=succeeded || observed=blocked
+  res=$(kubectl -n "$NS" exec -i "$pod" -c attacker -- python - http http://ratings:9080/ratings/0 < tests/probe.py 2>&1) || true
+  observed=$(outcome "$res")
   { echo "## $variant: rogue pod (app=${app:-none}, inject=$inject, SA $sa) -> ratings:9080"
     echo "$res"
     # who answered: the app (200), the sidecar (403 RBAC body) or nobody

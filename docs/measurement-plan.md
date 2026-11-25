@@ -43,7 +43,7 @@ Sweeps (optional, cut first when time is short):
 | QPS 100 to 8000 req/s, then unlimited (app path: 10 to 400, then unlimited) | a, b, c | saturation knee per configuration; latency vs achieved rate |
 | Payload 64 B to 64 KiB (POST body, echoed back) at 500 req/s | a, b | effect of the 1405 B WireGuard MTU |
 
-CPU counters are read on each node right before and after each run (`bench/node-snapshot.sh` over `limactl shell`), so the window is the run itself, with the node's own timestamps.
+CPU counters are read on each node right before and after each run (`bench/node-snapshot.sh` over `limactl shell`, now `node_exec`), so the window is the run itself, with the node's own timestamps.
 The kubelet resource endpoint is not used: it caches cgroup stats for about 10 s, which smears short runs into each other.
 Node CPU in the cost metric is net of an idle baseline measured per configuration and round (30 s, no load), because WireGuard runs in kernel context that no container is charged for.
 `kubectl top` runs during every measured window, idle included, so its own load is the same in all of them.
@@ -76,7 +76,7 @@ The `scenario` column holds the configuration code.
 | `results/bench/raw/<run_id>/` | raw fortio and iperf3 JSON |
 
 The CSVs are append-only; every row carries its `run_id`.
-`make plot` aggregates the latest run (or `RUN_ID=a,b`) into `summary.csv` (median, IQR, min, max), `cost.csv` (CPU per 1000 req/s and per Gbit/s, per run) and `knee.csv` next to the CSVs, and draws the figures into `docs/figures/bench/`.
+`make plot` aggregates the latest run (or `RUN_ID=a,b`) into `summary.csv` (median, IQR, min, max), `cost.csv` (CPU per 1000 req/s and per Gbit/s, per run) and `knee.csv` next to the CSVs, and draws the figures (now `results/bench/figures/`, or the report repository when it is checked out).
 
 ## Threats to validity
 

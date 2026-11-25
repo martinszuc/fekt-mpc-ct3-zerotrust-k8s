@@ -27,9 +27,12 @@ def main():
             if r["run_id"] == a.run_id and r["suite"] == "latency" and r["component"] == "client" and r["metric"] in METRICS:
                 vals[(r["path"], r["metric"])][(r["scenario"], int(r["repeat"]))] = float(r["value"])
 
+    if not vals:
+        raise SystemExit(f"no latency suite rows for run {a.run_id} in {a.indir}")
     out = Path(a.indir) / "deltas.csv"
     with open(out, "w", newline="") as f:
-        w = csv.writer(f)
+        # LF like the committed deltas.csv (csv default is CRLF)
+        w = csv.writer(f, lineterminator="\n")
         w.writerow(["path", "metric", "parent", "child", "rounds", "median_diff_ms", "median_diff_pct", "same_sign_all_rounds"])
         for (path, metric), v in sorted(vals.items()):
             for p, c in PAIRS:

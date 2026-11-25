@@ -15,8 +15,12 @@ SCENARIO=${SCENARIO:-$(kubectl get ns "$NS" -o jsonpath='{.metadata.annotations.
 SCENARIO=${SCENARIO:-S0}
 # one id per `make test` run (set by run.sh); standalone scripts get their own
 RUN_ID=${RUN_ID:-$(date -u +%Y%m%dT%H%M%SZ)-$SCENARIO}
-# commit of the tested code; -dirty if infra, manifests or tests differ from it
-GIT_SHA=${GIT_SHA:-$(git rev-parse --short HEAD)$(git diff --quiet HEAD -- infra manifests tests || echo -dirty)}
+# commit of the tested code; -dirty if infra, manifests or tests differ from it; "none" outside a git checkout
+if [[ -z ${GIT_SHA:-} ]]; then
+  if GIT_SHA=$(git rev-parse --short HEAD 2>/dev/null); then
+    git diff --quiet HEAD -- infra manifests tests || GIT_SHA+=-dirty
+  else GIT_SHA=none; fi
+fi
 mkdir -p "$RESULTS"
 # rows before 29.10 have no run_id and git_sha (empty trailing fields)
 [[ -f $CSV ]] || echo "time,scenario,threat,check,expected,observed,verdict,evidence,run_id,git_sha" > "$CSV"
@@ -35,6 +39,17 @@ record() {
   printf '%-4s %-4s %-28s expected=%-9s observed=%-9s %s\n' "$verdict" "$1" "$2" "$3" "$4" "$5"
 }
 FAILED=0
+
+# outcome <probe output>: succeeded | blocked | error
+# blocked only on what a control produces (drop: timeout, mTLS reject: reset, authz: 403, no token: missing file);
+# anything else (refused, DNS, 5xx, failed exec) proves nothing and must not pass as blocked
+outcome() {
+  case $(grep -m1 -E '^(OK|FAIL) ' <<< "$1") in
+    "OK "*) echo succeeded ;;
+    "FAIL "*TimeoutError*|"FAIL "*"timed out"*|"FAIL "*ConnectionResetError*|"FAIL "*"HTTP Error 403"*|"FAIL "*FileNotFoundError*) echo blocked ;;
+    *) echo error ;;
+  esac
+}
 
 # attacker as an ephemeral container in the real reviews pod: same network namespace,
 # so same Cilium identity and (mesh) same sidecar and principal; prints "<pod> <container>"

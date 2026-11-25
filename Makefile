@@ -8,7 +8,7 @@ up:
 down:
 	infra/down.sh
 
-# from scratch: down, up, app, then every configuration with attack tests (KEEP=1 keeps the VMs)
+# from scratch: down, up, app, then every configuration with attack tests (KEEP=1 keeps the cluster)
 reproduce:
 	infra/reproduce.sh
 
@@ -68,6 +68,8 @@ $(VENV)/.ok: scripts/requirements.txt
 
 # make plot [BENCH_DIR=results/bench-quick] [RUN_ID=id,id] [DROP=run_id/scenario/suite,...]
 BENCH_DIR ?= results/bench
+# a trailing slash would miss the report-run defaults below
+override BENCH_DIR := $(patsubst %/,%,$(BENCH_DIR))
 # report figures from the real run go to the report repo when it is checked out next to this one;
 # otherwise, and for other result dirs, figures stay next to the CSVs
 TEX_DIR ?= ../mpc-ct3-zerotrust-k8s-tex

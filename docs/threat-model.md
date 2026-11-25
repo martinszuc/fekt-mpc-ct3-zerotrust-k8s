@@ -1,4 +1,4 @@
-# Threat model (STRIDE, draft 22.10.2026)
+# Threat model (STRIDE)
 
 ## System
 
@@ -81,7 +81,7 @@ Not tested: Repudiation (only partly covered by Hubble flow logs from segmentati
 
 ## Expected and observed outcomes
 
-Cells: expected outcome of the attack; `ok` = matched in `results/attacks.csv` (full rerun 29.10 at commit 154c95d, all 70 checks pass; rows carry `run_id` and `git_sha`).
+Cells: expected outcome of the attack; `ok` = matched in `results/attacks.csv` (full rerun 29.10 at commit 154c95d and from scratch 16.11 at a22fcb6, all 70 checks pass each time; rows carry `run_id` and `git_sha`). The CI job `attack-tests` repeats all 70 on kind.
 
 | Attack | Baseline | Segmentation | Node encryption | Mesh mTLS | L7 authorization |
 |---|---|---|---|---|---|
@@ -115,7 +115,7 @@ Scripts, `make` targets and evidence files use short codes. This table is the on
 | S1 | Segmentation | `make s1`, `manifests/s1-segmentation/` | |
 | S2a | Node encryption | `make s2a`, `manifests/s2a-wireguard/` | |
 | S2b | Mesh mTLS | `make s2b`, `manifests/s2b-mtls/` | |
-| S2b-plain | Mesh without mTLS | planned | |
+| S2b-plain | Mesh without mTLS | `make s2b-plain`, `manifests/s2b-plain/` | |
 | S3 | L7 authorization | `make s3`, `manifests/s3-authz/` | |
 | T1 | Lateral movement | | `tests/t1-lateral.sh` |
 | T2 | Network sniffing | | `tests/t2-sniff.sh` |

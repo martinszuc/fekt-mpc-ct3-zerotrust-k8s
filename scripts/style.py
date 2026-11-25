@@ -9,13 +9,18 @@ import matplotlib
 
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt  # noqa: E402
+from matplotlib.ticker import FuncFormatter  # noqa: E402
 
 ORDER = ["S0", "S1", "S2a", "S2b-plain", "S2b", "S3"]
-LABEL = {"S0": "baseline", "S1": "segmentation", "S2a": "node encryption", "S2b-plain": "mesh without mTLS",
-         "S2b": "mesh mTLS", "S3": "L7 authorization"}
+LABEL = {"S0": "bez ochrany", "S1": "segmentácia siete", "S2a": "šifrovanie medzi uzlami",
+         "S2b-plain": "mesh bez mTLS", "S2b": "mTLS medzi službami", "S3": "L7 autorizácia"}
 COLOR = {"S0": "#2a78d6", "S1": "#eb6834", "S2a": "#1baf7a", "S2b-plain": "#eda100", "S2b": "#e87ba4", "S3": "#008300"}
 MARKER = {"S0": "o", "S1": "s", "S2a": "^", "S2b-plain": "v", "S2b": "D", "S3": "P"}
+# hatching keeps S2b-plain apart from S2b in grayscale and marks it as measurement-only
+HATCH = {"S2b-plain": "////"}
 INK, MUTED = "#2b2b2b", "#6b6b6b"
+# text width of the report (426.8 pt), so 7-8 pt fonts print at 7-8 pt
+FIGW = 426.8 / 72
 
 plt.style.use(os.path.join(os.path.dirname(os.path.abspath(__file__)), "zt.mplstyle"))
 
@@ -26,6 +31,15 @@ def label(s):
 
 def color(s):
     return COLOR.get(s, MUTED)
+
+
+def num(v, _=None):
+    """plain number with a decimal comma (no locale: CI has no sk_SK)"""
+    return f"{v:g}".replace(".", ",")
+
+
+def comma(ax, axis="y"):
+    getattr(ax, f"{axis}axis").set_major_formatter(FuncFormatter(num))
 
 
 def panel(ax, i, text):

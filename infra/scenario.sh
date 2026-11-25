@@ -61,7 +61,10 @@ mesh() {
 # S3: Istio AuthorizationPolicy on top of S2b; policies take effect via xDS, no restart
 authz() {
   if [[ $1 == on ]]; then kubectl apply -k manifests/s3-authz
-  else kubectl delete -k manifests/s3-authz --ignore-not-found 2>/dev/null || true
+  else
+    kubectl delete -k manifests/s3-authz --ignore-not-found 2>/dev/null || true
+    # bench policies (bench/deploy.sh) must not outlive S3
+    kubectl delete -k bench/k8s-authz --ignore-not-found 2>/dev/null || true
   fi
 }
 

@@ -10,6 +10,8 @@ macOS on Apple Silicon (arm64), Homebrew, ~12 vCPU and 24 GB RAM free for the VM
 brew install lima socket_vmnet kubectl helm cilium-cli hubble fortio iperf3 wireshark jq yq
 ```
 
+git, make and python3 come with the Xcode command line tools. Homebrew installs current versions; the tested ones are in [docs/versions.md](docs/versions.md). Clone with git: test runs record the commit.
+
 One-time socket_vmnet setup (needs sudo, nothing runs at login):
 
 ```bash
@@ -38,13 +40,13 @@ make test     # attack tests against the current configuration, evidence in resu
 make demo     # terminal recording of the attacks in every configuration (brew install vhs), results/demo/
 make bench    # benchmarks of the current configuration (or SCENARIO="S0 S1 ..."), results/bench/
 make plot     # summary CSVs and figures (results/bench/figures/, or TEX_DIR/figures/bench when the report repo is checked out)
-make down     # delete the VMs
-make reproduce  # from scratch: down, up, app, every configuration with make test
+make down     # delete the VMs (kind: the kind cluster)
+make reproduce  # from scratch: down, up, app, every configuration with make test (KEEP=1 keeps the cluster)
 ```
 
 `make up` and `make app` reapply the base config; run the configuration target (`make s1`, `make s2a`, ...) again afterwards.
 
-After `make up`, point kubectl at the cluster:
+Scripts and `make` always use `.kube/config` in the repository, never an inherited `KUBECONFIG`. For your own kubectl, point it at the cluster:
 
 ```bash
 export KUBECONFIG=$PWD/.kube/config
@@ -86,17 +88,22 @@ The app is pinned to fixed nodes so every call crosses nodes: productpage and ra
 
 ## Other platforms
 
-Only the macOS setup above is tested. Everything else here is untested unless marked; the defaults in `infra/config.env` are the Mac values and every setting below is an environment override, so the Mac path does not change.
+The results come from the macOS setup above. The defaults in `infra/config.env` are the Mac values and every setting below is an environment override, so the Mac path does not change. The only arm64-specific default is `VM_ARCH`; all container images are multi-arch (the CI attack tests run on x86_64).
 
 | Setup | How | Status |
 |---|---|---|
-| Linux host, Lima with QEMU | `VM_TYPE=qemu VM_ARCH=x86_64 VM_NETWORK=lima:user-v2 make up` (socket_vmnet is macOS only; the network must let VMs reach each other) | untested |
+| kind, attack tests only | `infra/up-kind.sh`, then `source infra/kind.env` and `make app`, `make s0` ... `make test` (or `make reproduce` after `source infra/kind.env`) | CI job `attack-tests` on Linux x86_64: 70/70 (25.11) |
+| Figures from the committed data | `make plot` and `make deltas` on any OS with Python 3 and make; without make, the commands of the CI job `plot` | Mac; CI on Linux and Windows (Git Bash) |
+| Linux host, Lima with QEMU | `VM_TYPE=qemu VM_ARCH=x86_64 VM_NETWORK=lima:user-v2 make up` (socket_vmnet is macOS only; the network must let VMs reach each other; check the node NIC name and set `NODE_IFACE` if it is not `lima0`) | untested |
 | Own 3-node cluster | below | untested |
-| kind, attack tests only | `infra/up-kind.sh`, then `source infra/kind.env` and `make app`, `make s0` ... `make test` | CI job `attack-tests`, not yet run |
-| Figures from the committed data | `make plot` and `make deltas` on any OS with Python 3 and make; without make, the commands of the CI job `plot` | Mac tested; CI on Linux and Windows not yet run |
-| Windows | WSL2 (Ubuntu) as the host for the scripts, plus an own cluster or kind in WSL2 | untested |
+| Windows | WSL2 (Ubuntu) as the Linux host, with kind or an own cluster | untested |
 
-Own cluster: Cilium must be the only CNI, without kube-proxy, as with the k3s flags in `infra/up.sh` (`--flannel-backend=none --disable-network-policy --disable-kube-proxy --disable=traefik,servicelb`). Put its kubeconfig at `.kube/config`, then `infra/cilium.sh` installs Cilium and the rest works as above with:
+Host tools on Linux and WSL2: kubectl, helm, cilium-cli, jq, tshark, git, make, python3 (Debian/Ubuntu: also `python3-venv` for `make plot`); for kind also Docker and kind (node access is `docker exec`). Versions as in [docs/versions.md](docs/versions.md); the `Install tools` step of `.github/workflows/ci.yml` installs them on Ubuntu.
+kind with three nodes needs higher inotify limits on Linux: `sudo sysctl fs.inotify.max_user_instances=512 fs.inotify.max_user_watches=524288`. Node encryption needs WireGuard in the host kernel (kind nodes share it; WSL2 uses its own kernel).
+WSL2: clone inside the WSL file system with git from WSL; a Windows checkout converts line endings and the scripts fail.
+`make up` and `make vm-prep` are Lima only; `make down` deletes the kind cluster with `NODE_EXEC=docker` and nothing on an own cluster.
+
+Own cluster: Cilium must be the only CNI, without kube-proxy, as with the k3s flags in `infra/up.sh` (`--flannel-backend=none --disable-network-policy --disable-kube-proxy --disable=traefik,servicelb`). The nodes need tcpdump and passwordless sudo for the ssh user (network sniffing captures on the W1 node). Put its kubeconfig at `.kube/config`, then `infra/cilium.sh` installs Cilium and the rest works as above with:
 
 ```bash
 export NODE_EXEC=ssh NODE_SSH_USER=ubuntu       # ssh <user>@<node>; extra flags in NODE_SSH_OPTS
