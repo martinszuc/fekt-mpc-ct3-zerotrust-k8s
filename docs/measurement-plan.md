@@ -1,6 +1,6 @@
 # Measurement plan (draft 22.10.2026)
 
-> Historical plan from 22.10.2026. Final method and results: report chapters on experiment design and overhead (`docs/report/`), `results/bench/RUNLOG.md`.
+> Historical plan from 22.10.2026. Final method and results: `results/bench/RUNLOG.md`.
 
 Goal: the cost of each control, attributed to exactly one change. Implemented in `bench/` (runner) and `scripts/` (aggregation, figures).
 

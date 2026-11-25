@@ -227,7 +227,7 @@ def fig_resources(resources, outdir):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--in", dest="indir", default="results/bench")
-    ap.add_argument("--out", default="docs/figures/bench")
+    ap.add_argument("--out", default="results/bench/figures")
     ap.add_argument("--run-id", type=run_ids_arg, help="comma-separated run ids (default: latest)")
     ap.add_argument("--drop", type=drop_arg, default=[], help="comma-separated run_id/scenario/suite to leave out")
     args = ap.parse_args()

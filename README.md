@@ -37,8 +37,7 @@ make s2b-plain  # mesh without mTLS: sidecars, mTLS DISABLE (measurement only)
 make test     # attack tests against the current configuration, evidence in results/
 make demo     # terminal recording of the attacks in every configuration (brew install vhs), results/demo/
 make bench    # benchmarks of the current configuration (or SCENARIO="S0 S1 ..."), results/bench/
-make plot     # summary CSVs and figures in docs/figures/bench/
-make figures  # docs/figures/*.svg to PDF (report) and PNG (slides), needs Chrome
+make plot     # summary CSVs and figures in results/bench/figures/
 make down     # delete the VMs
 make reproduce  # from scratch: down, up, app, every configuration with make test
 ```
@@ -95,4 +94,4 @@ The app is pinned to fixed nodes so every call crosses nodes: productpage and ra
 | `bench/` | fortio and iperf3 runners |
 | `results/` | raw CSV, packet captures, logs |
 | `scripts/` | aggregation and plotting |
-| `docs/` | LaTeX report, bibliography, versions |
+| `docs/` | threat model, measurement plan, versions |

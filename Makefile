@@ -1,9 +1,6 @@
 SHELL := /usr/bin/env bash
 export KUBECONFIG := $(CURDIR)/.kube/config
-# MacTeX binaries are not on PATH in non-login shells
-export PATH := /Library/TeX/texbin:$(PATH)
-
-.PHONY: up down reproduce vm-prep status app s0 s1 s2a s2b s2b-plain s3 test demo bench bench-link plot deltas figures pdf
+.PHONY: up down reproduce vm-prep status app s0 s1 s2a s2b s2b-plain s3 test demo bench bench-link plot deltas
 
 up:
 	infra/up.sh
@@ -71,8 +68,10 @@ $(VENV)/.ok: scripts/requirements.txt
 
 # make plot [BENCH_DIR=results/bench-quick] [RUN_ID=id,id] [DROP=run_id/scenario/suite,...]
 BENCH_DIR ?= results/bench
-# report figures only from the real run; other result dirs keep their figures next to the CSVs
-PLOT_OUT ?= $(if $(filter results/bench,$(BENCH_DIR)),docs/figures/bench,$(BENCH_DIR)/figures)
+# report figures from the real run go to the report repo when it is checked out next to this one;
+# otherwise, and for other result dirs, figures stay next to the CSVs
+TEX_DIR ?= ../mpc-ct3-zerotrust-k8s-tex
+PLOT_OUT ?= $(if $(and $(filter results/bench,$(BENCH_DIR)),$(wildcard $(TEX_DIR))),$(TEX_DIR)/figures/bench,$(BENCH_DIR)/figures)
 # runs behind the report figures (results/bench/RUNLOG.md); RUN_ID= DROP= selects the latest run instead
 REPORT_RUN_ID := 20261029T031157Z,20261029T073604Z,20261029T073939Z,20261029T104041Z,20261029T105456Z,20261111T015852Z
 REPORT_DROP := 20261029T031157Z/S0/latency,20261029T031157Z/S1/latency,20261029T031157Z/S2a/latency,20261029T031157Z/S2b-plain/latency,20261029T031157Z/S2b/latency,20261029T031157Z/S3/latency,20261029T073939Z/S2a/payload
@@ -86,9 +85,3 @@ plot: $(VENV)/.ok
 LATENCY_RUN ?= 20261111T015852Z
 deltas:
 	python3 scripts/paired.py --in $(BENCH_DIR) --run-id $(LATENCY_RUN)
-
-figures:
-	scripts/figures.sh
-
-pdf:
-	cd docs/report && latexmk -pdf -interaction=nonstopmode -halt-on-error sablona-prace.tex sablona-obhaj.tex
