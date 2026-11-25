@@ -7,5 +7,6 @@ scripts/.venv/
 __pycache__/
 results/bench-quick/
 results/bench-fake/
+results/bench/figures/
 results/demo/*
 !results/demo/demo.mp4

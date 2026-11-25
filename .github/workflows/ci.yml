@@ -87,12 +87,12 @@ jobs:
           mk() { sed -n "s/^$1 [:?]= //p" Makefile | tr -d '\r'; }
           run_id=$(mk REPORT_RUN_ID) drop=$(mk REPORT_DROP)
           python scripts/aggregate.py --in results/bench --run-id "$run_id" --drop "$drop"
-          python scripts/plot.py --in results/bench --out docs/figures/bench --run-id "$run_id" --drop "$drop"
+          python scripts/plot.py --in results/bench --out results/bench/figures --run-id "$run_id" --drop "$drop"
           python scripts/paired.py --in results/bench --run-id "$(mk LATENCY_RUN)"
       - name: Summary CSVs match the committed ones
         run: git diff --ignore-cr-at-eol --exit-code --stat -- results/bench
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: figures-${{ matrix.os }}
-          path: docs/figures/bench/
+          path: results/bench/figures/
           retention-days: 14

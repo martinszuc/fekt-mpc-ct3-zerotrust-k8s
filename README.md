@@ -37,7 +37,7 @@ make s2b-plain  # mesh without mTLS: sidecars, mTLS DISABLE (measurement only)
 make test     # attack tests against the current configuration, evidence in results/
 make demo     # terminal recording of the attacks in every configuration (brew install vhs), results/demo/
 make bench    # benchmarks of the current configuration (or SCENARIO="S0 S1 ..."), results/bench/
-make plot     # summary CSVs and figures in results/bench/figures/
+make plot     # summary CSVs and figures (results/bench/figures/, or TEX_DIR/figures/bench when the report repo is checked out)
 make down     # delete the VMs
 make reproduce  # from scratch: down, up, app, every configuration with make test
 ```
