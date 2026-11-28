@@ -1,4 +1,4 @@
-scenario S2a, run_id 20261127T235929Z-S2a, git 4bbe9aa, 2026-11-27T23:59:29Z
+scenario S2a, run_id 20261128T030649Z-S2a, git a196c1a, 2026-11-28T03:06:49Z
 
 ## host
 macOS 26.7.4 (25G422), arm64
@@ -10,9 +10,9 @@ TShark (Wireshark) 4.6.10 (Git commit eac916f07299).
 
 ## VMs
 NAME     STATUS     SSH                VMTYPE    ARCH       CPUS    MEMORY    DISK     DIR
-zt-cp    Running    127.0.0.1:61329    vz        aarch64    4       8GiB      30GiB    ~/.lima/zt-cp
-zt-w1    Running    127.0.0.1:61338    vz        aarch64    4       8GiB      30GiB    ~/.lima/zt-w1
-zt-w2    Running    127.0.0.1:61343    vz        aarch64    4       8GiB      30GiB    ~/.lima/zt-w2
+zt-cp    Running    127.0.0.1:64246    vz        aarch64    4       8GiB      30GiB    ~/.lima/zt-cp
+zt-w1    Running    127.0.0.1:64262    vz        aarch64    4       8GiB      30GiB    ~/.lima/zt-w1
+zt-w2    Running    127.0.0.1:64267    vz        aarch64    4       8GiB      30GiB    ~/.lima/zt-w2
 
 ## nodes
 NAME         STATUS   ROLES           AGE   VERSION        INTERNAL-IP     EXTERNAL-IP   OS-IMAGE             KERNEL-VERSION              CONTAINER-RUNTIME
@@ -61,42 +61,42 @@ wireguard-persistent-keepalive=0s
 
 ## istio
 NAME      	NAMESPACE   	REVISION	UPDATED                             	STATUS  	CHART      	APP VERSION
-istio-base	istio-system	33      	2026-11-25 01:36:29.082677 +0100 CET	deployed	base-1.30.7	1.30.7     
+istio-base	istio-system	35      	2026-11-28 01:02:33.458003 +0100 CET	deployed	base-1.30.7	1.30.7     
 
 ## policies in bookinfo
 NAME            POD-SELECTOR        AGE
-allow-dns       <none>              2m4s
-bench-client    app=bench-client    2m4s
-default-deny    <none>              2m4s
-details         app=details         2m4s
-fortio-server   app=fortio-server   2m4s
-iperf3-server   app=iperf3-server   2m4s
-mongodb         app=mongodb         2m4s
-productpage     app=productpage     2m4s
-ratings         app=ratings         2m4s
-reviews         app=reviews         2m4s
+allow-dns       <none>              2m14s
+bench-client    app=bench-client    2m14s
+default-deny    <none>              2m14s
+details         app=details         2m14s
+fortio-server   app=fortio-server   2m14s
+iperf3-server   app=iperf3-server   2m14s
+mongodb         app=mongodb         2m14s
+productpage     app=productpage     2m14s
+ratings         app=ratings         2m14s
+reviews         app=reviews         2m14s
 No resources found in bookinfo namespace.
 namespace labels: {"kubernetes.io/metadata.name":"bookinfo"}
 
 ## workloads in bookinfo
-bench-client-5b98fbb957-77d7k node=lima-zt-w1 sa=bench-client
+bench-client-5c8d9c9fb8-fll9d node=lima-zt-w1 sa=bench-client
   fortio docker.io/fortio/fortio@sha256:3dd31ddeb4f962a1dae8cc2a0bce62c408ac830c8435bbea51b1e0fd4c8f7181
   iperf3 docker.io/nicolaka/netshoot@sha256:7f08c4aff13ff61a35d30e30c5c1ea8396eac6ab4ce19fd02d5a4b3b5d0d09a2
-details-v1-78785b4bb9-ml7fq node=lima-zt-w2 sa=bookinfo-details
+details-v1-85f94cc5d-sd6qc node=lima-zt-w2 sa=bookinfo-details
   details registry.istio.io/release/examples-bookinfo-details-v1@sha256:a49731e1fc05d7c24a4103709f41d64180bed989b251625f4c31ba63022e303b
-fortio-cross-b65d44645-vgkz6 node=lima-zt-w2 sa=bench-server
+fortio-cross-f864cdf88-ndcx7 node=lima-zt-w2 sa=bench-server
   fortio docker.io/fortio/fortio@sha256:3dd31ddeb4f962a1dae8cc2a0bce62c408ac830c8435bbea51b1e0fd4c8f7181
-fortio-same-5dd59c75bd-6rmxd node=lima-zt-w1 sa=bench-server
+fortio-same-58dbb76b57-5blc5 node=lima-zt-w1 sa=bench-server
   fortio docker.io/fortio/fortio@sha256:3dd31ddeb4f962a1dae8cc2a0bce62c408ac830c8435bbea51b1e0fd4c8f7181
-iperf3-cross-679785d9c9-jcvkc node=lima-zt-w2 sa=bench-server
+iperf3-cross-69c9c6d9db-5g459 node=lima-zt-w2 sa=bench-server
   iperf3 docker.io/nicolaka/netshoot@sha256:7f08c4aff13ff61a35d30e30c5c1ea8396eac6ab4ce19fd02d5a4b3b5d0d09a2
-iperf3-same-6c5f5665cd-qfgxm node=lima-zt-w1 sa=bench-server
+iperf3-same-6b6bd9bbd7-pppnd node=lima-zt-w1 sa=bench-server
   iperf3 docker.io/nicolaka/netshoot@sha256:7f08c4aff13ff61a35d30e30c5c1ea8396eac6ab4ce19fd02d5a4b3b5d0d09a2
-mongodb-v1-b8fc454d4-fswgx node=lima-zt-w2 sa=bookinfo-mongodb
+mongodb-v1-5c5f9ccf49-l6g8b node=lima-zt-w2 sa=bookinfo-mongodb
   mongodb registry.istio.io/release/examples-bookinfo-mongodb@sha256:7f5ef5a825048f5f777da521c9756c8d0f007c58358c87b8629456832bbf73ad
-productpage-v1-855b649958-tp5km node=lima-zt-w1 sa=bookinfo-productpage
+productpage-v1-79d86cc65f-d5rqj node=lima-zt-w1 sa=bookinfo-productpage
   productpage registry.istio.io/release/examples-bookinfo-productpage-v1@sha256:1e339866b782d22b063539d19c87b4682291c889e67c3d4abdea947bef917958
-ratings-v2-5df94ccccc-c7n87 node=lima-zt-w1 sa=bookinfo-ratings-v2
+ratings-v2-848c885768-qbdgv node=lima-zt-w1 sa=bookinfo-ratings-v2
   ratings registry.istio.io/release/examples-bookinfo-ratings-v2@sha256:cb361115b5ea27a765a5bdc7623e235cc37839289f477e1c0aefa4425b0749ff
-reviews-v3-7b97f694c9-5lq8s node=lima-zt-w2 sa=bookinfo-reviews
+reviews-v3-98c9d68d4-jnhc7 node=lima-zt-w2 sa=bookinfo-reviews
   reviews registry.istio.io/release/examples-bookinfo-reviews-v3@sha256:3b3415c5e7cc7cef3ad1741fa595f2f26627bddf2117dcee1429fa2a422df1b7
