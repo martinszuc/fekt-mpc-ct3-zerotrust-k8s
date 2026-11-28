@@ -88,3 +88,9 @@ Host power log check (24.11, `pmset -g log`): 18.11 run 20:03 to 23:26 on AC wit
 History rewrite (25.11): the report sources were moved to a private repo and purged from this history, so every commit hash changed. Hashes in `results/` and `docs/` were updated to the rewritten commits; the two commits that changed only report files (old 6a698b2, bfd7a19) map to their parent, which has identical code.
 
 Portability branch check (25.11): `KEEP=1 infra/reproduce.sh` at 004a459 (env overrides, node_exec, node names via infra/apply.sh), runs 20261125T003038Z-S0 to 20261125T003637Z-S3: 70/70 pass. Evidence and attacks.csv rows of this check were discarded so the report figures keep matching the committed evidence; Lima 2.3.0 (sudoers regenerated, same grants).
+
+## 28.11.2026 attack tests with stricter verdicts
+
+`KEEP=1 infra/reproduce.sh` at 4bbe9aa (blocked only on timeout, reset, 403 or missing token; anything else is `error`), log `results/logs/rerun-20261128.log`. Runs 20261127T235648Z-S0 to 20261128T000241Z-S3: 70/70 pass, every check has the same observed outcome as the 16.11 run. Cluster versions unchanged; host tools updated (macOS 26.7.4, limactl 2.3.0, cilium-cli 0.20.3, tshark 4.6.10, see `results/env-*.txt`).
+
+Evidence replaced with this run. Network sniffing captures differ only in frame counts (pod headers readable: baseline 253, segmentation 245, mTLS 294 of which TLS 106, L7 authorization 343 of which TLS 121; node encryption 302 WireGuard frames plus one host broadcast). mTLS capture: 5 new connections and 5 resumed TLS 1.3 handshakes (x25519, AES-128-GCM) to 27017, 2 to 9080 (16.11: 1); TCP handshake to first MongoDB data 0.80 to 0.85 ms (16.11: 0.69 to 0.84 ms; without mTLS 0.08 to 0.10 ms, not rerun). Report and slides updated to these values.

@@ -1,24 +1,24 @@
-scenario S1, run_id 20261116T122106Z-S1, git a22fcb6, 2026-11-16T12:21:06Z
+scenario S1, run_id 20261127T235807Z-S1, git 4bbe9aa, 2026-11-27T23:58:07Z
 
 ## host
-macOS 26.7.3 (25G416), arm64
-limactl version 2.2.1
-Client Version: v1.37.1
-helm v4.3.1+gc0d08d0
-cilium-cli: v0.20.1 compiled with go1.27.1 on darwin/arm64
-TShark (Wireshark) 4.6.9 (Git commit 2d548b197c75).
+macOS 26.7.4 (25G422), arm64
+limactl version 2.3.0
+Client Version: v1.37.2
+helm v4.3.2+g8346aaa
+cilium-cli: v0.20.3 compiled with go1.27.4 on darwin/arm64
+TShark (Wireshark) 4.6.10 (Git commit eac916f07299).
 
 ## VMs
 NAME     STATUS     SSH                VMTYPE    ARCH       CPUS    MEMORY    DISK     DIR
-zt-cp    Running    127.0.0.1:61401    vz        aarch64    4       8GiB      30GiB    ~/.lima/zt-cp
-zt-w1    Running    127.0.0.1:61410    vz        aarch64    4       8GiB      30GiB    ~/.lima/zt-w1
-zt-w2    Running    127.0.0.1:61415    vz        aarch64    4       8GiB      30GiB    ~/.lima/zt-w2
+zt-cp    Running    127.0.0.1:61329    vz        aarch64    4       8GiB      30GiB    ~/.lima/zt-cp
+zt-w1    Running    127.0.0.1:61338    vz        aarch64    4       8GiB      30GiB    ~/.lima/zt-w1
+zt-w2    Running    127.0.0.1:61343    vz        aarch64    4       8GiB      30GiB    ~/.lima/zt-w2
 
 ## nodes
-NAME         STATUS   ROLES           AGE     VERSION        INTERNAL-IP     EXTERNAL-IP   OS-IMAGE             KERNEL-VERSION              CONTAINER-RUNTIME
-lima-zt-cp   Ready    control-plane   3m13s   v1.36.5+k3s1   192.168.105.2   <none>        Ubuntu 24.04.5 LTS   6.8.0-147-generic (arm64)   containerd://2.3.4-k3s1.36
-lima-zt-w1   Ready    <none>          2m59s   v1.36.5+k3s1   192.168.105.3   <none>        Ubuntu 24.04.5 LTS   6.8.0-147-generic (arm64)   containerd://2.3.4-k3s1.36
-lima-zt-w2   Ready    <none>          2m45s   v1.36.5+k3s1   192.168.105.4   <none>        Ubuntu 24.04.5 LTS   6.8.0-147-generic (arm64)   containerd://2.3.4-k3s1.36
+NAME         STATUS   ROLES           AGE   VERSION        INTERNAL-IP     EXTERNAL-IP   OS-IMAGE             KERNEL-VERSION              CONTAINER-RUNTIME
+lima-zt-cp   Ready    control-plane   11d   v1.36.5+k3s1   192.168.105.2   <none>        Ubuntu 24.04.5 LTS   6.8.0-147-generic (arm64)   containerd://2.3.4-k3s1.36
+lima-zt-w1   Ready    <none>          11d   v1.36.5+k3s1   192.168.105.3   <none>        Ubuntu 24.04.5 LTS   6.8.0-147-generic (arm64)   containerd://2.3.4-k3s1.36
+lima-zt-w2   Ready    <none>          11d   v1.36.5+k3s1   192.168.105.4   <none>        Ubuntu 24.04.5 LTS   6.8.0-147-generic (arm64)   containerd://2.3.4-k3s1.36
 
 ## node zt-cp
 Linux lima-zt-cp 6.8.0-147-generic #147-Ubuntu SMP PREEMPT_DYNAMIC Thu Sep 24 11:39:52 UTC 2026 aarch64 aarch64 aarch64 GNU/Linux
@@ -56,7 +56,8 @@ tunnel-protocol=vxlan
 tunnel-source-port-range=0-0
 
 ## istio
-NAME	NAMESPACE	REVISION	UPDATED	STATUS	CHART	APP VERSION
+NAME      	NAMESPACE   	REVISION	UPDATED                             	STATUS  	CHART      	APP VERSION
+istio-base	istio-system	33      	2026-11-25 01:36:29.082677 +0100 CET	deployed	base-1.30.7	1.30.7     
 
 ## policies in bookinfo
 NAME            POD-SELECTOR        AGE
@@ -70,17 +71,28 @@ mongodb         app=mongodb         41s
 productpage     app=productpage     41s
 ratings         app=ratings         41s
 reviews         app=reviews         41s
-error: the server doesn't have a resource type "peerauthentications" in group "security.istio.io"
+No resources found in bookinfo namespace.
 namespace labels: {"kubernetes.io/metadata.name":"bookinfo"}
 
 ## workloads in bookinfo
-details-v1-6d58d76fcd-wxcrq node=lima-zt-w2 sa=bookinfo-details
+bench-client-5b98fbb957-77d7k node=lima-zt-w1 sa=bench-client
+  fortio docker.io/fortio/fortio@sha256:3dd31ddeb4f962a1dae8cc2a0bce62c408ac830c8435bbea51b1e0fd4c8f7181
+  iperf3 docker.io/nicolaka/netshoot@sha256:7f08c4aff13ff61a35d30e30c5c1ea8396eac6ab4ce19fd02d5a4b3b5d0d09a2
+details-v1-78785b4bb9-ml7fq node=lima-zt-w2 sa=bookinfo-details
   details registry.istio.io/release/examples-bookinfo-details-v1@sha256:a49731e1fc05d7c24a4103709f41d64180bed989b251625f4c31ba63022e303b
-mongodb-v1-5c74799857-sdkgx node=lima-zt-w2 sa=bookinfo-mongodb
+fortio-cross-b65d44645-vgkz6 node=lima-zt-w2 sa=bench-server
+  fortio docker.io/fortio/fortio@sha256:3dd31ddeb4f962a1dae8cc2a0bce62c408ac830c8435bbea51b1e0fd4c8f7181
+fortio-same-5dd59c75bd-6rmxd node=lima-zt-w1 sa=bench-server
+  fortio docker.io/fortio/fortio@sha256:3dd31ddeb4f962a1dae8cc2a0bce62c408ac830c8435bbea51b1e0fd4c8f7181
+iperf3-cross-679785d9c9-jcvkc node=lima-zt-w2 sa=bench-server
+  iperf3 docker.io/nicolaka/netshoot@sha256:7f08c4aff13ff61a35d30e30c5c1ea8396eac6ab4ce19fd02d5a4b3b5d0d09a2
+iperf3-same-6c5f5665cd-qfgxm node=lima-zt-w1 sa=bench-server
+  iperf3 docker.io/nicolaka/netshoot@sha256:7f08c4aff13ff61a35d30e30c5c1ea8396eac6ab4ce19fd02d5a4b3b5d0d09a2
+mongodb-v1-b8fc454d4-fswgx node=lima-zt-w2 sa=bookinfo-mongodb
   mongodb registry.istio.io/release/examples-bookinfo-mongodb@sha256:7f5ef5a825048f5f777da521c9756c8d0f007c58358c87b8629456832bbf73ad
-productpage-v1-58db7b856c-qv7jm node=lima-zt-w1 sa=bookinfo-productpage
+productpage-v1-855b649958-tp5km node=lima-zt-w1 sa=bookinfo-productpage
   productpage registry.istio.io/release/examples-bookinfo-productpage-v1@sha256:1e339866b782d22b063539d19c87b4682291c889e67c3d4abdea947bef917958
-ratings-v2-b56f68f76-pgm6p node=lima-zt-w1 sa=bookinfo-ratings-v2
+ratings-v2-5df94ccccc-c7n87 node=lima-zt-w1 sa=bookinfo-ratings-v2
   ratings registry.istio.io/release/examples-bookinfo-ratings-v2@sha256:cb361115b5ea27a765a5bdc7623e235cc37839289f477e1c0aefa4425b0749ff
-reviews-v3-89bd49f7b-nv9q5 node=lima-zt-w2 sa=bookinfo-reviews
+reviews-v3-7b97f694c9-5lq8s node=lima-zt-w2 sa=bookinfo-reviews
   reviews registry.istio.io/release/examples-bookinfo-reviews-v3@sha256:3b3415c5e7cc7cef3ad1741fa595f2f26627bddf2117dcee1429fa2a422df1b7

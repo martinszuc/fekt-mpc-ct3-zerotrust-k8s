@@ -2,20 +2,20 @@
 FAIL URLError <urlopen error timed out>
 command terminated with exit code 1
 NAME              READY   STATUS    RESTARTS   AGE   IP            NODE         NOMINATED NODE   READINESS GATES   LABELS
-rogue-unlabeled   0/1     Running   0          7s    10.42.2.247   lima-zt-w2   <none>           <none>            sidecar.istio.io/inject=false
+rogue-unlabeled   0/1     Running   0          8s    10.42.2.217   lima-zt-w2   <none>           <none>            sidecar.istio.io/inject=false
 
 ## no-identity: rogue pod (app=reviews, inject=false, SA default) -> ratings:9080
 OK HTTP 200 {"id":0,"ratings":{"Reviewer1":5,"Reviewer2":4}}
 NAME                READY   STATUS    RESTARTS   AGE   IP            NODE         NOMINATED NODE   READINESS GATES   LABELS
-rogue-no-identity   0/1     Running   0          3s    10.42.2.186   lima-zt-w2   <none>           <none>            app=reviews,sidecar.istio.io/inject=false
+rogue-no-identity   0/1     Running   0          3s    10.42.2.139   lima-zt-w2   <none>           <none>            app=reviews,sidecar.istio.io/inject=false
 
 ## default-sa: rogue pod (app=reviews, inject=true, SA default) -> ratings:9080
 OK HTTP 200 {"id":0,"ratings":{"Reviewer1":5,"Reviewer2":4}}
-NAME               READY   STATUS    RESTARTS   AGE   IP            NODE         NOMINATED NODE   READINESS GATES   LABELS
-rogue-default-sa   0/1     Running   0          4s    10.42.2.173   lima-zt-w2   <none>           <none>            app=reviews,sidecar.istio.io/inject=true
+NAME               READY   STATUS    RESTARTS   AGE   IP           NODE         NOMINATED NODE   READINESS GATES   LABELS
+rogue-default-sa   0/1     Running   0          3s    10.42.2.69   lima-zt-w2   <none>           <none>            app=reviews,sidecar.istio.io/inject=true
 
 ## reused-sa: rogue pod (app=reviews, inject=true, SA bookinfo-reviews) -> ratings:9080
 OK HTTP 200 {"id":0,"ratings":{"Reviewer1":5,"Reviewer2":4}}
 NAME              READY   STATUS    RESTARTS   AGE   IP            NODE         NOMINATED NODE   READINESS GATES   LABELS
-rogue-reused-sa   0/1     Running   0          3s    10.42.2.116   lima-zt-w2   <none>           <none>            app=reviews,sidecar.istio.io/inject=true
+rogue-reused-sa   0/1     Running   0          4s    10.42.2.176   lima-zt-w2   <none>           <none>            app=reviews,sidecar.istio.io/inject=true
 

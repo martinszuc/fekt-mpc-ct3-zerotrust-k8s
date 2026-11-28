@@ -1,5 +1,5 @@
 ## token-mounted: productpage token
-OK SA token mounted, sub=system:serviceaccount:bookinfo:bookinfo-productpage, expires 2027-11-16T12:19:18Z
+OK SA token mounted, sub=system:serviceaccount:bookinfo:bookinfo-productpage, expires 2027-11-27T23:56:09Z
 
 ## api-reachable: productpage api-reach
 OK anonymous GET /version: HTTP 401 (API server answered)
@@ -23,6 +23,8 @@ none
 
 ## automountServiceAccountToken per SA
 SA                     AUTOMOUNT
+bench-client           <none>
+bench-server           <none>
 bookinfo-details       <none>
 bookinfo-mongodb       <none>
 bookinfo-productpage   <none>

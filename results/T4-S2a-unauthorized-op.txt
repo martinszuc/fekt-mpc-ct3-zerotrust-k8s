@@ -1,9 +1,8 @@
-## compromised reviews (reviews-v3-89bd49f7b-nv9q5, ephemeral container attacker-1794831796-65627) -> POST ratings:9080/ratings/0
+## compromised reviews (reviews-v3-7b97f694c9-5lq8s, ephemeral container attacker-1795824015-97390) -> POST ratings:9080/ratings/0
 OK HTTP 501 {"error":"Post not implemented for database backed ratings"}
 
 ## same container, allowed operation: GET ratings:9080/ratings/0
 OK HTTP 200 {"id":0,"ratings":{"Reviewer1":5,"Reviewer2":4}}
 
 ## authorization policies in bookinfo
-error: the server doesn't have a resource type "authorizationpolicies" in group "security.istio.io"
-(Istio not installed)
+No resources found in bookinfo namespace.
