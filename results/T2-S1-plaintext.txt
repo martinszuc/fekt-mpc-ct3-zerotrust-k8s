@@ -1,73 +1,73 @@
 capture: zt-w1 lima0, 15s, filter udp
 requests with the full call graph: 5/5
-frames total: 307, VXLAN (8472): 307, WireGuard (51871): 0, frames containing "Reviewer1": 10
+frames total: 324, VXLAN (8472): 324, WireGuard (51871): 0, frames containing "Reviewer1": 10
 inner HTTP/MongoDB in plaintext: 60, app-port TLS (9080, 27017): 0
 
 ## metadata exposure
-VXLAN frames with readable inner pod IP/TCP headers: 245
+VXLAN frames with readable inner pod IP/TCP headers: 260
 of which app traffic (9080, 27017) with TLS payload (mesh mTLS): 0
 inner pod-to-pod conversations (client server port):
 10.42.0.119	10.42.1.26	4240
 10.42.0.119	10.42.2.54	4240
-10.42.1.208	10.42.2.164	9080
-10.42.1.208	10.42.2.215	9080
+10.42.1.133	10.42.2.126	9080
+10.42.1.133	10.42.2.223	9080
+10.42.1.167	10.42.2.236	27017
+10.42.1.68	10.42.0.194	4240
 10.42.1.68	10.42.2.54	4240
-10.42.1.83	10.42.2.35	27017
-10.42.2.164	10.42.1.83	9080
+10.42.2.223	10.42.1.167	9080
 10.42.2.7	10.42.0.194	4240
-10.42.2.7	10.42.1.26	4240
 
 ## outer protocols
-frame                                    frames:307 bytes:53484
-  eth                                    frames:307 bytes:53484
-    ip                                   frames:307 bytes:53484
-      udp                                frames:307 bytes:53484
-        vxlan                            frames:307 bytes:53484
-          eth                            frames:307 bytes:53484
-            ip                           frames:307 bytes:53484
-              tcp                        frames:245 bytes:42467
-                http                     frames:32 bytes:11223
-                  json                   frames:15 bytes:6735
-                mongo                    frames:30 bytes:8463
+frame                                    frames:324 bytes:55660
+  eth                                    frames:324 bytes:55660
+    ip                                   frames:324 bytes:55660
+      udp                                frames:324 bytes:55660
+        vxlan                            frames:324 bytes:55660
+          eth                            frames:324 bytes:55660
+            ip                           frames:324 bytes:55660
               udp                        frames:60 bytes:10785
                 dns                      frames:60 bytes:10785
-              icmp                       frames:2 bytes:232
+              tcp                        frames:260 bytes:44411
+                http                     frames:34 bytes:11627
+                  json                   frames:15 bytes:6730
+                mongo                    frames:30 bytes:8462
+              icmp                       frames:4 bytes:464
 ===================================================================
 
 ## decoded inner HTTP (src dst method uri status)
-10.42.1.208	10.42.2.215	GET	/details/0	
-10.42.2.215	10.42.1.208		/details/0	200
-10.42.1.208	10.42.2.164	GET	/reviews/0	
-10.42.2.164	10.42.1.83	GET	/ratings/0	
-10.42.1.83	10.42.2.164		/ratings/0	200
-10.42.2.164	10.42.1.208		/reviews/0	200
-10.42.1.208	10.42.2.215	GET	/details/0	
-10.42.2.215	10.42.1.208		/details/0	200
-10.42.1.208	10.42.2.164	GET	/reviews/0	
-10.42.2.164	10.42.1.83	GET	/ratings/0	
-10.42.1.83	10.42.2.164		/ratings/0	200
-10.42.2.164	10.42.1.208		/reviews/0	200
-10.42.1.208	10.42.2.215	GET	/details/0	
-10.42.2.215	10.42.1.208		/details/0	200
-10.42.1.208	10.42.2.164	GET	/reviews/0	
-10.42.2.164	10.42.1.83	GET	/ratings/0	
-10.42.1.83	10.42.2.164		/ratings/0	200
-10.42.2.164	10.42.1.208		/reviews/0	200
-10.42.1.208	10.42.2.215	GET	/details/0	
-10.42.2.215	10.42.1.208		/details/0	200
+10.42.1.133	10.42.2.126	GET	/details/0	
+10.42.2.126	10.42.1.133		/details/0	200
+10.42.1.133	10.42.2.223	GET	/reviews/0	
+10.42.2.223	10.42.1.167	GET	/ratings/0	
+10.42.1.167	10.42.2.223		/ratings/0	200
+10.42.2.223	10.42.1.133		/reviews/0	200
+10.42.1.133	10.42.2.126	GET	/details/0	
+10.42.2.126	10.42.1.133		/details/0	200
+10.42.1.133	10.42.2.223	GET	/reviews/0	
+10.42.2.223	10.42.1.167	GET	/ratings/0	
+10.42.1.167	10.42.2.223		/ratings/0	200
+10.42.2.223	10.42.1.133		/reviews/0	200
+10.42.1.133	10.42.2.126	GET	/details/0	
+10.42.2.126	10.42.1.133		/details/0	200
+10.42.1.133	10.42.2.223	GET	/reviews/0	
+10.42.2.223	10.42.1.167	GET	/ratings/0	
+10.42.1.167	10.42.2.223		/ratings/0	200
+10.42.2.223	10.42.1.133		/reviews/0	200
+10.42.1.133	10.42.2.126	GET	/details/0	
+10.42.2.126	10.42.1.133		/details/0	200
 
 ## readable payload containing "Reviewer1"
 {"id":0,"ratings":{"Reviewer1":5,"Reviewer2":4}}
-{"id": "0","podname": "reviews-v3-7b97f694c9-5lq8s","clustername": "null","reviews": [{  "reviewer": "Reviewer1",  "text": "An extremely entertaining play by Shakespeare. The slapstick humour is refreshing!", "rating": {"stars": 5, "color": "red"}},{  "reviewer": "Reviewer2",  "text": "Absolutely fu
+{"id": "0","podname": "reviews-v3-98c9d68d4-jnhc7","clustername": "null","reviews": [{  "reviewer": "Reviewer1",  "text": "An extremely entertaining play by Shakespeare. The slapstick humour is refreshing!", "rating": {"stars": 5, "color": "red"}},{  "reviewer": "Reviewer2",  "text": "Absolutely fun
 
 
 ## decoded inner MongoDB (src dst opcode)
-10.42.1.83	10.42.2.35	2004
-10.42.2.35	10.42.1.83	1
-10.42.1.83	10.42.2.35	2013
-10.42.2.35	10.42.1.83	2013
-10.42.1.83	10.42.2.35	2013
-10.42.2.35	10.42.1.83	2013
+10.42.1.167	10.42.2.236	2004
+10.42.2.236	10.42.1.167	1
+10.42.1.167	10.42.2.236	2013
+10.42.2.236	10.42.1.167	2013
+10.42.1.167	10.42.2.236	2013
+10.42.2.236	10.42.1.167	2013
 
 ## cilium encryption status
 Encryption: Disabled (3/3 nodes)
