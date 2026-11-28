@@ -130,6 +130,13 @@ def fig_latency(latency, outdir):
             panel(ax, i * len(pcts) + j, f"{m[:-3]}, {PATH_LABEL[path]}")
     bar_legend(fig, axes, scen)
     save(fig, outdir, "latency")
+    # p50 only, one row: large enough for a slide
+    fig, axes = plt.subplots(1, len(paths), figsize=(FIGW, 2.4), squeeze=False)
+    for j, path in enumerate(paths):
+        bars(axes[0][j], values(rows, path=path, metric="p50_ms"), scen, "ms" if j == 0 else "")
+        panel(axes[0][j], j, f"p50, {PATH_LABEL[path]}")
+    bar_legend(fig, axes, scen)
+    save(fig, outdir, "latency-p50")
 
 
 def fig_throughput(throughput, outdir):
