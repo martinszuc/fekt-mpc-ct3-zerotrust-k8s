@@ -98,3 +98,19 @@ Evidence replaced with this run. Network sniffing captures differ only in frame 
 ## 28.11.2026: attack rerun with Hubble drop verdict
 
 Commit a196c1a (`confirm_drop`), same VMs, runs `20261128T030358Z-S0` to `20261128T031010Z-S3`: 70/70. Evidence replaced. Pod headers readable: baseline 248, segmentation 260, mTLS 290 of which TLS 110, L7 authorization 327 of which TLS 118; node encryption 0; 60 DNS frames with service names in every capture except node encryption. mTLS capture: 5 new connections and 5 resumed TLS 1.3 handshakes to 27017, 3 to 9080; TCP handshake to first MongoDB data 1.00 to 1.12 ms (method: ACK to the second client data segment after ServerHello; reproduces 0.80 to 0.85 ms on e1e37ea). Report and slides updated.
+
+## 28.11.2026: test and reproducibility fixes after the second review (not yet rerun)
+
+Changed, **not yet rerun on the VMs; the committed evidence (runs `20261128T030358Z-S0` to `20261128T031010Z-S3`, commit a196c1a) predates this change**:
+
+- `confirm_drop` matches only drops to the probed destination port and saves the matching lines with the evidence. Lateral movement: 27017 or 9080 (the committed `T1-S2b-lateral.txt` shows retransmitted SYNs to 27017 landing in the 9080 check's window). Identity spoofing: 9080. Token abuse: `api-reachable` now goes through `confirm_drop` with 443 or 6443 (Service and endpoint port); before, a bare timeout counted as blocked.
+- Identity spoofing: a 403 counts as blocked only with the sidecar body `RBAC: access denied`.
+- Unauthorized operation: the allowed `GET` must return 200, or the check is `error`.
+- Network sniffing: capture filter `not tcp port 22` instead of `udp`; node encryption also needs 0 frames with a pod address (`POD_CIDR`) outside WireGuard. Frame totals in new captures will include host traffic; the metadata counts (`vxlan && tcp`) are unaffected.
+- `api-read-secrets` is documented as decided by RBAC only in the baseline; from segmentation on the token file is missing and the request is never sent (as in the committed evidence).
+- Lima image pinned by release date and digest (`infra/lima-ubuntu.yaml`); k3s install script taken from the k3s tag instead of `get.k3s.io`.
+- Bench drivers in `results/bench/logs/*.sh` no longer `cd` to an absolute path.
+- Logs added with `git add -f`: `latency-20261111.log` (report latency run), `latency-reverse-clean.log` (reverse-order control), `bench-mtu-control/run.log`, `results/logs/rerun-20261128.log` (first 28.11 attack rerun at 4bbe9aa). The final 28.11 run at a196c1a has no console log; its record is `attacks.csv` and the evidence files.
+- Sweep figures draw a min-max band (2 repeats per step) instead of an IQR band.
+
+Expected on rerun: every verdict unchanged. Unverified: whether Hubble reports the API server drop with destination port 6443 (after service translation) or 443; with neither, `api-reachable` becomes `error` and fails, which is the safe direction.

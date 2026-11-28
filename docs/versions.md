@@ -15,7 +15,7 @@ Recorded 22.10.2026, host drift and kernels rechecked and aligned 29.10.2026. VM
 | Component | Version | Pinned in |
 |---|---|---|
 | Lima | 2.2.1 (2.3.0 for the 25.11 portability check and the 28.11 attack rerun) | host tool |
-| VM image | Ubuntu 24.04 arm64 (Lima `template:ubuntu-24.04`) | `infra/config.env` |
+| VM image | Ubuntu 24.04 arm64, cloud image `release-20260926` pinned by digest (Lima base `template:ubuntu-24.04`) | `infra/lima-ubuntu.yaml` |
 | VM type / network | vz, socket_vmnet 1.2.2 `lima:shared` (192.168.105.0/24) | `infra/config.env` |
 | VM sizing | 3 nodes, each 4 vCPU / 8 GiB / 30 GiB | `infra/config.env` |
 | VM kernel / packages | 6.8.0-147-generic on every node; all packages upgraded together on 29.10 (noble-updates), identical package sets; unattended-upgrades and apt timers masked, kernel metapackages held | `infra/config.env` (`KERNEL_VERSION`), `infra/vm-prep.sh` |

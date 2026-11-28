@@ -2,7 +2,7 @@
 # latency rerun with 10 us histogram buckets (02.11.2026); parameters also in results/bench/RUNLOG.md
 # same rates, rounds and durations as the 29.10 main run, only RES differs
 set -u
-cd /Users/mszuc/school/mpc-ct3-zerotrust-k8s
+cd "$(dirname "$0")/../../.."
 export KUBECONFIG=$PWD/.kube/config
 stamp() { echo "### $(date '+%F %T %Z') $*"; }
 export QPS_ECHO=2000 QPS_APP=100 RES=0.00001

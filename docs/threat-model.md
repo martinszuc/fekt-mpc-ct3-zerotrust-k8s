@@ -73,9 +73,9 @@ Segmentation adds two independent controls; each token abuse check is decided by
 | `token-mounted` | `automountServiceAccountToken: false` |
 | `api-reachable` (anonymous, no token) | default-deny egress (no route to the API server) |
 | `api-authenticated` | token absent (would also be stopped by default-deny egress) |
-| `api-read-secrets` | RBAC (denied in every configuration, including the baseline) |
+| `api-read-secrets` | token absent: the request is never sent (RBAC denies it only in the baseline) |
 
-Both controls have no data-path cost, so they do not affect the segmentation vs. baseline measurement.
+Token restriction has no data-path cost, so the segmentation vs. baseline overhead is NetworkPolicy enforcement in eBPF alone.
 
 Not tested: Repudiation (only partly covered by Hubble flow logs from segmentation on and Envoy access logs with the mesh) and Denial of service (out of scope).
 

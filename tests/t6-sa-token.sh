@@ -9,17 +9,22 @@ case $SCENARIO in S0) s0=succeeded ;; *) s0=blocked ;; esac
 
 check() {
   local name=$1 want=$2; shift 2
-  local res observed
+  local res observed since pod
+  since=$(date -u +%FT%TZ)
   res=$(probe productpage-v1 "$@" 2>&1) || true
-  observed=$(outcome "$res")
+  pod=$(kubectl -n "$NS" get pod -l app=productpage -o jsonpath='{.items[0].metadata.name}')
   printf '## %s: productpage %s\n%s\n\n' "$name" "$*" "$res" >> "$out"
+  # a timeout counts as blocked only with a Hubble policy drop to the API server
+  # (Service port 443, endpoint 6443 after Cilium's service translation)
+  observed=$(confirm_drop "$(outcome "$res")" "$res" "$pod" "$since" "443|6443" "$out")
   record T6 "$name" "$want" "$observed" "$out"
 }
 
 check token-mounted "$s0" token
 check api-reachable "$s0" api-reach
 check api-authenticated "$s0" api-whoami
-# default RBAC grants app SAs nothing beyond discovery, in every scenario
+# baseline: RBAC denies (app SAs get nothing beyond discovery); from segmentation on the token is
+# missing, so the request is never sent and RBAC is not exercised (FileNotFoundError)
 check api-read-secrets blocked api-secrets "$NS"
 
 { echo "## RBAC: effective permissions of $SA (admin view)"

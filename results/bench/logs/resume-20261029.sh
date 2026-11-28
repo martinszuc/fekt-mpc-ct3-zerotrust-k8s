@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # resume of the overnight sweeps after the lid-close pause (29.10.2026)
 set -u
-cd /Users/mszuc/school/mpc-ct3-zerotrust-k8s
+cd "$(dirname "$0")/../../.."
 export KUBECONFIG=$PWD/.kube/config
 stamp() { echo "### $(date '+%F %T %Z') $*"; }
 export QPS_ECHO=2000 QPS_APP=100

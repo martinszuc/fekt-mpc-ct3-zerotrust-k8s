@@ -1,0 +1,519 @@
+[1m==> starting zt-cp[0m
+time="2026-11-28T00:55:05+01:00" level=info msg="Using the existing instance `zt-cp`"
+time="2026-11-28T00:55:05+01:00" level=info msg="Starting socket_vmnet daemon for `shared` network"
+time="2026-11-28T00:55:05+01:00" level=info msg="Running: [sudo --user root --group wheel --non-interactive /bin/mkdir -m 775 -p /private/var/run/lima]"
+time="2026-11-28T00:55:05+01:00" level=info msg="Starting `socket_vmnet` daemon for `shared` network: [sudo --user root --group wheel --non-interactive /opt/socket_vmnet/bin/socket_vmnet --socket-group=admin --vmnet-mode=shared --vmnet-gateway=192.168.105.1 --vmnet-dhcp-end=192.168.105.254 --vmnet-mask=255.255.255.0 --pidfile=/private/var/run/lima/shared_socket_vmnet.pid /private/var/run/lima/socket_vmnet.shared]"
+time="2026-11-28T00:55:05+01:00" level=info msg="Starting the instance `zt-cp` with internal VM driver `vz`"
+time="2026-11-28T00:55:06+01:00" level=info msg="[hostagent] hostagent socket created at /Users/mszuc/.lima/zt-cp/ha.sock"
+time="2026-11-28T00:55:06+01:00" level=info msg="[hostagent] Starting VZ (hint: to watch the boot progress, see `/Users/mszuc/.lima/zt-cp/serial*.log`)"
+time="2026-11-28T00:55:06+01:00" level=info msg="[hostagent] [VZ] - vm state change: running"
+time="2026-11-28T00:55:06+01:00" level=info msg="[hostagent] gvproxy API request" component=services-api endpoint=/services/dhcp/leases method=GET outcome=success source=
+time="2026-11-28T00:55:11+01:00" level=info msg="[hostagent] SSH server does not seem to be running on vsock port, using usernet forwarder"
+time="2026-11-28T00:55:12+01:00" level=info msg="[hostagent] gvproxy API request" component=services-api endpoint=/services/dhcp/leases method=GET outcome=success source=
+time="2026-11-28T00:55:12+01:00" level=info msg="[hostagent] gvproxy API request" component=services-api endpoint=/services/forwarder/expose local="127.0.0.1:61329" method=POST outcome=success protocol=tcp remote="192.168.5.15:22" source=
+time="2026-11-28T00:55:12+01:00" level=info msg="[hostagent] gvproxy API request" component=services-api endpoint=/services/dns/add method=POST outcome=success source= zone=internal.
+time="2026-11-28T00:55:12+01:00" level=info msg="SSH Local Port: 61329"
+time="2026-11-28T00:55:12+01:00" level=info msg="[hostagent] Running in plain mode. Mounts, dynamic port forwarding, containerd, etc. will be ignored. Guest agent will not be running."
+time="2026-11-28T00:55:12+01:00" level=info msg="( 1/3) 🕐 SSH connection (essential)"
+time="2026-11-28T00:55:12+01:00" level=info msg="( 1/3) ✅ SSH connection"
+time="2026-11-28T00:55:12+01:00" level=info msg="( 2/3) 🕐 Persistent SSH ControlMaster (essential)"
+time="2026-11-28T00:55:13+01:00" level=info msg="( 2/3) ✅ Persistent SSH ControlMaster"
+time="2026-11-28T00:55:13+01:00" level=info msg="( 3/3) 🕐 Boot scripts to be finished"
+time="2026-11-28T00:55:19+01:00" level=info msg="( 3/3) ✅ Boot scripts to be finished"
+time="2026-11-28T00:55:19+01:00" level=info msg="READY. Run `ssh -F `/Users/mszuc/.lima/zt-cp/ssh.config` lima-zt-cp` to open the shell."
+[1m==> starting zt-w1[0m
+time="2026-11-28T00:55:19+01:00" level=info msg="Using the existing instance `zt-w1`"
+time="2026-11-28T00:55:19+01:00" level=info msg="Starting the instance `zt-w1` with internal VM driver `vz`"
+time="2026-11-28T00:55:19+01:00" level=info msg="[hostagent] hostagent socket created at /Users/mszuc/.lima/zt-w1/ha.sock"
+time="2026-11-28T00:55:19+01:00" level=info msg="[hostagent] Starting VZ (hint: to watch the boot progress, see `/Users/mszuc/.lima/zt-w1/serial*.log`)"
+time="2026-11-28T00:55:19+01:00" level=info msg="[hostagent] [VZ] - vm state change: running"
+time="2026-11-28T00:55:20+01:00" level=info msg="[hostagent] gvproxy API request" component=services-api endpoint=/services/dhcp/leases method=GET outcome=success source=
+time="2026-11-28T00:55:25+01:00" level=info msg="[hostagent] SSH server does not seem to be running on vsock port, using usernet forwarder"
+time="2026-11-28T00:55:25+01:00" level=info msg="[hostagent] gvproxy API request" component=services-api endpoint=/services/dhcp/leases method=GET outcome=success source=
+time="2026-11-28T00:55:25+01:00" level=info msg="[hostagent] gvproxy API request" component=services-api endpoint=/services/forwarder/expose local="127.0.0.1:61338" method=POST outcome=success protocol=tcp remote="192.168.5.15:22" source=
+time="2026-11-28T00:55:25+01:00" level=info msg="[hostagent] gvproxy API request" component=services-api endpoint=/services/dns/add method=POST outcome=success source= zone=internal.
+time="2026-11-28T00:55:25+01:00" level=info msg="SSH Local Port: 61338"
+time="2026-11-28T00:55:25+01:00" level=info msg="[hostagent] Running in plain mode. Mounts, dynamic port forwarding, containerd, etc. will be ignored. Guest agent will not be running."
+time="2026-11-28T00:55:25+01:00" level=info msg="( 1/3) 🕐 SSH connection (essential)"
+time="2026-11-28T00:55:26+01:00" level=info msg="( 1/3) ✅ SSH connection"
+time="2026-11-28T00:55:26+01:00" level=info msg="( 2/3) 🕐 Persistent SSH ControlMaster (essential)"
+time="2026-11-28T00:55:26+01:00" level=info msg="( 2/3) ✅ Persistent SSH ControlMaster"
+time="2026-11-28T00:55:26+01:00" level=info msg="( 3/3) 🕐 Boot scripts to be finished"
+time="2026-11-28T00:55:29+01:00" level=info msg="( 3/3) ✅ Boot scripts to be finished"
+time="2026-11-28T00:55:29+01:00" level=info msg="READY. Run `ssh -F `/Users/mszuc/.lima/zt-w1/ssh.config` lima-zt-w1` to open the shell."
+[1m==> starting zt-w2[0m
+time="2026-11-28T00:55:29+01:00" level=info msg="Using the existing instance `zt-w2`"
+time="2026-11-28T00:55:29+01:00" level=info msg="Starting the instance `zt-w2` with internal VM driver `vz`"
+time="2026-11-28T00:55:30+01:00" level=info msg="[hostagent] hostagent socket created at /Users/mszuc/.lima/zt-w2/ha.sock"
+time="2026-11-28T00:55:30+01:00" level=info msg="[hostagent] Starting VZ (hint: to watch the boot progress, see `/Users/mszuc/.lima/zt-w2/serial*.log`)"
+time="2026-11-28T00:55:30+01:00" level=info msg="[hostagent] [VZ] - vm state change: running"
+time="2026-11-28T00:55:30+01:00" level=info msg="[hostagent] gvproxy API request" component=services-api endpoint=/services/dhcp/leases method=GET outcome=success source=
+time="2026-11-28T00:55:36+01:00" level=info msg="[hostagent] SSH server does not seem to be running on vsock port, using usernet forwarder"
+time="2026-11-28T00:55:37+01:00" level=info msg="[hostagent] gvproxy API request" component=services-api endpoint=/services/dhcp/leases method=GET outcome=success source=
+time="2026-11-28T00:55:37+01:00" level=info msg="[hostagent] gvproxy API request" component=services-api endpoint=/services/forwarder/expose local="127.0.0.1:61343" method=POST outcome=success protocol=tcp remote="192.168.5.15:22" source=
+time="2026-11-28T00:55:37+01:00" level=info msg="[hostagent] gvproxy API request" component=services-api endpoint=/services/dns/add method=POST outcome=success source= zone=internal.
+time="2026-11-28T00:55:37+01:00" level=info msg="SSH Local Port: 61343"
+time="2026-11-28T00:55:37+01:00" level=info msg="[hostagent] Running in plain mode. Mounts, dynamic port forwarding, containerd, etc. will be ignored. Guest agent will not be running."
+time="2026-11-28T00:55:37+01:00" level=info msg="( 1/3) 🕐 SSH connection (essential)"
+time="2026-11-28T00:55:37+01:00" level=info msg="( 1/3) ✅ SSH connection"
+time="2026-11-28T00:55:37+01:00" level=info msg="( 2/3) 🕐 Persistent SSH ControlMaster (essential)"
+time="2026-11-28T00:55:37+01:00" level=info msg="( 2/3) ✅ Persistent SSH ControlMaster"
+time="2026-11-28T00:55:37+01:00" level=info msg="( 3/3) 🕐 Boot scripts to be finished"
+time="2026-11-28T00:55:37+01:00" level=info msg="( 3/3) ✅ Boot scripts to be finished"
+time="2026-11-28T00:55:37+01:00" level=info msg="READY. Run `ssh -F `/Users/mszuc/.lima/zt-w2/ssh.config` lima-zt-w2` to open the shell."
+[1m==> k3s server already active on zt-cp[0m
+[1m==> waiting for API server[0m
+[1m==> k3s agent already active on zt-w1[0m
+[1m==> k3s agent already active on zt-w2[0m
+[1m==> writing kubeconfig to .kube/config[0m
+[1m==> installing Cilium 1.20.3[0m
+Release "cilium" has been upgraded. Happy Helming!
+NAME: cilium
+LAST DEPLOYED: Sat Nov 28 00:55:44 2026
+NAMESPACE: kube-system
+STATUS: deployed
+REVISION: 29
+DESCRIPTION: Upgrade complete
+TEST SUITE: None
+NOTES:
+You have successfully installed Cilium with Hubble Relay.
+
+WARNINGS:
+- WARNING: TLS is not enabled for the Hubble Relay server (hubble.relay.tls.server.enabled=false).
+  This means Hubble Relay communications may not be encrypted. For more information about the security
+  implications and suggested controls, please see: https://docs.cilium.io/en/stable/security/threat-model/#hubble-data-attacker
+
+Your release version is 1.20.3.
+
+For any further help, visit https://docs.cilium.io/en/v1.20/gettinghelp
+node/lima-zt-cp condition met
+node/lima-zt-w1 condition met
+node/lima-zt-w2 condition met
+NAME         STATUS   ROLES           AGE   VERSION        INTERNAL-IP     EXTERNAL-IP   OS-IMAGE             KERNEL-VERSION              CONTAINER-RUNTIME
+lima-zt-cp   Ready    control-plane   11d   v1.36.5+k3s1   192.168.105.2   <none>        Ubuntu 24.04.5 LTS   6.8.0-147-generic (arm64)   containerd://2.3.4-k3s1.36
+lima-zt-w1   Ready    <none>          11d   v1.36.5+k3s1   192.168.105.3   <none>        Ubuntu 24.04.5 LTS   6.8.0-147-generic (arm64)   containerd://2.3.4-k3s1.36
+lima-zt-w2   Ready    <none>          11d   v1.36.5+k3s1   192.168.105.4   <none>        Ubuntu 24.04.5 LTS   6.8.0-147-generic (arm64)   containerd://2.3.4-k3s1.36
+[1m==> cluster ready; export KUBECONFIG=/Users/mszuc/school/mpc-ct3-zerotrust-k8s/.kube/config[0m
+namespace/bookinfo unchanged
+serviceaccount/bookinfo-details unchanged
+serviceaccount/bookinfo-mongodb unchanged
+serviceaccount/bookinfo-productpage unchanged
+serviceaccount/bookinfo-ratings-v2 unchanged
+serviceaccount/bookinfo-reviews unchanged
+configmap/mongodb-init-724862k9f6 unchanged
+service/details unchanged
+service/mongodb unchanged
+service/productpage unchanged
+service/ratings unchanged
+service/reviews unchanged
+deployment.apps/details-v1 unchanged
+deployment.apps/mongodb-v1 unchanged
+deployment.apps/productpage-v1 unchanged
+deployment.apps/ratings-v2 unchanged
+deployment.apps/reviews-v3 unchanged
+deployment "bench-client" successfully rolled out
+deployment "details-v1" successfully rolled out
+deployment "fortio-cross" successfully rolled out
+deployment "fortio-same" successfully rolled out
+deployment "iperf3-cross" successfully rolled out
+deployment "iperf3-same" successfully rolled out
+deployment "mongodb-v1" successfully rolled out
+deployment "productpage-v1" successfully rolled out
+deployment "ratings-v2" successfully rolled out
+deployment "reviews-v3" successfully rolled out
+networkpolicy.networking.k8s.io "allow-dns" deleted from bookinfo namespace
+networkpolicy.networking.k8s.io "bench-client" deleted from bookinfo namespace
+networkpolicy.networking.k8s.io "default-deny" deleted from bookinfo namespace
+networkpolicy.networking.k8s.io "details" deleted from bookinfo namespace
+networkpolicy.networking.k8s.io "fortio-server" deleted from bookinfo namespace
+networkpolicy.networking.k8s.io "iperf3-server" deleted from bookinfo namespace
+networkpolicy.networking.k8s.io "mongodb" deleted from bookinfo namespace
+networkpolicy.networking.k8s.io "productpage" deleted from bookinfo namespace
+networkpolicy.networking.k8s.io "ratings" deleted from bookinfo namespace
+networkpolicy.networking.k8s.io "reviews" deleted from bookinfo namespace
+serviceaccount/bench-client patched
+serviceaccount/bench-server patched
+serviceaccount/bookinfo-details patched
+serviceaccount/bookinfo-mongodb patched
+serviceaccount/bookinfo-productpage patched
+serviceaccount/bookinfo-ratings-v2 patched
+serviceaccount/bookinfo-reviews patched
+serviceaccount/default patched
+authorizationpolicy.security.istio.io "allow-nothing" deleted from bookinfo namespace
+authorizationpolicy.security.istio.io "details" deleted from bookinfo namespace
+authorizationpolicy.security.istio.io "mongodb" deleted from bookinfo namespace
+authorizationpolicy.security.istio.io "productpage" deleted from bookinfo namespace
+authorizationpolicy.security.istio.io "ratings" deleted from bookinfo namespace
+authorizationpolicy.security.istio.io "reviews" deleted from bookinfo namespace
+networkpolicy.networking.k8s.io "allow-istiod" deleted from bookinfo namespace
+peerauthentication.security.istio.io "default" deleted from bookinfo namespace
+namespace/bookinfo unlabeled
+deployment.apps/bench-client restarted
+deployment.apps/details-v1 restarted
+deployment.apps/fortio-cross restarted
+deployment.apps/fortio-same restarted
+deployment.apps/iperf3-cross restarted
+deployment.apps/iperf3-same restarted
+deployment.apps/mongodb-v1 restarted
+deployment.apps/productpage-v1 restarted
+deployment.apps/ratings-v2 restarted
+deployment.apps/reviews-v3 restarted
+Waiting for deployment "bench-client" rollout to finish: 1 old replicas are pending termination...
+Waiting for deployment "bench-client" rollout to finish: 1 old replicas are pending termination...
+deployment "bench-client" successfully rolled out
+deployment "details-v1" successfully rolled out
+deployment "fortio-cross" successfully rolled out
+deployment "fortio-same" successfully rolled out
+deployment "iperf3-cross" successfully rolled out
+deployment "iperf3-same" successfully rolled out
+Waiting for deployment "mongodb-v1" rollout to finish: 1 old replicas are pending termination...
+Waiting for deployment "mongodb-v1" rollout to finish: 1 old replicas are pending termination...
+deployment "mongodb-v1" successfully rolled out
+deployment "productpage-v1" successfully rolled out
+deployment "ratings-v2" successfully rolled out
+deployment "reviews-v3" successfully rolled out
+release "istiod" uninstalled
+namespace/bookinfo annotated
+env snapshot: results/env-S0.txt
+PASS T1   frontend-to-db               expected=succeeded observed=succeeded results/T1-S0-lateral.txt
+PASS T1   frontend-to-ratings          expected=succeeded observed=succeeded results/T1-S0-lateral.txt
+PASS T1   frontend-to-details-allowed  expected=succeeded observed=succeeded results/T1-S0-lateral.txt
+PASS T2   cross-node-sniff             expected=succeeded observed=succeeded results/T2-S0-plaintext.pcap
+PASS T3   rogue-unlabeled-to-ratings   expected=succeeded observed=succeeded results/T3-S0-rogue-pod.txt
+PASS T3   rogue-no-identity-to-ratings expected=succeeded observed=succeeded results/T3-S0-rogue-pod.txt
+PASS T3   rogue-default-sa-to-ratings  expected=succeeded observed=succeeded results/T3-S0-rogue-pod.txt
+PASS T3   rogue-reused-sa-to-ratings   expected=succeeded observed=succeeded results/T3-S0-rogue-pod.txt
+PASS T4   reviews-posts-ratings        expected=succeeded observed=succeeded results/T4-S0-unauthorized-op.txt
+PASS T5   reviews-reads-ratings        expected=succeeded observed=succeeded results/T5-S0-valid-identity.txt
+PASS T6   token-mounted                expected=succeeded observed=succeeded results/T6-S0-sa-token.txt
+PASS T6   api-reachable                expected=succeeded observed=succeeded results/T6-S0-sa-token.txt
+PASS T6   api-authenticated            expected=succeeded observed=succeeded results/T6-S0-sa-token.txt
+PASS T6   api-read-secrets             expected=blocked   observed=blocked   results/T6-S0-sa-token.txt
+run 20261127T235648Z-S0 (S0, 4bbe9aa): 14 pass, 0 fail
+networkpolicy.networking.k8s.io/allow-dns created
+networkpolicy.networking.k8s.io/bench-client created
+networkpolicy.networking.k8s.io/default-deny created
+networkpolicy.networking.k8s.io/details created
+networkpolicy.networking.k8s.io/fortio-server created
+networkpolicy.networking.k8s.io/iperf3-server created
+networkpolicy.networking.k8s.io/mongodb created
+networkpolicy.networking.k8s.io/productpage created
+networkpolicy.networking.k8s.io/ratings created
+networkpolicy.networking.k8s.io/reviews created
+serviceaccount/bench-client patched
+serviceaccount/bench-server patched
+serviceaccount/bookinfo-details patched
+serviceaccount/bookinfo-mongodb patched
+serviceaccount/bookinfo-productpage patched
+serviceaccount/bookinfo-ratings-v2 patched
+serviceaccount/bookinfo-reviews patched
+serviceaccount/default patched
+label "istio-injection" not found.
+namespace/bookinfo not labeled
+deployment.apps/bench-client restarted
+deployment.apps/details-v1 restarted
+deployment.apps/fortio-cross restarted
+deployment.apps/fortio-same restarted
+deployment.apps/iperf3-cross restarted
+deployment.apps/iperf3-same restarted
+deployment.apps/mongodb-v1 restarted
+deployment.apps/productpage-v1 restarted
+deployment.apps/ratings-v2 restarted
+deployment.apps/reviews-v3 restarted
+Waiting for deployment "bench-client" rollout to finish: 0 out of 1 new replicas have been updated...
+Waiting for deployment "bench-client" rollout to finish: 1 old replicas are pending termination...
+Waiting for deployment "bench-client" rollout to finish: 1 old replicas are pending termination...
+deployment "bench-client" successfully rolled out
+deployment "details-v1" successfully rolled out
+Waiting for deployment "fortio-cross" rollout to finish: 1 old replicas are pending termination...
+deployment "fortio-cross" successfully rolled out
+deployment "fortio-same" successfully rolled out
+deployment "iperf3-cross" successfully rolled out
+deployment "iperf3-same" successfully rolled out
+Waiting for deployment "mongodb-v1" rollout to finish: 1 old replicas are pending termination...
+Waiting for deployment "mongodb-v1" rollout to finish: 1 old replicas are pending termination...
+deployment "mongodb-v1" successfully rolled out
+deployment "productpage-v1" successfully rolled out
+deployment "ratings-v2" successfully rolled out
+deployment "reviews-v3" successfully rolled out
+namespace/bookinfo annotated
+env snapshot: results/env-S1.txt
+PASS T1   frontend-to-db               expected=blocked   observed=blocked   results/T1-S1-lateral.txt
+PASS T1   frontend-to-ratings          expected=blocked   observed=blocked   results/T1-S1-lateral.txt
+PASS T1   frontend-to-details-allowed  expected=succeeded observed=succeeded results/T1-S1-lateral.txt
+PASS T2   cross-node-sniff             expected=succeeded observed=succeeded results/T2-S1-plaintext.pcap
+PASS T3   rogue-unlabeled-to-ratings   expected=blocked   observed=blocked   results/T3-S1-rogue-pod.txt
+PASS T3   rogue-no-identity-to-ratings expected=succeeded observed=succeeded results/T3-S1-rogue-pod.txt
+PASS T3   rogue-default-sa-to-ratings  expected=succeeded observed=succeeded results/T3-S1-rogue-pod.txt
+PASS T3   rogue-reused-sa-to-ratings   expected=succeeded observed=succeeded results/T3-S1-rogue-pod.txt
+PASS T4   reviews-posts-ratings        expected=succeeded observed=succeeded results/T4-S1-unauthorized-op.txt
+PASS T5   reviews-reads-ratings        expected=succeeded observed=succeeded results/T5-S1-valid-identity.txt
+PASS T6   token-mounted                expected=blocked   observed=blocked   results/T6-S1-sa-token.txt
+PASS T6   api-reachable                expected=blocked   observed=blocked   results/T6-S1-sa-token.txt
+PASS T6   api-authenticated            expected=blocked   observed=blocked   results/T6-S1-sa-token.txt
+PASS T6   api-read-secrets             expected=blocked   observed=blocked   results/T6-S1-sa-token.txt
+run 20261127T235807Z-S1 (S1, 4bbe9aa): 14 pass, 0 fail
+networkpolicy.networking.k8s.io/allow-dns unchanged
+networkpolicy.networking.k8s.io/bench-client unchanged
+networkpolicy.networking.k8s.io/default-deny unchanged
+networkpolicy.networking.k8s.io/details unchanged
+networkpolicy.networking.k8s.io/fortio-server unchanged
+networkpolicy.networking.k8s.io/iperf3-server unchanged
+networkpolicy.networking.k8s.io/mongodb unchanged
+networkpolicy.networking.k8s.io/productpage unchanged
+networkpolicy.networking.k8s.io/ratings unchanged
+networkpolicy.networking.k8s.io/reviews unchanged
+Release "cilium" has been upgraded. Happy Helming!
+NAME: cilium
+LAST DEPLOYED: Sat Nov 28 00:58:59 2026
+NAMESPACE: kube-system
+STATUS: deployed
+REVISION: 30
+DESCRIPTION: Upgrade complete
+TEST SUITE: None
+NOTES:
+You have successfully installed Cilium with Hubble Relay.
+
+WARNINGS:
+- WARNING: TLS is not enabled for the Hubble Relay server (hubble.relay.tls.server.enabled=false).
+  This means Hubble Relay communications may not be encrypted. For more information about the security
+  implications and suggested controls, please see: https://docs.cilium.io/en/stable/security/threat-model/#hubble-data-attacker
+
+Your release version is 1.20.3.
+
+For any further help, visit https://docs.cilium.io/en/v1.20/gettinghelp
+daemonset.apps/cilium restarted
+Waiting for daemon set "cilium" rollout to finish: 0 out of 3 new pods have been updated...
+Waiting for daemon set "cilium" rollout to finish: 1 out of 3 new pods have been updated...
+Waiting for daemon set "cilium" rollout to finish: 2 out of 3 new pods have been updated...
+Waiting for daemon set "cilium" rollout to finish: 2 out of 3 new pods have been updated...
+Waiting for daemon set "cilium" rollout to finish: 2 out of 3 new pods have been updated...
+Waiting for daemon set "cilium" rollout to finish: 1 of 3 updated pods are available...
+Waiting for daemon set "cilium" rollout to finish: 2 of 3 updated pods are available...
+daemon set "cilium" successfully rolled out
+label "istio-injection" not found.
+namespace/bookinfo not labeled
+namespace/bookinfo annotated
+env snapshot: results/env-S2a.txt
+PASS T1   frontend-to-db               expected=blocked   observed=blocked   results/T1-S2a-lateral.txt
+PASS T1   frontend-to-ratings          expected=blocked   observed=blocked   results/T1-S2a-lateral.txt
+PASS T1   frontend-to-details-allowed  expected=succeeded observed=succeeded results/T1-S2a-lateral.txt
+PASS T2   cross-node-sniff             expected=blocked   observed=blocked   results/T2-S2a-encrypted.pcap
+PASS T3   rogue-unlabeled-to-ratings   expected=blocked   observed=blocked   results/T3-S2a-rogue-pod.txt
+PASS T3   rogue-no-identity-to-ratings expected=succeeded observed=succeeded results/T3-S2a-rogue-pod.txt
+PASS T3   rogue-default-sa-to-ratings  expected=succeeded observed=succeeded results/T3-S2a-rogue-pod.txt
+PASS T3   rogue-reused-sa-to-ratings   expected=succeeded observed=succeeded results/T3-S2a-rogue-pod.txt
+PASS T4   reviews-posts-ratings        expected=succeeded observed=succeeded results/T4-S2a-unauthorized-op.txt
+PASS T5   reviews-reads-ratings        expected=succeeded observed=succeeded results/T5-S2a-valid-identity.txt
+PASS T6   token-mounted                expected=blocked   observed=blocked   results/T6-S2a-sa-token.txt
+PASS T6   api-reachable                expected=blocked   observed=blocked   results/T6-S2a-sa-token.txt
+PASS T6   api-authenticated            expected=blocked   observed=blocked   results/T6-S2a-sa-token.txt
+PASS T6   api-read-secrets             expected=blocked   observed=blocked   results/T6-S2a-sa-token.txt
+run 20261127T235929Z-S2a (S2a, 4bbe9aa): 14 pass, 0 fail
+networkpolicy.networking.k8s.io/allow-dns unchanged
+networkpolicy.networking.k8s.io/bench-client unchanged
+networkpolicy.networking.k8s.io/default-deny unchanged
+networkpolicy.networking.k8s.io/details unchanged
+networkpolicy.networking.k8s.io/fortio-server unchanged
+networkpolicy.networking.k8s.io/iperf3-server unchanged
+networkpolicy.networking.k8s.io/mongodb unchanged
+networkpolicy.networking.k8s.io/productpage unchanged
+networkpolicy.networking.k8s.io/ratings unchanged
+networkpolicy.networking.k8s.io/reviews unchanged
+Release "cilium" has been upgraded. Happy Helming!
+NAME: cilium
+LAST DEPLOYED: Sat Nov 28 01:00:23 2026
+NAMESPACE: kube-system
+STATUS: deployed
+REVISION: 31
+DESCRIPTION: Upgrade complete
+TEST SUITE: None
+NOTES:
+You have successfully installed Cilium with Hubble Relay.
+
+WARNINGS:
+- WARNING: TLS is not enabled for the Hubble Relay server (hubble.relay.tls.server.enabled=false).
+  This means Hubble Relay communications may not be encrypted. For more information about the security
+  implications and suggested controls, please see: https://docs.cilium.io/en/stable/security/threat-model/#hubble-data-attacker
+
+Your release version is 1.20.3.
+
+For any further help, visit https://docs.cilium.io/en/v1.20/gettinghelp
+daemonset.apps/cilium restarted
+Waiting for daemon set "cilium" rollout to finish: 0 out of 3 new pods have been updated...
+Waiting for daemon set "cilium" rollout to finish: 1 out of 3 new pods have been updated...
+Waiting for daemon set "cilium" rollout to finish: 2 out of 3 new pods have been updated...
+Waiting for daemon set "cilium" rollout to finish: 2 out of 3 new pods have been updated...
+Waiting for daemon set "cilium" rollout to finish: 2 out of 3 new pods have been updated...
+Waiting for daemon set "cilium" rollout to finish: 1 of 3 updated pods are available...
+Waiting for daemon set "cilium" rollout to finish: 2 of 3 updated pods are available...
+daemon set "cilium" successfully rolled out
+Release "istio-base" has been upgraded. Happy Helming!
+NAME: istio-base
+LAST DEPLOYED: Sat Nov 28 01:00:48 2026
+NAMESPACE: istio-system
+STATUS: deployed
+REVISION: 34
+DESCRIPTION: Upgrade complete
+TEST SUITE: None
+NOTES:
+Istio base successfully installed!
+
+To learn more about the release, try:
+  $ helm status istio-base -n istio-system
+  $ helm get all istio-base -n istio-system
+Release "istiod" does not exist. Installing it now.
+NAME: istiod
+LAST DEPLOYED: Sat Nov 28 01:00:50 2026
+NAMESPACE: istio-system
+STATUS: deployed
+REVISION: 1
+DESCRIPTION: Install complete
+TEST SUITE: None
+NOTES:
+"istiod" successfully installed!
+
+To learn more about the release, try:
+  $ helm status istiod -n istio-system
+  $ helm get all istiod -n istio-system
+
+Next steps:
+  * Deploy a Gateway: https://istio.io/latest/docs/setup/additional-setup/gateway/
+  * Try out our tasks to get started on common configurations:
+    * https://istio.io/latest/docs/tasks/traffic-management
+    * https://istio.io/latest/docs/tasks/security/
+    * https://istio.io/latest/docs/tasks/policy-enforcement/
+  * Review the list of actively supported releases, CVE publications and our hardening guide:
+    * https://istio.io/latest/docs/releases/supported-releases/
+    * https://istio.io/latest/news/security/
+    * https://istio.io/latest/docs/ops/best-practices/security/
+
+For further documentation see https://istio.io website
+networkpolicy.networking.k8s.io/allow-istiod created
+peerauthentication.security.istio.io/default created
+namespace/bookinfo labeled
+deployment.apps/bench-client restarted
+deployment.apps/details-v1 restarted
+deployment.apps/fortio-cross restarted
+deployment.apps/fortio-same restarted
+deployment.apps/iperf3-cross restarted
+deployment.apps/iperf3-same restarted
+deployment.apps/mongodb-v1 restarted
+deployment.apps/productpage-v1 restarted
+deployment.apps/ratings-v2 restarted
+deployment.apps/reviews-v3 restarted
+Waiting for deployment "bench-client" rollout to finish: 0 out of 1 new replicas have been updated...
+Waiting for deployment "bench-client" rollout to finish: 1 old replicas are pending termination...
+Waiting for deployment "bench-client" rollout to finish: 1 old replicas are pending termination...
+deployment "bench-client" successfully rolled out
+Waiting for deployment "details-v1" rollout to finish: 1 old replicas are pending termination...
+Waiting for deployment "details-v1" rollout to finish: 1 old replicas are pending termination...
+deployment "details-v1" successfully rolled out
+Waiting for deployment "fortio-cross" rollout to finish: 1 old replicas are pending termination...
+deployment "fortio-cross" successfully rolled out
+deployment "fortio-same" successfully rolled out
+Waiting for deployment "iperf3-cross" rollout to finish: 1 old replicas are pending termination...
+Waiting for deployment "iperf3-cross" rollout to finish: 1 old replicas are pending termination...
+deployment "iperf3-cross" successfully rolled out
+deployment "iperf3-same" successfully rolled out
+Waiting for deployment "mongodb-v1" rollout to finish: 1 old replicas are pending termination...
+Waiting for deployment "mongodb-v1" rollout to finish: 1 old replicas are pending termination...
+deployment "mongodb-v1" successfully rolled out
+deployment "productpage-v1" successfully rolled out
+deployment "ratings-v2" successfully rolled out
+deployment "reviews-v3" successfully rolled out
+namespace/bookinfo annotated
+env snapshot: results/env-S2b.txt
+PASS T1   frontend-to-db               expected=blocked   observed=blocked   results/T1-S2b-lateral.txt
+PASS T1   frontend-to-ratings          expected=blocked   observed=blocked   results/T1-S2b-lateral.txt
+PASS T1   frontend-to-details-allowed  expected=succeeded observed=succeeded results/T1-S2b-lateral.txt
+PASS T2   cross-node-sniff             expected=blocked   observed=blocked   results/T2-S2b-encrypted.pcap
+PASS T3   rogue-unlabeled-to-ratings   expected=blocked   observed=blocked   results/T3-S2b-rogue-pod.txt
+PASS T3   rogue-no-identity-to-ratings expected=blocked   observed=blocked   results/T3-S2b-rogue-pod.txt
+PASS T3   rogue-default-sa-to-ratings  expected=succeeded observed=succeeded results/T3-S2b-rogue-pod.txt
+PASS T3   rogue-reused-sa-to-ratings   expected=succeeded observed=succeeded results/T3-S2b-rogue-pod.txt
+PASS T4   reviews-posts-ratings        expected=succeeded observed=succeeded results/T4-S2b-unauthorized-op.txt
+PASS T5   reviews-reads-ratings        expected=succeeded observed=succeeded results/T5-S2b-valid-identity.txt
+PASS T6   token-mounted                expected=blocked   observed=blocked   results/T6-S2b-sa-token.txt
+PASS T6   api-reachable                expected=blocked   observed=blocked   results/T6-S2b-sa-token.txt
+PASS T6   api-authenticated            expected=blocked   observed=blocked   results/T6-S2b-sa-token.txt
+PASS T6   api-read-secrets             expected=blocked   observed=blocked   results/T6-S2b-sa-token.txt
+run 20261128T000136Z-S2b (S2b, 4bbe9aa): 14 pass, 0 fail
+networkpolicy.networking.k8s.io/allow-dns unchanged
+networkpolicy.networking.k8s.io/bench-client unchanged
+networkpolicy.networking.k8s.io/default-deny unchanged
+networkpolicy.networking.k8s.io/details unchanged
+networkpolicy.networking.k8s.io/fortio-server unchanged
+networkpolicy.networking.k8s.io/iperf3-server unchanged
+networkpolicy.networking.k8s.io/mongodb unchanged
+networkpolicy.networking.k8s.io/productpage unchanged
+networkpolicy.networking.k8s.io/ratings unchanged
+networkpolicy.networking.k8s.io/reviews unchanged
+Release "istio-base" has been upgraded. Happy Helming!
+NAME: istio-base
+LAST DEPLOYED: Sat Nov 28 01:02:33 2026
+NAMESPACE: istio-system
+STATUS: deployed
+REVISION: 35
+DESCRIPTION: Upgrade complete
+TEST SUITE: None
+NOTES:
+Istio base successfully installed!
+
+To learn more about the release, try:
+  $ helm status istio-base -n istio-system
+  $ helm get all istio-base -n istio-system
+Release "istiod" has been upgraded. Happy Helming!
+NAME: istiod
+LAST DEPLOYED: Sat Nov 28 01:02:34 2026
+NAMESPACE: istio-system
+STATUS: deployed
+REVISION: 2
+DESCRIPTION: Upgrade complete
+TEST SUITE: None
+NOTES:
+"istiod" successfully installed!
+
+To learn more about the release, try:
+  $ helm status istiod -n istio-system
+  $ helm get all istiod -n istio-system
+
+Next steps:
+  * Deploy a Gateway: https://istio.io/latest/docs/setup/additional-setup/gateway/
+  * Try out our tasks to get started on common configurations:
+    * https://istio.io/latest/docs/tasks/traffic-management
+    * https://istio.io/latest/docs/tasks/security/
+    * https://istio.io/latest/docs/tasks/policy-enforcement/
+  * Review the list of actively supported releases, CVE publications and our hardening guide:
+    * https://istio.io/latest/docs/releases/supported-releases/
+    * https://istio.io/latest/news/security/
+    * https://istio.io/latest/docs/ops/best-practices/security/
+
+For further documentation see https://istio.io website
+networkpolicy.networking.k8s.io/allow-istiod unchanged
+peerauthentication.security.istio.io/default unchanged
+namespace/bookinfo not labeled
+authorizationpolicy.security.istio.io/allow-nothing created
+authorizationpolicy.security.istio.io/details created
+authorizationpolicy.security.istio.io/mongodb created
+authorizationpolicy.security.istio.io/productpage created
+authorizationpolicy.security.istio.io/ratings created
+authorizationpolicy.security.istio.io/reviews created
+namespace/bookinfo annotated
+env snapshot: results/env-S3.txt
+PASS T1   frontend-to-db               expected=blocked   observed=blocked   results/T1-S3-lateral.txt
+PASS T1   frontend-to-ratings          expected=blocked   observed=blocked   results/T1-S3-lateral.txt
+PASS T1   frontend-to-details-allowed  expected=succeeded observed=succeeded results/T1-S3-lateral.txt
+PASS T2   cross-node-sniff             expected=blocked   observed=blocked   results/T2-S3-encrypted.pcap
+PASS T3   rogue-unlabeled-to-ratings   expected=blocked   observed=blocked   results/T3-S3-rogue-pod.txt
+PASS T3   rogue-no-identity-to-ratings expected=blocked   observed=blocked   results/T3-S3-rogue-pod.txt
+PASS T3   rogue-default-sa-to-ratings  expected=blocked   observed=blocked   results/T3-S3-rogue-pod.txt
+PASS T3   rogue-reused-sa-to-ratings   expected=succeeded observed=succeeded results/T3-S3-rogue-pod.txt
+PASS T4   reviews-posts-ratings        expected=blocked   observed=blocked   results/T4-S3-unauthorized-op.txt
+PASS T5   reviews-reads-ratings        expected=succeeded observed=succeeded results/T5-S3-valid-identity.txt
+PASS T6   token-mounted                expected=blocked   observed=blocked   results/T6-S3-sa-token.txt
+PASS T6   api-reachable                expected=blocked   observed=blocked   results/T6-S3-sa-token.txt
+PASS T6   api-authenticated            expected=blocked   observed=blocked   results/T6-S3-sa-token.txt
+PASS T6   api-read-secrets             expected=blocked   observed=blocked   results/T6-S3-sa-token.txt
+run 20261128T000241Z-S3 (S3, 4bbe9aa): 14 pass, 0 fail
+exit=0

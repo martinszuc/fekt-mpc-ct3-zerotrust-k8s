@@ -12,8 +12,9 @@ base=$RESULTS/T2-$SCENARIO
 pcap=$base-capture.pcap
 rm -f "$base"-{capture,plaintext,encrypted,no-traffic}.{pcap,txt}
 
-# udp covers VXLAN (8472) and WireGuard (51871) between nodes
-node_exec "$NODE" sudo timeout "$SECONDS_" tcpdump -i "$NODE_IFACE" -s 0 -U -w - udp 2>/dev/null > "$pcap" &
+# everything on the node NIC except a possible ssh session: VXLAN (8472), WireGuard (51871) and host traffic
+FILTER="not tcp port 22"
+node_exec "$NODE" sudo timeout "$SECONDS_" tcpdump -i "$NODE_IFACE" -s 0 -U -w - "$FILTER" 2>/dev/null > "$pcap" &
 cap=$!
 sleep 3
 # legitimate user traffic: productpage -> details/reviews -> ratings -> mongodb, all cross-node
@@ -30,22 +31,24 @@ wait $cap || true
 hits=$(tshark -r "$pcap" -Y "frame contains \"$MARKER\"" 2>/dev/null | wc -l | tr -d ' ')
 vxlan=$(tshark -r "$pcap" -Y 'udp.port==8472' 2>/dev/null | wc -l | tr -d ' ')
 wg=$(tshark -r "$pcap" -Y 'udp.port==51871' 2>/dev/null | wc -l | tr -d ' ')
+# pod addresses outside WireGuard, outer or inside VXLAN: must be 0 for node encryption to count
+leak=$(tshark -r "$pcap" -d udp.port==8472,vxlan -Y "ip.addr==$POD_CIDR && !(udp.port==51871)" 2>/dev/null | wc -l | tr -d ' ')
 # app ports only: kubelet and health-check TLS would otherwise count as mesh mTLS
 mtls=$(tshark -r "$pcap" -d udp.port==8472,vxlan -Y 'vxlan && tls && (tcp.port==9080 || tcp.port==27017)' 2>/dev/null | wc -l | tr -d ' ')
 plain=$(tshark -r "$pcap" -d udp.port==8472,vxlan -Y 'vxlan && (http || mongo) && (tcp.port==9080 || tcp.port==27017)' 2>/dev/null | wc -l | tr -d ' ')
 # blocked needs proof: traffic ran and the capture shows it encrypted (WireGuard only, or mTLS on the app ports)
 if [[ $ok -ne $REQUESTS ]]; then observed=error; tag=no-traffic
 elif [[ $hits -gt 0 ]]; then observed=succeeded; tag=plaintext
-elif [[ $vxlan -eq 0 && $wg -gt 0 ]]; then observed=blocked; tag=encrypted
+elif [[ $vxlan -eq 0 && $leak -eq 0 && $wg -gt 0 ]]; then observed=blocked; tag=encrypted
 elif [[ $mtls -gt 0 && $plain -eq 0 ]]; then observed=blocked; tag=encrypted
 else observed=error; tag=no-traffic; fi
 final=$base-$tag.pcap
 mv "$pcap" "$final"
 txt=${final%.pcap}.txt
 {
-  echo "capture: $NODE $NODE_IFACE, ${SECONDS_}s, filter udp"
+  echo "capture: $NODE $NODE_IFACE, ${SECONDS_}s, filter $FILTER"
   echo "requests with the full call graph: $ok/$REQUESTS"
-  echo "frames total: $(tshark -r "$final" 2>/dev/null | wc -l | tr -d ' '), VXLAN (8472): $vxlan, WireGuard (51871): $wg, frames containing \"$MARKER\": $hits"
+  echo "frames total: $(tshark -r "$final" 2>/dev/null | wc -l | tr -d ' '), VXLAN (8472): $vxlan, WireGuard (51871): $wg, frames containing \"$MARKER\": $hits, pod-CIDR frames outside WireGuard: $leak"
   echo "inner HTTP/MongoDB in plaintext: $plain, app-port TLS (9080, 27017): $mtls"
   echo
   # verdict above is about payload; this is about metadata (who talks to whom, on which port)

@@ -22,7 +22,7 @@ expect() {
 
 # rogue <variant> <inject true|false> <serviceAccountName> [app label]
 rogue() {
-  local variant=$1 inject=$2 sa=$3 app=${4-reviews} pod=rogue-$1 res observed since
+  local variant=$1 inject=$2 sa=$3 app=${4-reviews} pod=rogue-$1 res observed since body
   kubectl -n "$NS" delete pod "$pod" --ignore-not-found --wait >/dev/null
   kubectl -n "$NS" apply -f - >/dev/null <<YAML
 apiVersion: v1
@@ -57,13 +57,18 @@ YAML
   sleep 3   # Cilium identity for the new pod
   since=$(date -u +%FT%TZ)
   res=$(kubectl -n "$NS" exec -i "$pod" -c attacker -- python - http http://ratings:9080/ratings/0 < tests/probe.py 2>&1) || true
-  # a timeout counts as blocked only with a Hubble policy drop from the rogue pod
-  observed=$(confirm_drop "$(outcome "$res")" "$res" "$pod" "$since")
   { echo "## $variant: rogue pod (app=${app:-none}, inject=$inject, SA $sa) -> ratings:9080"
     echo "$res"
-    # who answered: the app (200), the sidecar (403 RBAC body) or nobody
-    [[ $res == *HTTPError* ]] && kubectl -n "$NS" exec -i "$pod" -c attacker -- python - http-any GET http://ratings:9080/ratings/0 < tests/probe.py 2>&1 || true
-    kubectl -n "$NS" get pod "$pod" -o wide --show-labels
+  } >> "$out"
+  # a timeout counts as blocked only with a Hubble policy drop from the rogue pod to ratings
+  observed=$(confirm_drop "$(outcome "$res")" "$res" "$pod" "$since" 9080 "$out")
+  # a 403 counts as blocked only when the sidecar answered it (RBAC body), not the app
+  if [[ $res == *"HTTP Error 403"* ]]; then
+    body=$(kubectl -n "$NS" exec -i "$pod" -c attacker -- python - http-any GET http://ratings:9080/ratings/0 < tests/probe.py 2>&1) || true
+    echo "$body" >> "$out"
+    [[ $body == "OK HTTP 403 RBAC: access denied"* ]] || observed=error
+  fi
+  { kubectl -n "$NS" get pod "$pod" -o wide --show-labels
     echo
   } >> "$out"
   kubectl -n "$NS" delete pod "$pod" --wait=false >/dev/null
