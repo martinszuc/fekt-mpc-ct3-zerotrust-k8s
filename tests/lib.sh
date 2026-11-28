@@ -51,6 +51,23 @@ outcome() {
   esac
 }
 
+# confirm_drop <observed> <probe output> <pod> <since>: a timeout counts as blocked only when the Cilium agent
+# on the pod's node logged a policy drop from that pod since <since>; otherwise the timeout proves nothing (error)
+confirm_drop() {
+  local observed=$1 res=$2 pod=$3 since=$4 node agent drops
+  if [[ $observed != blocked ]] || ! grep -qiE 'timeout|timed out' <<< "$res"; then echo "$observed"; return; fi
+  node=$(kubectl -n "$NS" get pod "$pod" -o jsonpath='{.spec.nodeName}')
+  agent=$(kubectl -n kube-system get pod -l k8s-app=cilium --field-selector spec.nodeName="$node" -o name)
+  # capture first: grep -q in a pipe under pipefail can SIGPIPE the writer and turn a match into a failure
+  drops=$(kubectl -n kube-system exec "$agent" -c cilium-agent -- \
+      hubble observe --from-pod "$NS/$pod" --type drop --since "$since" -o compact 2>/dev/null) || true
+  if grep -q 'Policy denied' <<< "$drops"; then
+    echo blocked
+  else
+    echo error
+  fi
+}
+
 # attacker as an ephemeral container in the real reviews pod: same network namespace,
 # so same Cilium identity and (mesh) same sidecar and principal; prints "<pod> <container>"
 attacker_in_reviews() {

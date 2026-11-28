@@ -10,7 +10,7 @@ macOS on Apple Silicon (arm64), Homebrew, ~12 vCPU and 24 GB RAM free for the VM
 brew install lima socket_vmnet kubectl helm cilium-cli hubble fortio iperf3 wireshark jq yq
 ```
 
-git, make and python3 come with the Xcode command line tools. Homebrew installs current versions; the tested ones are in [docs/versions.md](docs/versions.md). Clone with git: test runs record the commit.
+git, make and python3 come with the Xcode command line tools. Homebrew installs current versions, not the tested ones; those are in [docs/versions.md](docs/versions.md), and every test run records the live versions in `results/env-<configuration code>.txt`. Clone with git: test runs record the commit.
 
 One-time socket_vmnet setup (needs sudo, nothing runs at login):
 
@@ -81,7 +81,7 @@ Dry run without a cluster: `scripts/pipeline-selftest.py && make plot BENCH_DIR=
 | `tests/t6-sa-token.sh` | Token abuse: productpage uses its ServiceAccount token against the API server | token usable in the baseline, blocked from segmentation on; reading Secrets is denied by RBAC everywhere |
 
 Each run appends to `results/attacks.csv` (one `run_id` per `make test`, plus the tested `git_sha`, `-dirty` if `infra/`, `manifests/` or `tests/` differ from it), writes the environment to `results/env-<configuration code>.txt` and evidence as `results/<attack code>-<configuration code>-*`; the codes are mapped in [docs/threat-model.md](docs/threat-model.md#codes-used-in-the-repository).
-A check whose evidence proves nothing (for example a capture without the probe traffic) is recorded as `error` and fails.
+A check whose evidence proves nothing (for example a capture without the probe traffic) is recorded as `error` and fails. A timeout counts as blocked by segmentation only when Hubble logged a `Policy denied` drop from the attacking pod (`confirm_drop` in `tests/lib.sh`).
 Network sniffing captures on the node NIC inside VM `zt-w1`. The host bridge `bridge100` does not see VM-to-VM frames (`results/T2-S0-host-bridge.txt`).
 
 The app is pinned to fixed nodes so every call crosses nodes: productpage and ratings on `zt-w1`, details, reviews and mongodb on `zt-w2`.

@@ -22,7 +22,7 @@ expect() {
 
 # rogue <variant> <inject true|false> <serviceAccountName> [app label]
 rogue() {
-  local variant=$1 inject=$2 sa=$3 app=${4-reviews} pod=rogue-$1 res observed
+  local variant=$1 inject=$2 sa=$3 app=${4-reviews} pod=rogue-$1 res observed since
   kubectl -n "$NS" delete pod "$pod" --ignore-not-found --wait >/dev/null
   kubectl -n "$NS" apply -f - >/dev/null <<YAML
 apiVersion: v1
@@ -55,8 +55,10 @@ YAML
     sleep 2
   done
   sleep 3   # Cilium identity for the new pod
+  since=$(date -u +%FT%TZ)
   res=$(kubectl -n "$NS" exec -i "$pod" -c attacker -- python - http http://ratings:9080/ratings/0 < tests/probe.py 2>&1) || true
-  observed=$(outcome "$res")
+  # a timeout counts as blocked only with a Hubble policy drop from the rogue pod
+  observed=$(confirm_drop "$(outcome "$res")" "$res" "$pod" "$since")
   { echo "## $variant: rogue pod (app=${app:-none}, inject=$inject, SA $sa) -> ratings:9080"
     echo "$res"
     # who answered: the app (200), the sidecar (403 RBAC body) or nobody

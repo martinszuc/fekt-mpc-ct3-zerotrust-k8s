@@ -9,9 +9,12 @@ start=$(date -u +%FT%TZ)
 
 check() {
   local name=$1 want=$2; shift 2
-  local res observed
+  local res observed since pod
+  since=$(date -u +%FT%TZ)
   res=$(probe productpage-v1 "$@" 2>&1) || true
-  observed=$(outcome "$res")
+  pod=$(kubectl -n "$NS" get pod -l app=productpage -o jsonpath='{.items[0].metadata.name}')
+  # blocked by segmentation needs a matching Hubble policy drop, not just a timeout
+  observed=$(confirm_drop "$(outcome "$res")" "$res" "$pod" "$since")
   printf '## %s: productpage -> %s\n%s\n\n' "$name" "$*" "$res" >> "$out"
   record T1 "$name" "$want" "$observed" "$out"
 }

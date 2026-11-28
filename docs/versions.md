@@ -7,14 +7,14 @@ Recorded 22.10.2026, host drift and kernels rechecked and aligned 29.10.2026. VM
 | Item | Version |
 |---|---|
 | Hardware | MacBook Pro Mac16,8, Apple M4 Pro (10P + 4E cores), 48 GB RAM |
-| macOS | 26.7.3 (25G416) since the 11.11 latency run; 26.7.2 (25G330) 29.10 to 02.11; 26.7.1 (25G313) until 23.10 |
+| macOS | 26.7.4 (25G422) for the 28.11 attack rerun; 26.7.3 (25G416) since the 11.11 latency run; 26.7.2 (25G330) 29.10 to 02.11; 26.7.1 (25G313) until 23.10 |
 | Homebrew | 7.0.10 |
 
 ## Cluster
 
 | Component | Version | Pinned in |
 |---|---|---|
-| Lima | 2.2.1 (2.3.0 for the 25.11 portability check) | host tool |
+| Lima | 2.2.1 (2.3.0 for the 25.11 portability check and the 28.11 attack rerun) | host tool |
 | VM image | Ubuntu 24.04 arm64 (Lima `template:ubuntu-24.04`) | `infra/config.env` |
 | VM type / network | vz, socket_vmnet 1.2.2 `lima:shared` (192.168.105.0/24) | `infra/config.env` |
 | VM sizing | 3 nodes, each 4 vCPU / 8 GiB / 30 GiB | `infra/config.env` |
@@ -33,13 +33,13 @@ Recorded 22.10.2026, host drift and kernels rechecked and aligned 29.10.2026. VM
 
 | Tool | Version |
 |---|---|
-| kubectl | v1.37.1 (v1.37.0 until 23.10) |
-| helm | v4.3.1 (v4.2.4 until 23.10) |
-| cilium-cli | v0.20.1 |
+| kubectl | v1.37.2 for the 28.11 attack rerun; v1.37.1 (v1.37.0 until 23.10) |
+| helm | v4.3.2 for the 28.11 attack rerun; v4.3.1 (v4.2.4 until 23.10) |
+| cilium-cli | v0.20.3 for the 28.11 attack rerun; v0.20.1 for the benchmarks |
 | hubble | 1.20.2 |
 | fortio | 1.76.0 |
 | iperf3 | 3.22 |
-| tshark (Wireshark) | 4.6.9 |
+| tshark (Wireshark) | 4.6.10 for the committed attack evidence (28.11); 4.6.9 before |
 | vhs (demo recording only) | 0.12.1 |
 | kind (attack tests only, CI and `infra/up-kind.sh`) | v0.33.0, node image `kindest/node:v1.36.4` |
 | jq / yq | Homebrew current |
