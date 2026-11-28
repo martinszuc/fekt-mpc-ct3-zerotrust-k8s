@@ -51,21 +51,24 @@ outcome() {
   esac
 }
 
-# confirm_drop <observed> <probe output> <pod> <since>: a timeout counts as blocked only when the Cilium agent
-# on the pod's node logged a policy drop from that pod since <since>; otherwise the timeout proves nothing (error)
+# confirm_drop <observed> <probe output> <pod> <since> <ports> [evidence file]: a timeout counts as blocked only
+# when the Cilium agent on the pod's node logged a policy drop from that pod to one of <ports> ("27017", "443|6443")
+# since <since>; the destination filter keeps drops left over from an earlier probe of the same pod from matching.
+# matching drop lines are appended to the evidence file; otherwise the timeout proves nothing (error)
 confirm_drop() {
-  local observed=$1 res=$2 pod=$3 since=$4 node agent drops
+  local observed=$1 res=$2 pod=$3 since=$4 ports=$5 ev=${6:-} node agent drops match
   if [[ $observed != blocked ]] || ! grep -qiE 'timeout|timed out' <<< "$res"; then echo "$observed"; return; fi
   node=$(kubectl -n "$NS" get pod "$pod" -o jsonpath='{.spec.nodeName}')
   agent=$(kubectl -n kube-system get pod -l k8s-app=cilium --field-selector spec.nodeName="$node" -o name)
   # capture first: grep -q in a pipe under pipefail can SIGPIPE the writer and turn a match into a failure
   drops=$(kubectl -n kube-system exec "$agent" -c cilium-agent -- \
       hubble observe --from-pod "$NS/$pod" --type drop --since "$since" -o compact 2>/dev/null) || true
-  if grep -q 'Policy denied' <<< "$drops"; then
-    echo blocked
-  else
-    echo error
+  # compact format: "<src>:<port> (...) <> <dst>:<port> (...) Policy denied DROPPED"
+  match=$(grep -E "(<>|->) [^ ]+:($ports) .*Policy denied" <<< "$drops" || true)
+  if [[ -n $ev ]]; then
+    { echo "## hubble: policy drops from $NS/$pod to port $ports since $since"; echo "${match:-none}"; echo; } >> "$ev"
   fi
+  if [[ -n $match ]]; then echo blocked; else echo error; fi
 }
 
 # attacker as an ephemeral container in the real reviews pod: same network namespace,

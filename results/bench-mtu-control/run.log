@@ -1,0 +1,76 @@
+### 2026-11-02 19:36:35 CET switch to S0
+### 2026-11-02 19:37:15 CET force MTU 1405
+### 2026-11-02 19:37:55 CET route mtu 1355
+[1m==> run 20261102T183755Z: scenarios S0, rounds 1, suites iperf3 -> results/bench-mtu-control[0m
+serviceaccount/bench-client unchanged
+serviceaccount/bench-server unchanged
+service/fortio-cross unchanged
+service/fortio-same unchanged
+service/iperf3-cross unchanged
+service/iperf3-same unchanged
+deployment.apps/bench-client unchanged
+deployment.apps/fortio-cross unchanged
+deployment.apps/fortio-same unchanged
+deployment.apps/iperf3-cross unchanged
+deployment.apps/iperf3-same unchanged
+deployment.apps/bench-client restarted
+deployment.apps/fortio-cross restarted
+deployment.apps/fortio-same restarted
+deployment.apps/iperf3-cross restarted
+deployment.apps/iperf3-same restarted
+Waiting for deployment "bench-client" rollout to finish: 1 old replicas are pending termination...
+Waiting for deployment "bench-client" rollout to finish: 1 old replicas are pending termination...
+deployment "bench-client" successfully rolled out
+deployment "fortio-cross" successfully rolled out
+deployment "fortio-same" successfully rolled out
+deployment "iperf3-cross" successfully rolled out
+deployment "iperf3-same" successfully rolled out
+[1m==> bench pods ready (S0)[0m
+[1m==> S0 iperf3 same repeat=0 (10s)[0m
+[1m==> S0 iperf3 same repeat=1 (30s)[0m
+[1m==> S0 iperf3 same repeat=2 (30s)[0m
+[1m==> S0 iperf3 same repeat=3 (30s)[0m
+[1m==> S0 iperf3 cross repeat=0 (10s)[0m
+[1m==> S0 iperf3 cross repeat=1 (30s)[0m
+[1m==> S0 iperf3 cross repeat=2 (30s)[0m
+[1m==> S0 iperf3 cross repeat=3 (30s)[0m
+[1m==> done: results/bench-mtu-control (raw JSON in results/bench-mtu-control/raw/20261102T183755Z)[0m
+### 2026-11-02 19:43:13 CET bench exit 0
+### 2026-11-02 19:43:13 CET restore auto MTU
+### 2026-11-02 19:43:40 CET route mtu 1450
+### 2026-11-02 19:43:40 CET CONTROL DONE
+[1m==> run 20261102T184401Z: scenarios S0, rounds 1, suites iperf3 -> results/bench-mtu-control[0m
+serviceaccount/bench-client unchanged
+serviceaccount/bench-server unchanged
+service/fortio-cross unchanged
+service/fortio-same unchanged
+service/iperf3-cross unchanged
+service/iperf3-same unchanged
+deployment.apps/bench-client unchanged
+deployment.apps/fortio-cross unchanged
+deployment.apps/fortio-same unchanged
+deployment.apps/iperf3-cross unchanged
+deployment.apps/iperf3-same unchanged
+deployment.apps/bench-client restarted
+deployment.apps/fortio-cross restarted
+deployment.apps/fortio-same restarted
+deployment.apps/iperf3-cross restarted
+deployment.apps/iperf3-same restarted
+Waiting for deployment "bench-client" rollout to finish: 1 old replicas are pending termination...
+Waiting for deployment "bench-client" rollout to finish: 1 old replicas are pending termination...
+deployment "bench-client" successfully rolled out
+deployment "fortio-cross" successfully rolled out
+deployment "fortio-same" successfully rolled out
+deployment "iperf3-cross" successfully rolled out
+deployment "iperf3-same" successfully rolled out
+[1m==> bench pods ready (S0)[0m
+[1m==> S0 iperf3 same repeat=0 (10s)[0m
+[1m==> S0 iperf3 same repeat=1 (30s)[0m
+[1m==> S0 iperf3 same repeat=2 (30s)[0m
+[1m==> S0 iperf3 same repeat=3 (30s)[0m
+[1m==> S0 iperf3 cross repeat=0 (10s)[0m
+[1m==> S0 iperf3 cross repeat=1 (30s)[0m
+[1m==> S0 iperf3 cross repeat=2 (30s)[0m
+[1m==> S0 iperf3 cross repeat=3 (30s)[0m
+[1m==> done: results/bench-mtu-control (raw JSON in results/bench-mtu-control/raw/20261102T184401Z)[0m
+### 2026-11-02 19:49:21 CET auto-MTU reference exit 0

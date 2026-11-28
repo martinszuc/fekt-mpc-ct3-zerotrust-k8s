@@ -35,7 +35,7 @@ install_server() {
   local ip=$1
   if k3s_active "$CP_NODE" k3s; then log "k3s server already active on $CP_NODE"; return; fi
   log "installing k3s $K3S_VERSION server on $CP_NODE ($ip)"
-  limactl shell "$CP_NODE" sh -c "curl -sfL https://get.k3s.io | INSTALL_K3S_VERSION='$K3S_VERSION' sh -s - server \
+  limactl shell "$CP_NODE" sh -c "curl -sfL $K3S_INSTALL_URL | INSTALL_K3S_VERSION='$K3S_VERSION' sh -s - server \
     --node-ip=$ip --advertise-address=$ip --tls-san=$ip \
     --flannel-backend=none --disable-network-policy --disable-kube-proxy \
     --disable=traefik,servicelb \
@@ -46,7 +46,7 @@ install_agent() {
   local name=$1 ip=$2 cp_ip=$3 token=$4
   if k3s_active "$name" k3s-agent; then log "k3s agent already active on $name"; return; fi
   log "installing k3s $K3S_VERSION agent on $name ($ip)"
-  limactl shell "$name" sh -c "curl -sfL https://get.k3s.io | INSTALL_K3S_VERSION='$K3S_VERSION' \
+  limactl shell "$name" sh -c "curl -sfL $K3S_INSTALL_URL | INSTALL_K3S_VERSION='$K3S_VERSION' \
     K3S_URL='https://$cp_ip:6443' K3S_TOKEN='$token' sh -s - agent --node-ip=$ip"
 }
 

@@ -19,6 +19,8 @@ get=$(req GET http://ratings:9080/ratings/0)
 if [[ $post == "OK HTTP 403 RBAC: access denied"* ]]; then observed=blocked
 elif [[ $post == "OK HTTP "* ]]; then observed=succeeded
 else observed=error; fi
+# the allowed operation must still work: a policy that denies everything is not method-level authorization
+[[ $get == "OK HTTP 200"* ]] || observed=error
 { echo "## compromised reviews ($pod, ephemeral container $ctr) -> POST ratings:9080/ratings/0"
   echo "$post"
   echo

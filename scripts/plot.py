@@ -2,7 +2,7 @@
 """Figures for the report from results/bench/*.csv -> <out>/*.pdf|png, in the shared style (scripts/style.py).
 
 Bars: median across repeats, whisker min to max, dots for single repeats.
-Curves: median, band IQR. Same configuration order, label, color and marker in every figure.
+Curves: median, band min to max (sweeps have 2 repeats per step). Same configuration order, label, color and marker in every figure.
 """
 import argparse
 import statistics
@@ -53,12 +53,12 @@ def bars(ax, by_scenario, scenarios, ylabel):
 
 
 def curve(ax, points, s, gap=None):
-    """points: {x: [y...]} -> median line with IQR band; a last step more than `gap` times
+    """points: {x: [y...]} -> median line with a min-max band; a last step more than `gap` times
     the previous x is drawn dashed (range between the two points not measured)"""
     xs = sorted(points)
     st = [stats(points[x]) for x in xs]
     med = [p["median"] for p in st]
-    ax.fill_between(xs, [p["q1"] for p in st], [p["q3"] for p in st], color=color(s), alpha=0.15, lw=0)
+    ax.fill_between(xs, [min(points[x]) for x in xs], [max(points[x]) for x in xs], color=color(s), alpha=0.15, lw=0)
     n = len(xs) - 1 if gap and len(xs) > 2 and xs[-1] > gap * xs[-2] else len(xs)
     ax.plot(xs[:n], med[:n], color=color(s), marker=MARKER.get(s, "o"), label=label(s))
     if n < len(xs):
@@ -130,6 +130,13 @@ def fig_latency(latency, outdir):
             panel(ax, i * len(pcts) + j, f"{m[:-3]}, {PATH_LABEL[path]}")
     bar_legend(fig, axes, scen)
     save(fig, outdir, "latency")
+    # p50 only, one row: large enough for a slide
+    fig, axes = plt.subplots(1, len(paths), figsize=(FIGW, 2.4), squeeze=False)
+    for j, path in enumerate(paths):
+        bars(axes[0][j], values(rows, path=path, metric="p50_ms"), scen, "ms" if j == 0 else "")
+        panel(axes[0][j], j, f"p50, {PATH_LABEL[path]}")
+    bar_legend(fig, axes, scen)
+    save(fig, outdir, "latency-p50")
 
 
 def fig_throughput(throughput, outdir):
@@ -223,7 +230,7 @@ def fig_cost(costs, outdir):
         scen = present(rows)
         paths = [p for p in ("same", "cross", "app") if any(r["path"] == p for r in rows)]
         # the measured component goes into the y label, titles do not fit a third of the text width
-        unit = "millicores na 1000 pož./s"
+        unit = "milijadrá (m) na 1000 pož./s"
         scopes = [("node_net", f"CPU uzlov nad nečinnosťou\n{unit}"), ("proxy", f"CPU istio-proxy\n{unit}")]
         fig, axes = plt.subplots(len(scopes), len(paths), figsize=(FIGW, 4), squeeze=False)
         for i, (scope, ylabel) in enumerate(scopes):
@@ -239,7 +246,7 @@ def fig_cost(costs, outdir):
         fig, axes = plt.subplots(1, 2, figsize=(FIGW, 2.4), squeeze=False)
         for j, path in enumerate(("same", "cross")):
             bars(axes[0][j], values(rows, path=path, metric="mcores_per_gbps_node_net"), scen,
-                 "millicores na Gbit/s" if j == 0 else "")
+                 "milijadrá (m) na 1 Gbit/s" if j == 0 else "")
             panel(axes[0][j], j, f"CPU uzlov nad nečinnosťou, {PATH_LABEL[path]}")
         save(fig, outdir, "cost-per-gbit")
 

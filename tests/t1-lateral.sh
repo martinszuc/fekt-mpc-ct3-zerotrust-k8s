@@ -7,22 +7,23 @@ out=$RESULTS/T1-$SCENARIO-lateral.txt
 : > "$out"
 start=$(date -u +%FT%TZ)
 
+# check <name> <expected> <destination port> <probe args...>
 check() {
-  local name=$1 want=$2; shift 2
+  local name=$1 want=$2 port=$3; shift 3
   local res observed since pod
   since=$(date -u +%FT%TZ)
   res=$(probe productpage-v1 "$@" 2>&1) || true
   pod=$(kubectl -n "$NS" get pod -l app=productpage -o jsonpath='{.items[0].metadata.name}')
-  # blocked by segmentation needs a matching Hubble policy drop, not just a timeout
-  observed=$(confirm_drop "$(outcome "$res")" "$res" "$pod" "$since")
   printf '## %s: productpage -> %s\n%s\n\n' "$name" "$*" "$res" >> "$out"
+  # blocked by segmentation needs a Hubble policy drop to this destination port, not just a timeout
+  observed=$(confirm_drop "$(outcome "$res")" "$res" "$pod" "$since" "$port" "$out")
   record T1 "$name" "$want" "$observed" "$out"
 }
 
-check frontend-to-db "$expect" mongo mongodb 27017
-check frontend-to-ratings "$expect" http http://ratings:9080/ratings/0
+check frontend-to-db "$expect" 27017 mongo mongodb 27017
+check frontend-to-ratings "$expect" 9080 http http://ratings:9080/ratings/0
 # legitimate path must keep working in every scenario
-check frontend-to-details-allowed succeeded http http://details:9080/details/0
+check frontend-to-details-allowed succeeded 9080 http http://details:9080/details/0
 
 # policy verdicts from the Cilium agent on the attacker's node
 node=$(kubectl -n "$NS" get pod -l app=productpage -o jsonpath='{.items[0].spec.nodeName}')

@@ -16,8 +16,9 @@ LABEL = {"S0": "bez ochrany", "S1": "segmentácia siete", "S2a": "šifrovanie me
          "S2b-plain": "mesh bez mTLS", "S2b": "mTLS medzi službami", "S3": "L7 autorizácia"}
 COLOR = {"S0": "#2a78d6", "S1": "#eb6834", "S2a": "#1baf7a", "S2b-plain": "#eda100", "S2b": "#e87ba4", "S3": "#008300"}
 MARKER = {"S0": "o", "S1": "s", "S2a": "^", "S2b-plain": "v", "S2b": "D", "S3": "P"}
-# hatching keeps S2b-plain apart from S2b in grayscale and marks it as measurement-only
-HATCH = {"S2b-plain": "////"}
+# hatching keeps S2b-plain apart from S2b in grayscale and marks it as measurement-only;
+# dots keep L7 authorization apart from node encryption (similar greens in print)
+HATCH = {"S2b-plain": "////", "S3": "...."}
 INK, MUTED = "#2b2b2b", "#6b6b6b"
 # text width of the report (426.8 pt), so 7-8 pt fonts print at 7-8 pt
 FIGW = 426.8 / 72
